@@ -32,8 +32,8 @@ export const loadIdolData = async () => {
     ]);
     
     // Log response status to help debug
-    console.log('Data fetch responses:', 
-      responses.map(r => `${r.url}: ${r.status}`));
+    // console.log('Data fetch responses:', 
+      // responses.map(r => `${r.url}: ${r.status}`));
     
     // Check if any responses failed
     const failedResponses = responses.filter(r => !r.ok);
