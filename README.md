@@ -41,7 +41,7 @@ Check out the live demo: [PoE Idol Grid Builder](https://yourusername.github.io/
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/poe-idol-grid-builder.git
+   git clone https://github.com/jlepoff/poe-idol-grid-builder.git
    cd poe-idol-grid-builder
    ```
 
