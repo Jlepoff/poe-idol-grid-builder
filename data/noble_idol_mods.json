@@ -1,0 +1,738 @@
+{
+  "prefixes": [
+    {
+      "Name": "Abyssal",
+      "Code": "MapRelicAbyssAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain an Abyss",
+      "Family": "MapRelicAdditionalAbyssChance"
+    },
+    {
+      "Name": "Abyssal",
+      "Code": "MapRelicAbyssIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain an Abyss",
+      "Family": "MapRelicIncreasedAbyssChance"
+    },
+    {
+      "Name": "Alva's",
+      "Code": "MapRelicAdditionalIncursionChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain Alva",
+      "Family": "MapRelicAdditionalIncursionChance"
+    },
+    {
+      "Name": "Alva's",
+      "Code": "MapRelicIncreasedIncursionChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain Alva",
+      "Family": "MapRelicIncreasedIncursionChance"
+    },
+    {
+      "Name": "Exiled",
+      "Code": "MapRelicAnarchyAdditionalExilesChanceMedium",
+      "Mod": "Your Maps have a 45% chance to contain an additional Rogue Exile",
+      "Family": "MapRelicAnarchyAdditionalExilesChance"
+    },
+    {
+      "Name": "Exiled",
+      "Code": "MapRelicAnarchyExileChanceMedium",
+      "Mod": "Your Maps have +18% chance to contain a Rogue Exile",
+      "Family": "MapRelicAnarchyExileChance"
+    },
+    {
+      "Name": "Bestial",
+      "Code": "MapRelicBestiaryAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain Einhar",
+      "Family": "MapRelicBestiaryAdditionalChance"
+    },
+    {
+      "Name": "Bestial",
+      "Code": "MapRelicBestiaryIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain Einhar",
+      "Family": "MapRelicBestiaryIncreasedChance"
+    },
+    {
+      "Name": "Demonic",
+      "Code": "MapRelicBeyondAdditionalChanceMedium",
+      "Mod": "45% chance for your Maps to attract Beyond Demons",
+      "Family": "MapRelicBeyondAdditionalChance"
+    },
+    {
+      "Name": "Blighted",
+      "Code": "MapRelicBlightAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain a Blight Encounter",
+      "Family": "MapRelicBlightAdditionalEncounterChance"
+    },
+    {
+      "Name": "Blighted",
+      "Code": "MapRelicBlightIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain a Blight Encounter",
+      "Family": "MapRelicBlightAdditionalChance"
+    },
+    {
+      "Name": "Breachlord's",
+      "Code": "MapRelicBreachAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain Breaches",
+      "Family": "MapRelicBreachAdditionalChance"
+    },
+    {
+      "Name": "Breachlord's",
+      "Code": "MapRelicBreachIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain a Breach",
+      "Family": "MapRelicBreachIncreasedChance"
+    },
+    {
+      "Name": "Breachlord's",
+      "Code": "MapRelicBreachTwoAdditionalBreachChance1",
+      "Mod": "Your Maps which contain Breaches have 10% chance to contain two additional Breaches",
+      "Family": "MapRelicBreachTwoAdditionalBreachChance"
+    },
+    {
+      "Name": "Delirious",
+      "Code": "MapRelicDeliriumAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain a Mirror of Delirium",
+      "Family": "MapRelicDeliriumAdditionalChance"
+    },
+    {
+      "Name": "Delirious",
+      "Code": "MapRelicDeliriumIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain a Mirror of Delirium",
+      "Family": "MapRelicDeliriumIncreasedChance"
+    },
+    {
+      "Name": "Niko's",
+      "Code": "MapRelicDelveAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain Niko",
+      "Family": "MapRelicDelveAdditionalChance"
+    },
+    {
+      "Name": "Niko's",
+      "Code": "MapRelicDelveIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain Niko",
+      "Family": "MapRelicDelveIncreasedChance"
+    },
+    {
+      "Name": "Domination",
+      "Code": "MapRelicShrineIncreasedChanceMedium",
+      "Mod": "Your Maps have +18% chance to contain a Shrine",
+      "Family": "MapRelicShrineIncreasedChance"
+    },
+    {
+      "Name": "Domination",
+      "Code": "MapRelicShrineAdditionalChanceMedium",
+      "Mod": "Your Maps have a 80% chance to contain an additional Shrine",
+      "Family": "MapRelicShrineAdditionalChance"
+    },
+    {
+      "Name": "Shaper's",
+      "Code": "MapRelicBossShaperMapDropChance1",
+      "Mod": "Final Map Boss in each Map has +(1.8\u20132.4)% chance to drop a Shaper Guardian Map (Tier 14+)",
+      "Family": "MapRelicBossShaperMapDropChance"
+    },
+    {
+      "Name": "Elder's",
+      "Code": "MapRelicBossElderMapDropChance1",
+      "Mod": "Final Map Boss in each Map has +(1.8\u20132.4)% chance to drop an Elder Guardian Map (Tier 14+)",
+      "Family": "MapRelicBossElderMapDropChance"
+    },
+    {
+      "Name": "Essence",
+      "Code": "MapRelicEssenceIncreasedChanceMedium",
+      "Mod": "Your Maps have +18% chance to contain an Imprisoned Monster",
+      "Family": "MapRelicEssenceIncreasedChance"
+    },
+    {
+      "Name": "Essence",
+      "Code": "MapRelicEssenceAdditionalMonolithChanceMedium",
+      "Mod": "Your Maps have 80% chance to contain an additional Imprisoned Monster",
+      "Family": "MapRelicEssenceAdditionalMonolithChance"
+    },
+    {
+      "Name": "Ruinic",
+      "Code": "MapRelicExpeditionAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain an Expedition Encounter",
+      "Family": "MapRelicExpeditionAdditionalChance"
+    },
+    {
+      "Name": "Ruinic",
+      "Code": "MapRelicExpeditionIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain an Expedition Encounter",
+      "Family": "MapRelicExpeditionIncreasedChance"
+    },
+    {
+      "Name": "Harbinger's",
+      "Code": "MapRelicHarbingerAdditionalHarbingerChanceMedium",
+      "Mod": "Your Maps have a 80% chance to contain an additional Harbinger",
+      "Family": "MapRelicHarbingerAdditionalHarbingerChance"
+    },
+    {
+      "Name": "Bountiful",
+      "Code": "MapRelicHarvestAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain The Sacred Grove",
+      "Family": "MapRelicHarvestAdditionalChance"
+    },
+    {
+      "Name": "Bountiful",
+      "Code": "MapRelicHarvestIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain The Sacred Grove",
+      "Family": "MapRelicHarvestIncreasedChance"
+    },
+    {
+      "Name": "Smuggler's",
+      "Code": "MapRelicHeistAdditionalCacheChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain a Smuggler's Cache",
+      "Family": "MapRelicHeistAdditionalCacheChance"
+    },
+    {
+      "Name": "Smuggler's",
+      "Code": "MapRelicHeistIncreasedCacheChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain a Smuggler's Cache",
+      "Family": "MapRelicHeistIncreasedCacheChance"
+    },
+    {
+      "Name": "Smuggler's",
+      "Code": "MapRelicHeistIncreasedBlueprintChance1",
+      "Mod": "25% increased Blueprints found in your Maps",
+      "Family": "MapRelicHeistIncreasedBlueprintChance"
+    },
+    {
+      "Name": "Syndicate's",
+      "Code": "MapRelicBetrayalAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain Jun",
+      "Family": "MapRelicBetrayalAdditionalChance"
+    },
+    {
+      "Name": "Syndicate's",
+      "Code": "MapRelicBetrayalIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain Jun",
+      "Family": "MapRelicBetrayalIncreasedChance"
+    },
+    {
+      "Name": "General's",
+      "Code": "MapRelicLegionAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain a Legion Encounter",
+      "Family": "MapRelicLegionAdditionalChance"
+    },
+    {
+      "Name": "General's",
+      "Code": "MapRelicLegionIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain a Legion Encounter",
+      "Family": "MapRelicLegionIncreasedChance"
+    },
+    {
+      "Name": "Trialmaster's",
+      "Code": "MapRelicUltimatumIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain an Ultimatum Encounter",
+      "Family": "MapRelicUltimatumIncreasedChance"
+    },
+    {
+      "Name": "Trialmaster's",
+      "Code": "MapRelicUltimatumAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain an Ultimatum Encounter",
+      "Family": "MapRelicUltimatumAdditionalChance"
+    },
+    {
+      "Name": "Ritualistic",
+      "Code": "MapRelicRitualAdditionalChanceMedium",
+      "Mod": "Your Maps have +45% chance to contain Ritual Altars",
+      "Family": "MapRelicRitualAdditionalChance"
+    },
+    {
+      "Name": "Ritualistic",
+      "Code": "MapRelicRitualIncreasedChanceMedium",
+      "Mod": "Your Maps have 180% increased chance to contain Ritual Altars",
+      "Family": "MapRelicRitualIncreasedChance"
+    },
+    {
+      "Name": "Trapped",
+      "Code": "MapRelicStrongboxIncreasedChanceMedium",
+      "Mod": "Your Maps have +80% chance to contain a Strongbox",
+      "Family": "MapRelicStrongboxIncreasedChance"
+    },
+    {
+      "Name": "Synthesised",
+      "Code": "MapRelicMapBossSynthesisMapDropChance1",
+      "Mod": "+(1.2\u20131.8)% chance for a Synthesis Map to drop from Final Map Boss in each Map (Tier 14+)",
+      "Family": "MapRelicMapBossSynthesisMapDropChance"
+    },
+    {
+      "Name": "Tormented",
+      "Code": "MapRelicTormentAdditionalChanceMedium",
+      "Mod": "Your Maps have a 80% chance to be haunted by an additional Tormented Spirit",
+      "Family": "MapRelicTormentAdditionalChance"
+    },
+    {
+      "Name": "Tormented",
+      "Code": "MapRelicTormentIncreasedChanceMedium",
+      "Mod": "Your Maps have +18% chance to be haunted by a Tormented Spirit",
+      "Family": "MapRelicTormentIncreasedChance"
+    },
+    {
+      "Name": "Tormented",
+      "Code": "MapRelicTormentMapBossSurroundedBySpiritChance1",
+      "Mod": "Map Bosses have 8% chance to be surrounded by Tormented Spirits",
+      "Family": "MapRelicTormentMapBossSurroundedBySpiritChance"
+    },
+    {
+      "Name": "Corrupting",
+      "Code": "MapRelicMapVaalSideAreaChance1",
+      "Mod": "Your Maps have +8% chance to contain a Vaal Side Area",
+      "Family": "MapRelicMapVaalSideAreaChance"
+    },
+    {
+      "Name": "Cartographer's",
+      "Code": "MapRelicMapContainsAdjacentMapChance1",
+      "Mod": "8% chance for one Monster in each of your Maps to drop an additional connected Map",
+      "Family": "MapRelicMapContainsAdjacentMapChance"
+    }
+  ],
+  "suffixes": [
+    {
+      "Name": "of the Abyss",
+      "Code": "MapRelicAbyssIncreasedMonsters1",
+      "Mod": "Abysses in your Maps spawn 18% increased Monsters",
+      "Family": "MapRelicIncreasedAbyssMonsters"
+    },
+    {
+      "Name": "of the Abyss",
+      "Code": "MapRelicAbyssIncreasedMonsterExperience1",
+      "Mod": "Abyss Monsters in your Maps grant 40% increased Experience",
+      "Family": "MapRelicIncreasedAbyssMonsterExperience"
+    },
+    {
+      "Name": "of the Abyss",
+      "Code": "MapRelicAbyssPathSpawn100PercentIncreasedMonstersChance1",
+      "Mod": "Abyss Cracks in your Maps have 12% chance to spawn 100% increased Monsters",
+      "Family": "MapRelicAbyssPathSpawn100PercentIncreasedMonstersChance"
+    },
+    {
+      "Name": "of the Abyss",
+      "Code": "MapRelicAbyssChasmSpawn100PercentIncreasedMonstersChance1",
+      "Mod": "Abyss Pits in your Maps have 12% chance to spawn 100% increased Monsters",
+      "Family": "MapRelicAbyssChasmSpawn100PercentIncreasedMonstersChance"
+    },
+    {
+      "Name": "of the Abyss",
+      "Code": "MapRelicAbyssAtLeastMagicPerChasmChance1",
+      "Mod": "Abyss Cracks in your Maps have 5% chance to spawn all Monsters as Magic for each prior Pit in that Abyss",
+      "Family": "MapRelicAbyssAtLeastMagicPerChasmChance"
+    },
+    {
+      "Name": "of Incursion",
+      "Code": "MapRelicIncursionAllMonstersMagicChance1",
+      "Mod": "Incursions in your Maps have 25% chance for all Monsters to be at least Magic",
+      "Family": "MapRelicIncursionAllMonstersMagicChance"
+    },
+    {
+      "Name": "of Exiles",
+      "Code": "MapRelicAnarchyExileIncreasedRarity1",
+      "Mod": "40% increased Rarity of Items Dropped by Wild Rogue Exiles in your Maps",
+      "Family": "MapRelicAnarchyExileIncreasedRarity"
+    },
+    {
+      "Name": "of Exiles",
+      "Code": "MapRelicAnarchyExileAdditionalCurrencyChance1",
+      "Mod": "Rogue Exiles in your Maps have 20% chance to drop an additional Currency Item",
+      "Family": "MapRelicAnarchyExileAdditionalCurrencyChance"
+    },
+    {
+      "Name": "of Beasts",
+      "Code": "MapRelicBestiaryAddtionalRedBeastChance1",
+      "Mod": "Your Maps that contain capturable Beasts have 18% chance to contain an additional Red Beast",
+      "Family": "MapRelicBestiaryAddtionalRedBeastChance"
+    },
+    {
+      "Name": "of Beasts",
+      "Code": "MapRelicBestiaryEinharMoreDamageToUniques1",
+      "Mod": "Einhar deals 800% more Damage to Unique Monsters in your Maps",
+      "Family": "MapRelicBestiaryEinharMoreDamageToUniques"
+    },
+    {
+      "Name": "of Beasts",
+      "Code": "MapRelicBestiaryEinharCooldownRecovery1",
+      "Mod": "Einhar has 80% increased Cooldown Recovery Rate in your Maps",
+      "Family": "MapRelicBeastiaryEinharCooldownRecovery"
+    },
+    {
+      "Name": "of the Scourge",
+      "Code": "MapRelicBeyondIncreasedPortalSearchRadius1",
+      "Mod": "Beyond Portals in your Maps have 25% increased Merging Radius",
+      "Family": "MapRelicBeyondIncreasedPortalSearchRadius"
+    },
+    {
+      "Name": "of the Scourge",
+      "Code": "MapRelicBeyondIncreasedMonsterTaintedCurrencyQuantity1",
+      "Mod": "15% increased Quantity of Tainted Currency dropped by Beyond Demons in your Maps",
+      "Family": "MapRelicBeyondIncreasedMonsterTaintedCurrencyQuantity"
+    },
+    {
+      "Name": "of Blight",
+      "Code": "MapRelicBlightLaneAdditionalChestChance1",
+      "Mod": "Lanes of Blight Encounters in your Maps have 8% chance for an additional Reward Chest",
+      "Family": "MapRelicBlightLaneAdditionalChestChance"
+    },
+    {
+      "Name": "of Blight",
+      "Code": "MapRelicBlightChestAdditionalDropChance1",
+      "Mod": "25% chance for Blight Chests to contain an additional Reward",
+      "Family": "MapRelicBlightChestAdditionalDropChance"
+    },
+    {
+      "Name": "of Blight",
+      "Code": "MapRelicBlightBossAdditionalRewardChance1",
+      "Mod": "Blight Bosses in your Maps have 18% chance to add an additional Reward Chest when Defeated",
+      "Family": "MapRelicBlightBossAdditionalRewardChance"
+    },
+    {
+      "Name": "of Blight",
+      "Code": "MapRelicBlightChestOilChance1",
+      "Mod": "Blighted Chests in your Maps have 35% increased chance to contain an Oil",
+      "Family": "MapRelicBlightChestOilChance"
+    },
+    {
+      "Name": "of Blight",
+      "Code": "MapRelicBlightMonsterSpawnRate1",
+      "Mod": "Blight Monsters in your Maps spawn 60% faster",
+      "Family": "MapRelicBlightMonsterSpawnRate"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachBossDoubleSplintersChance1",
+      "Mod": "Breach Bosses in your Maps have 16% chance to drop double Breach Splinters",
+      "Family": "MapRelicBreachBossDoubleSplintersChance"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachChestSplinterQuantity1",
+      "Mod": "25% increased Quantity of Breach Splinters found in Breach Hands in your Maps",
+      "Family": "MapRelicBreachChestSplinterQuantity"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachXophChance1",
+      "Mod": "Breaches in your Maps have 120% increased chance to belong to Xoph",
+      "Family": "MapRelicBreachXophChance"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachTulChance1",
+      "Mod": "Breaches in your Maps have 120% increased chance to belong to Tul",
+      "Family": "MapRelicBreachTulChance"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachEshChance1",
+      "Mod": "Breaches in your Maps have 120% increased chance to belong to Esh",
+      "Family": "MapRelicBreachEshChance"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachUulNetolChance1",
+      "Mod": "Breaches in your Maps have 100% increased chance to belong to Uul-Netol",
+      "Family": "MapRelicBreachUulNetolChance"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachChayulaChance1",
+      "Mod": "Breaches in your Maps have 80% increased chance to belong to Chayula",
+      "Family": "MapRelicBreachChayulaChance"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachIncreasedMonsterSplinterQuantity1",
+      "Mod": "25% increased Quantity of Breach Splinters dropped by Breach Monsters in your Maps",
+      "Family": "MapRelicBreachIncreasedMonsterSplinterQuantity"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachMonsterIncreasedUniqueDropChance1",
+      "Mod": "Breach Monsters in your Maps have 7% increased chance to drop a Breach Unique Item",
+      "Family": "MapRelicBreachMonsterIncreasedUniqueDropChance"
+    },
+    {
+      "Name": "of the Exarch",
+      "Code": "MapRelicCleansingFireMonsterInfluenceItemDropChance1",
+      "Mod": "Monsters Influenced by The Searing Exarch in your Maps have (0.5\u20130.7)% chance to drop an Item with a Searing Exarch Implicit Modifier",
+      "Family": "MapRelicCleansingFireMonsterInfluenceItemDropChance"
+    },
+    {
+      "Name": "of the Conqueror",
+      "Code": "MapRelicConquerorInfluencePackSize1",
+      "Mod": "Monster Packs Influenced by Conquerors in your Maps have 12% increased Pack Size",
+      "Family": "MapRelicConquerorInfluencePackSize"
+    },
+    {
+      "Name": "of Delirium",
+      "Code": "MapRelicDeliriumSecondaryWaveAcceleration1",
+      "Mod": "Delirium Fog in your Maps dissipates 5% slower",
+      "Family": "MapRelicDeliriumSecondaryWaveAcceleration"
+    },
+    {
+      "Name": "of Delirium",
+      "Code": "MapRelicDeliriumBossUniqueClusterJewelChance1",
+      "Mod": "Delirium Bosses in your Maps have 40% increased chance to drop Unique Cluster Jewels",
+      "Family": "MapRelicDeliriumBossUniqueClusterJewelChance"
+    },
+    {
+      "Name": "of Delirium",
+      "Code": "MapRelicDeliriumMonsterClusterJewelDropChance1",
+      "Mod": "Delirium Monsters in your Maps have 25% increased chance to drop Cluster Jewels",
+      "Family": "MapRelicDeliriumMonsterClusterJewelDropChance"
+    },
+    {
+      "Name": "of Delirium",
+      "Code": "MapRelicDeliriumClusterJewelRareCorruptedChance1",
+      "Mod": "Cluster Jewels from Delirium Rewards have a 8% chance to be Rare and Corrupted",
+      "Family": "MapRelicDeliriumClusterJewelRareCorruptedChance"
+    },
+    {
+      "Name": "of the Underground",
+      "Code": "MapRelicDelveIncreasedSulphite1",
+      "Mod": "Voltaxic Sulphite Veins and Chests in your Maps contain 10% increased Sulphite",
+      "Family": "MapRelicDelveIncreasedSulphite"
+    },
+    {
+      "Name": "of the Underground",
+      "Code": "MapRelicDelveMovementSpeedPerSulphiteMined1",
+      "Mod": "You Gain 12% increased Movement Speed per stack of Sulphite Intoxication.",
+      "Family": "MapRelicDelveMovementSpeedPerSulphiteMined"
+    },
+    {
+      "Name": "of Domination",
+      "Code": "MapRelicShrineBuffEffect1",
+      "Mod": "35% increased Effect of Shrine Buffs on Players in your Maps",
+      "Family": "MapRelicShrineBuffEffect"
+    },
+    {
+      "Name": "of Essences",
+      "Code": "MapRelicEssenceMonolithsHaveCorrutptionEssenceChance1",
+      "Mod": "Monsters Imprisoned by Essences have a 25% chance to contain a Remnant of Corruption",
+      "Family": "MapRelicEssenceMonolithsHaveCorrutptionEssenceChance"
+    },
+    {
+      "Name": "of Expedition",
+      "Code": "MapRelicExpeditionArtifactQuantity1",
+      "Mod": "15% increased quantity of Artifacts dropped by Monsters",
+      "Family": "MapRelicExpeditionArtifactQuantity"
+    },
+    {
+      "Name": "of Expedition",
+      "Code": "MapRelicExpeditionIncreasedExplosives1",
+      "Mod": "10% increased number of Explosives in your Maps",
+      "Family": "MapRelicExpeditionIncreasedExplosives"
+    },
+    {
+      "Name": "of Expedition",
+      "Code": "MapRelicExpeditionRerollCurrencyQuantity1",
+      "Mod": "20% increased Quantity of Vendor Refresh Currencies dropped by Monsters in your Maps",
+      "Family": "MapRelicExpeditionRerollCurrencyQuantity"
+    },
+    {
+      "Name": "of Expedition",
+      "Code": "MapRelicExpeditionFuseBurnTime1",
+      "Mod": "Expedition Detonation Chains in your Maps travel 18% slower",
+      "Family": "MapRelicExpeditionFuseBurnTime"
+    },
+    {
+      "Name": "of the Harbinger",
+      "Code": "MapRelicHarbingerAdditionalCurrencyShardStacks1",
+      "Mod": "Harbingers in your Maps have 60% chance to drop an additional Stack of Currency Shards",
+      "Family": "MapRelicHarbingerAdditionalCurrencyShardStacks"
+    },
+    {
+      "Name": "of Harvest",
+      "Code": "MapRelicHarvestBossEncounterChance1",
+      "Mod": "Harvest Crops in your Maps have 45% increased chance to contain a Tier 4 Plant",
+      "Family": "MapRelicHarvestBossEncounterChance"
+    },
+    {
+      "Name": "of Harvest",
+      "Code": "MapRelicHarvestTierThreeChance1",
+      "Mod": "Harvest Crops in your Maps have 35% increased chance to contain Tier 3 Plants",
+      "Family": "MapRelicHarvestTierThreeChance"
+    },
+    {
+      "Name": "of Smuggling",
+      "Code": "MapRelicHeistLevelThreeJobChance1",
+      "Mod": "Heist Contracts found in your Maps are 125% more likely to require level 3 Jobs",
+      "Family": "MapRelicHeistLevelThreeJobChance"
+    },
+    {
+      "Name": "of Smuggling",
+      "Code": "MapRelicHeistLevelFourJobChance1",
+      "Mod": "Heist Contracts found in your Maps are 125% more likely to require level 4 Jobs",
+      "Family": "MapRelicHeistLevelFourJobChance"
+    },
+    {
+      "Name": "of Smuggling",
+      "Code": "MapRelicHeistLevelFiveJobChance1",
+      "Mod": "Heist Contracts found in your Maps are 125% more likely to require level 5 Jobs",
+      "Family": "MapRelicHeistLevelFiveJobChance"
+    },
+    {
+      "Name": "of Smuggling",
+      "Code": "MapRelicHeistSecondCacheChance1",
+      "Mod": "Your Maps that contain Smuggler's Caches have a 35% chance to contain an additional Smuggler's Cache",
+      "Family": "MapRelicHeistSecondCacheChance"
+    },
+    {
+      "Name": "of Betrayal",
+      "Code": "MapRelicBetrayalBarginOptionChance1",
+      "Mod": "Immortal Syndicate Members in your Maps are 160% morelikely to offer to Bargain for Items",
+      "Family": "MapRelicBetrayalBarginOptionChance"
+    },
+    {
+      "Name": "of Betrayal",
+      "Code": "MapRelicBetrayalTargetItemRarityPerEquipment1",
+      "Mod": "24% increased Rarity of items from Defeated Syndicate Members in your Maps per Equipment Item they have",
+      "Family": "MapRelicBetrayalTargetItemRarityPerEquipment"
+    },
+    {
+      "Name": "of the Legion",
+      "Code": "MapRelicLegionSergeantItemRarity1",
+      "Mod": "150% increased Rarity of Items Dropped by Legion Sergeants in your Maps",
+      "Family": "MapRelicLegionSergeantItemRarity"
+    },
+    {
+      "Name": "of the Legion",
+      "Code": "MapRelicLegionDuration1",
+      "Mod": "Legion Encounters in your Maps have 60% increased Duration",
+      "Family": "MapRelicLegionDuration"
+    },
+    {
+      "Name": "of the Legion",
+      "Code": "MapRelicLegionFrozenMonstersDamageTaken1",
+      "Mod": "Legion Monsters in your Maps take 40% increased Damage while in Stasis",
+      "Family": "MapRelicLegionFrozenMonstersDamageTaken"
+    },
+    {
+      "Name": "of the Legion",
+      "Code": "MapRelicLegionPackSize1",
+      "Mod": "Legion Monsters in your Maps have 15% increased Pack Size",
+      "Family": "MapRelicLegionPackSize"
+    },
+    {
+      "Name": "of Ultimatum",
+      "Code": "MapRelicUltimatumDefenceEncounterLife1",
+      "Mod": "Ultimatum Altars in your Maps have 40% increased Life",
+      "Family": "MapRelicUltimatumDefenceEncounterLife"
+    },
+    {
+      "Name": "of Ultimatum",
+      "Code": "MapRelicUltimatumConquerEncounterRadius1",
+      "Mod": "Ultimatum Stone Circles in your Maps have 20% increased radius",
+      "Family": "MapRelicUltimatumConquerEncounterRadius"
+    },
+    {
+      "Name": "of Ultimatum",
+      "Code": "MapRelicUltimatumRewardsInscribedChance1",
+      "Mod": "Ultimatum Rewards in your Maps have 35% increased chance to be Inscribed Ultimatums",
+      "Family": "MapRelicUltimatumRewardsInscribedChance"
+    },
+    {
+      "Name": "of Ultimatum",
+      "Code": "MapRelicUltimatumIncreasedSurvivalEncounterTime1",
+      "Mod": "Ultimatum Encounters in your Maps only requiring you to Survivehave 5% reduced duration",
+      "Family": "MapRelicUltimatumIncreasedSurvivalEncounterTime"
+    },
+    {
+      "Name": "of Ultimatum",
+      "Code": "MapRelicUltimatumExterminateReducedMonsterKillsRequired1",
+      "Mod": "Ultimatum Encounters in your Maps requiring you to Defeat waves of Enemiesrequire killing 5% reduced number of Enemies",
+      "Family": "UltimatumUltimatumExterminateReducedMonsterKillsRequired"
+    },
+    {
+      "Name": "of the Ritual",
+      "Code": "MapRelicRitualIncreasedUberRuneChance1",
+      "Mod": "75% increased chance of Ritual Altars with Special Rewards",
+      "Family": "MapRelicRitualIncreasedUberRuneChance"
+    },
+    {
+      "Name": "of the Ritual",
+      "Code": "MapRelicRitualRewardsFromRerollsNoCostChance1",
+      "Mod": "Favours Rerolled at Ritual Altars in your Maps have (0.8\u20131.2)% chance to cost no Tribute",
+      "Family": "MapRelicRitualRewardsFromRerollsNoCostChance"
+    },
+    {
+      "Name": "of the Ritual",
+      "Code": "MapRelicRitualIncreasedMaximumMonstersAlive1",
+      "Mod": "Ritual Altars in your Maps can have 25% increased number of Spawned Monsters at once",
+      "Family": "MapRelicRitualIncreasedMaximumMonstersAlive"
+    },
+    {
+      "Name": "of the Ritual",
+      "Code": "MapRelicRitualSplintersIncreasedStackSize1",
+      "Mod": "Ritual Splinters offered at Ritual Altars in your Maps have 25% increased Stack Size",
+      "Family": "MapRelicRitualSplintersIncreasedStackSize"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabMapMoreLikely1",
+      "Mod": "Scarabs dropped in your Maps are 80% more likely to be Cartography Scarabs",
+      "Family": "MapRelicScarabMapMoreLikely"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabStrongboxMoreLikely1",
+      "Mod": "Scarabs found in your Maps are 80% more likely to be Ambush Scarabs",
+      "Family": "MapRelicScarabStrongboxMoreLikely"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabUniqueMoreLikely1",
+      "Mod": "Scarabs dropped in your Maps are 80% more likely to be Titanic Scarabs",
+      "Family": "MapRelicScarabUniqueMoreLikely"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabHarbingerMoreLikely1",
+      "Mod": "Scarabs dropped in your Maps are 80% more likely to be Harbinger Scarabs",
+      "Family": "MapRelicScarabHarbingerMoreLikely"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabBeyondMoreLikely1",
+      "Mod": "Scarabs dropped in your Maps are 80% more likely to be Beyond Scarabs",
+      "Family": "MapRelicScarabBeyondMoreLikely"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabEssenceMoreLikely1",
+      "Mod": "Scarabs dropped in your Maps are 80% more likely to be Essence Scarabs",
+      "Family": "MapRelicScarabEssenceMoreLikely"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabTormentMoreLikely1",
+      "Mod": "Scarabs dropped in your Maps are 80% more likely to be Torment Scarabs",
+      "Family": "MapRelicScarabTormentMoreLikely"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabDominationMoreLikely1",
+      "Mod": "Scarabs dropped in your Maps are 80% more likely to be Domination Scarabs",
+      "Family": "MapRelicScarabDominationMoreLikely"
+    },
+    {
+      "Name": "of Skittering",
+      "Code": "MapRelicScarabAnarchyMoreLikely1",
+      "Mod": "Scarabs dropped in your Maps are 80% more likely to be Anarchy Scarabs",
+      "Family": "MapRelicScarabAnarchyMoreLikely"
+    },
+    {
+      "Name": "of Ambush",
+      "Code": "MapRelicStrongboxAdditionalPackChance1",
+      "Mod": "Strongboxes in your Maps have 60% chance to be guarded by an additional Pack of Monsters",
+      "Family": "MapRelicStrongboxAdditionalPackChance"
+    },
+    {
+      "Name": "of Ambush",
+      "Code": "MapRelicStrongboxItemQuantity1",
+      "Mod": "20% increased Quantity of Items contained in Strongboxes in your Maps",
+      "Family": "MapRelicStrongboxItemQuantity"
+    },
+    {
+      "Name": "of Torment",
+      "Code": "MapRelicTormentSpiritEscapeChance1",
+      "Mod": "Tormented Spirits have a 2% chance to be set free when Possessed Monsters are slain",
+      "Family": "MapRelicTormentEscapeChance"
+    }
+  ]
+}
