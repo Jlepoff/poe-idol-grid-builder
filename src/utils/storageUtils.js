@@ -1,10 +1,40 @@
 // utils/storageUtils.js
+import pako from 'pako';
 
 // Storage keys for localStorage
 const STORAGE_KEYS = {
   GRID_STATE: 'poe-idol-grid',
   INVENTORY: 'poe-idol-inventory'
 };
+
+/**
+ * Encoding & Decoding
+ */
+function uint8ToBase64(uint8Array) {
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary)
+    .replace(/\+/g, '-')  // URL safe
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
+function base64ToUint8Array(base64) {
+  base64 = base64.replace(/-/g, '+').replace(/_/g, '/');
+  const pad = base64.length % 4;
+  if (pad) {
+    base64 += '='.repeat(4 - pad);
+  }
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
 
 /**
  * Save grid state to localStorage
@@ -69,18 +99,15 @@ export function clearSavedData() {
 /**
  * Generate a shareable URL with the current grid and inventory
  */
+
 export function generateShareableURL(gridState, inventory) {
   try {
-    // Create data object
     const shareData = { grid: gridState, inventory };
-    
-    // Serialize and compress
-    const encoded = btoa(encodeURIComponent(JSON.stringify(shareData)));
-    
-    // Create URL with encoded data
+    const json = JSON.stringify(shareData);
+    const compressed = pako.deflate(json);
+    const base64 = uint8ToBase64(compressed);
     const url = new URL(window.location.href);
-    url.searchParams.set('share', encoded);
-    
+    url.searchParams.set('share', base64);
     return url.toString();
   } catch (err) {
     console.error('Failed to generate share URL:', err);
@@ -95,20 +122,16 @@ export function getSharedDataFromURL() {
   try {
     const url = new URL(window.location.href);
     const shareParam = url.searchParams.get('share');
-    
     if (!shareParam) return null;
-    
-    // Decode and deserialize
-    const shareData = JSON.parse(decodeURIComponent(atob(shareParam)));
-    
-    // Basic validation
+    const compressed = base64ToUint8Array(shareParam);
+    const json = pako.inflate(compressed, { to: 'string' });
+    const shareData = JSON.parse(json);
     if (!shareData.grid || !shareData.inventory) {
       return null;
     }
-    
     return {
       gridState: shareData.grid,
-      inventory: shareData.inventory
+      inventory: shareData.inventory,
     };
   } catch (err) {
     console.error('Failed to extract shared data:', err);
