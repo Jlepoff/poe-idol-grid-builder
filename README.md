@@ -30,7 +30,7 @@ A powerful web application for planning and optimizing your Idol layouts in Path
 
 ## Demo
 
-Check out the live demo: [PoE Idol Grid Builder](https://yourusername.github.io/poe-idol-grid-builder/)
+Check out the live demo: [PoE Idol Grid Builder](https://jlepoff.github.io/poe-idol-grid-builder/)
 
 ## Installation
 
