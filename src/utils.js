@@ -13,19 +13,33 @@ const IDOL_TYPES = [
 ];
 
 /**
- * Load idol data from JSON files in the public directory
+ * Load idol data from JSON files with GitHub Pages compatibility
  */
 export const loadIdolData = async () => {
   try {
-    // Fetch all idol data files
+    // Get the base URL for the current environment
+    // This accounts for GitHub Pages serving from a subdirectory
+    const baseUrl = process.env.PUBLIC_URL || '';
+    
+    // Fetch all idol data files with proper path prefixing
     const responses = await Promise.all([
-      fetch('/data/minor_idol_mods.json'),
-      fetch('/data/kamasan_idol_mods.json'),
-      fetch('/data/totemic_idol_mods.json'),
-      fetch('/data/noble_idol_mods.json'),
-      fetch('/data/conqueror_idol_mods.json'),
-      fetch('/data/burial_idol_mods.json')
+      fetch(`${baseUrl}/data/minor_idol_mods.json`),
+      fetch(`${baseUrl}/data/kamasan_idol_mods.json`),
+      fetch(`${baseUrl}/data/totemic_idol_mods.json`),
+      fetch(`${baseUrl}/data/noble_idol_mods.json`),
+      fetch(`${baseUrl}/data/conqueror_idol_mods.json`),
+      fetch(`${baseUrl}/data/burial_idol_mods.json`)
     ]);
+    
+    // Log response status to help debug
+    console.log('Data fetch responses:', 
+      responses.map(r => `${r.url}: ${r.status}`));
+    
+    // Check if any responses failed
+    const failedResponses = responses.filter(r => !r.ok);
+    if (failedResponses.length > 0) {
+      throw new Error(`Failed to load: ${failedResponses.map(r => r.url).join(', ')}`);
+    }
     
     // Parse JSON data
     const [minorData, kamasanData, totemicData, nobleData, conquerorData, burialData] = 
@@ -57,10 +71,11 @@ export const loadIdolData = async () => {
     };
   } catch (error) {
     console.error('Error loading idol data:', error);
+    // Provide more helpful error for users
+    alert('Failed to load idol data. If you\'re seeing this error, please ensure data files are in the correct location and refresh the page.');
     throw error;
   }
 };
-
 /**
  * Check if a cell is blocked in the grid
  */
