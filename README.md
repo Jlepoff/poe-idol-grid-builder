@@ -11,7 +11,6 @@ A powerful web application for planning and optimizing your Idol layouts in Path
 - [Usage Guide](#usage-guide)
 - [Development](#development)
 - [Deployment](#deployment)
-- [Contributing](#contributing)
 - [License](#license)
 - [Credits](#credits)
 
