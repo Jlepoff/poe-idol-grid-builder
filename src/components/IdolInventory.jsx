@@ -1,6 +1,7 @@
 // components/IdolInventory.jsx
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { generateTradeUrl } from '../utils/tradeUtils';
 
 // Individual idol item component
 function IdolItem({ idol, onRemoveIdol }) {
@@ -25,6 +26,15 @@ function IdolItem({ idol, onRemoveIdol }) {
     e.preventDefault();
     onRemoveIdol(idol.id);
   };
+  
+  // Handle trade link click
+  const handleTradeClick = (e) => {
+    e.stopPropagation(); // Prevent triggering drag
+    const tradeUrl = generateTradeUrl(idol);
+    if (tradeUrl) {
+      window.open(tradeUrl, '_blank');
+    }
+  };
 
   // Color based on idol type
   const typeColors = {
@@ -38,6 +48,10 @@ function IdolItem({ idol, onRemoveIdol }) {
   
   const bgColor = typeColors[idol.type] || 'bg-gray-700';
   const opacity = isDragging ? 'opacity-50' : '';
+  
+  // Check if idol has valid trade data
+  const hasTradeData = (idol.prefixes && idol.prefixes.some(p => p.id)) || 
+                       (idol.suffixes && idol.suffixes.some(s => s.id));
 
   return (
     <div 
@@ -48,13 +62,24 @@ function IdolItem({ idol, onRemoveIdol }) {
     >
       <div className="flex justify-between items-start">
         <h3 className="font-bold">{idol.name}</h3>
-        <button 
-          onClick={() => onRemoveIdol(idol.id)}
-          className="text-red-400 hover:text-red-300"
-          title="Remove idol"
-        >
-          ✕
-        </button>
+        <div className="flex items-center space-x-2">
+          {hasTradeData && (
+            <button
+              onClick={handleTradeClick}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs py-0.5 px-2 rounded"
+              title="Search for similar idols on the trade site"
+            >
+              Trade
+            </button>
+          )}
+          <button 
+            onClick={() => onRemoveIdol(idol.id)}
+            className="text-red-400 hover:text-red-300"
+            title="Remove idol"
+          >
+            ✕
+          </button>
+        </div>
       </div>
       
       <div className="mt-2 space-y-1">
