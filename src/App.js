@@ -77,7 +77,7 @@ function App() {
     const hasVisited = localStorage.getItem('hasVisitedBefore');
     if (!hasVisited) {
       setTimeout(() => {
-        setShowHelp(true);
+        // setShowHelp(true);
         setFirstVisit(true);
         localStorage.setItem('hasVisitedBefore', 'true');
       }, 2000);
