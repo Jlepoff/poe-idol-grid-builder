@@ -145,7 +145,8 @@ function optimizeDataForSharing(gridState, inventory) {
       optimizedIdol.px = idol.prefixes.map(prefix => ({
         c: prefix.Code,
         m: prefix.Mod,
-        n: prefix.Name
+        n: prefix.Name,
+        id: prefix.id  // Preserve the trade ID
       }));
     }
     
@@ -154,7 +155,8 @@ function optimizeDataForSharing(gridState, inventory) {
       optimizedIdol.sx = idol.suffixes.map(suffix => ({
         c: suffix.Code,
         m: suffix.Mod,
-        n: suffix.Name
+        n: suffix.Name,
+        id: suffix.id  // Preserve the trade ID
       }));
     }
     
@@ -162,7 +164,8 @@ function optimizeDataForSharing(gridState, inventory) {
     if (idol.isUnique && idol.uniqueModifiers) {
       optimizedIdol.u = true;
       optimizedIdol.um = idol.uniqueModifiers.map(mod => ({
-        m: mod.Mod
+        m: mod.Mod,
+        id: mod.id  // Preserve ID for unique mods too
       }));
     }
     
@@ -193,7 +196,8 @@ function restoreFromOptimizedData(optimizedData) {
       idol.prefixes = opt.px.map(p => ({
         Code: p.c,
         Mod: p.m,
-        Name: p.n
+        Name: p.n,
+        id: p.id  // Restore the trade ID
       }));
     } else {
       idol.prefixes = [];
@@ -204,7 +208,8 @@ function restoreFromOptimizedData(optimizedData) {
       idol.suffixes = opt.sx.map(s => ({
         Code: s.c,
         Mod: s.m,
-        Name: s.n
+        Name: s.n,
+        id: s.id  // Restore the trade ID
       }));
     } else {
       idol.suffixes = [];
@@ -216,7 +221,8 @@ function restoreFromOptimizedData(optimizedData) {
       idol.uniqueModifiers = opt.um.map(m => ({
         Mod: m.m,
         Name: 'Unique',
-        Code: `Unique-${Date.now()}-${Math.random()}`
+        Code: `Unique-${Date.now()}-${Math.random()}`,
+        id: m.id  // Restore ID for unique mods
       }));
     }
     
