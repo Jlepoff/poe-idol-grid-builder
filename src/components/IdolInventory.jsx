@@ -1,7 +1,8 @@
 // components/IdolInventory.jsx
 import React from 'react';
 import { useDrag } from 'react-dnd';
-import { generateTradeUrl } from '../utils/tradeUtils';
+import { generateTradeUrl, hasValidTradeData } from '../utils/tradeUtils';
+
 
 // Individual idol item component
 function IdolItem({ idol, onRemoveIdol }) {
@@ -16,7 +17,7 @@ function IdolItem({ idol, onRemoveIdol }) {
       const dropResult = monitor.getDropResult();
       if (dropResult && !dropResult.success) {
         // Idol remains in inventory if drop failed
-        console.log('Drop failed');
+        // console.log('Drop failed');
       }
     },
   });
@@ -49,9 +50,8 @@ function IdolItem({ idol, onRemoveIdol }) {
   const bgColor = typeColors[idol.type] || 'bg-gray-700';
   const opacity = isDragging ? 'opacity-50' : '';
   
-  // Check if idol has valid trade data
-  const hasTradeData = (idol.prefixes && idol.prefixes.some(p => p.id)) || 
-                       (idol.suffixes && idol.suffixes.some(s => s.id));
+  // Check for valid trade data
+  const canTrade = hasValidTradeData(idol);
 
   return (
     <div 
@@ -63,10 +63,13 @@ function IdolItem({ idol, onRemoveIdol }) {
       <div className="flex justify-between items-start">
         <h3 className="font-bold">{idol.name}</h3>
         <div className="flex items-center space-x-2">
-          {hasTradeData && (
+          {canTrade && (
             <button
               onClick={handleTradeClick}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs py-0.5 px-2 rounded"
+className="bg-violet-700 hover:bg-violet-600 border border-white text-white text-xs py-0.5 px-2 rounded"
+
+
+
               title="Search for similar idols on the trade site"
             >
               Trade

@@ -44,7 +44,8 @@ export const generateTradeUrl = (idol) => {
       ],
       status: {
         option: "online"
-      }
+      },
+      type: idol.type + " Idol" // Specify the idol type
     }
   };
   
@@ -53,4 +54,25 @@ export const generateTradeUrl = (idol) => {
   
   // Return the full URL
   return `https://www.pathofexile.com/trade/search/Phrecia?q=${encodedQuery}`;
+};
+
+/**
+ * Checks if an idol has valid trade data
+ * @param {Object} idol - The idol object with modifiers
+ * @returns {boolean} - Whether the idol has valid trade data
+ */
+export const hasValidTradeData = (idol) => {
+  if (!idol) return false;
+  
+  // Check prefixes for valid IDs
+  const hasValidPrefix = idol.prefixes && 
+                         idol.prefixes.length > 0 && 
+                         idol.prefixes.some(prefix => !!prefix.id);
+  
+  // Check suffixes for valid IDs
+  const hasValidSuffix = idol.suffixes && 
+                         idol.suffixes.length > 0 && 
+                         idol.suffixes.some(suffix => !!suffix.id);
+  
+  return hasValidPrefix || hasValidSuffix;
 };
