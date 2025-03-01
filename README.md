@@ -17,6 +17,7 @@ A powerful web application for planning and optimizing your Idol layouts in Path
 ## Features
 
 - **Interactive Idol Grid**: Drag and drop idols onto the grid with automatic validation
+- **Trade Integration**: Quickly search for idols on the official Path of Exile trade site
 - **Custom Idol Builder**: Create any idol with your choice of prefixes and suffixes
 - **Auto-Optimization**: Automatically arrange idols for maximum grid utilization
 - **Modifier Search**: Find specific modifiers across all idol types
