@@ -44,6 +44,15 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           }
         }
 
+        // For magic idols, extract type from the name
+        if (rarity.toLowerCase() === "magic" && name) {
+          // Find the word before "Idol" in the name
+          const match = name.match(/(\w+)\s+Idol/i);
+          if (match && match[1]) {
+            type = match[1]; // This will be the idol type.
+          }
+        }
+
         // Extract item level
         const itemLevelLine = lines.find((line) =>
           line.includes("Item Level:")
@@ -96,7 +105,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             }
           }
 
-          // Find where the flavor text starts (usually starts with non-mechanical text)
+          // Find where the flavor text starts
           for (let i = 0; i < separatorIndices.length - 1; i++) {
             if (modStart !== -1 && separatorIndices[i] > modStart) {
               modEnd = separatorIndices[i];
@@ -126,7 +135,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
               name,
               isUnique: true,
               uniqueModifiers,
-              uniqueName: name, // Store the unique name specifically
+              uniqueName: name,
               prefixes: [],
               suffixes: [],
               id: Date.now() + Math.random(),
