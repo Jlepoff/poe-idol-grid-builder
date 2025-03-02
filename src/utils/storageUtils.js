@@ -1,31 +1,31 @@
 // utils/storageUtils.js
-import pako from 'pako';
+import pako from "pako";
 
 // Storage keys for localStorage
 const STORAGE_KEYS = {
-  GRID_STATE: 'poe-idol-grid',
-  INVENTORY: 'poe-idol-inventory'
+  GRID_STATE: "poe-idol-grid",
+  INVENTORY: "poe-idol-inventory",
 };
 
 /**
  * Encoding & Decoding
  */
 function uint8ToBase64(uint8Array) {
-  let binary = '';
+  let binary = "";
   for (let i = 0; i < uint8Array.length; i++) {
     binary += String.fromCharCode(uint8Array[i]);
   }
   return btoa(binary)
-    .replace(/\+/g, '-')  // URL safe
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+    .replace(/\+/g, "-") // URL safe
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 function base64ToUint8Array(base64) {
-  base64 = base64.replace(/-/g, '+').replace(/_/g, '/');
+  base64 = base64.replace(/-/g, "+").replace(/_/g, "/");
   const pad = base64.length % 4;
   if (pad) {
-    base64 += '='.repeat(4 - pad);
+    base64 += "=".repeat(4 - pad);
   }
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -43,7 +43,7 @@ export function saveGridState(gridState) {
   try {
     localStorage.setItem(STORAGE_KEYS.GRID_STATE, JSON.stringify(gridState));
   } catch (err) {
-    console.error('Failed to save grid:', err);
+    console.error("Failed to save grid:", err);
   }
 }
 
@@ -54,7 +54,7 @@ export function saveInventory(inventory) {
   try {
     localStorage.setItem(STORAGE_KEYS.INVENTORY, JSON.stringify(inventory));
   } catch (err) {
-    console.error('Failed to save inventory:', err);
+    console.error("Failed to save inventory:", err);
   }
 }
 
@@ -66,7 +66,7 @@ export function loadGridState() {
     const data = localStorage.getItem(STORAGE_KEYS.GRID_STATE);
     return data ? JSON.parse(data) : null;
   } catch (err) {
-    console.error('Failed to load grid:', err);
+    console.error("Failed to load grid:", err);
     return null;
   }
 }
@@ -79,7 +79,7 @@ export function loadInventory() {
     const data = localStorage.getItem(STORAGE_KEYS.INVENTORY);
     return data ? JSON.parse(data) : null;
   } catch (err) {
-    console.error('Failed to load inventory:', err);
+    console.error("Failed to load inventory:", err);
     return null;
   }
 }
@@ -92,22 +92,71 @@ export function clearSavedData() {
     localStorage.removeItem(STORAGE_KEYS.GRID_STATE);
     localStorage.removeItem(STORAGE_KEYS.INVENTORY);
   } catch (err) {
-    console.error('Failed to clear data:', err);
+    console.error("Failed to clear data:", err);
   }
 }
 
 /**
- * Optimize data for sharing by removing redundant information
- * and compressing the structure
+ * Get type code for an idol (single character)
+ */
+function getTypeCode(idolType) {
+  switch (idolType) {
+    case "Minor":
+      return "m";
+    case "Kamasan":
+      return "k";
+    case "Totemic":
+      return "t";
+    case "Noble":
+      return "n";
+    case "Conqueror":
+      return "c";
+    case "Burial":
+      return "b";
+    default:
+      return "x"; // Unknown
+  }
+}
+
+/**
+ * Get full idol type from type code
+ */
+function getIdolTypeFromCode(code) {
+  switch (code) {
+    case "m":
+      return "Minor";
+    case "k":
+      return "Kamasan";
+    case "t":
+      return "Totemic";
+    case "n":
+      return "Noble";
+    case "c":
+      return "Conqueror";
+    case "b":
+      return "Burial";
+    default:
+      return "Unknown";
+  }
+}
+
+/**
+ * Optimize data for sharing with extreme compression
  */
 function optimizeDataForSharing(gridState, inventory) {
-  // 1. Create optimized grid representation (sparse format)
+  // Assign simple sequential IDs for referencing
+  const idolMap = new Map();
+  inventory.forEach((idol, index) => {
+    idolMap.set(idol.id, index);
+  });
+
+  // 1. Create optimized grid representation
   const sparseGrid = [];
-  
-  // Track which idols are placed on the grid by ID
-  const placedIdolIds = new Set();
-  
-  // Only store non-null cells
+
+  // Track which idols are placed
+  const placedIdols = new Set();
+
+  // Only store non-null cells - primary positions only
   for (let r = 0; r < gridState.length; r++) {
     for (let c = 0; c < gridState[r].length; c++) {
       const cell = gridState[r][c];
@@ -115,172 +164,220 @@ function optimizeDataForSharing(gridState, inventory) {
         // Only store the primary cell of each idol (top-left corner)
         const pos = cell.position || { row: r, col: c };
         if (pos.row === r && pos.col === c) {
-          // Store minimal information for grid placement
-          sparseGrid.push({
-            i: cell.id,       // idol ID
-            r,                // row
-            c,                // col
-            t: cell.type      // type
-          });
-          
-          // Mark this idol as placed
-          placedIdolIds.add(cell.id);
+          // Simple array: [idolIndex, row, col]
+          const idolIndex = idolMap.get(cell.id);
+          sparseGrid.push([idolIndex, r, c]);
+
+          // Mark as placed
+          placedIdols.add(idolIndex);
         }
       }
     }
   }
-  
-  // 2. Optimize inventory data by only including essential fields
-  const optimizedInventory = inventory.map(idol => {
-    // Basic idol data
-    const optimizedIdol = {
-      i: idol.id,
-      t: idol.type,
-      n: idol.name,
-      p: idol.isPlaced || placedIdolIds.has(idol.id)
-    };
-    
-    // Handle prefixes
-    if (idol.prefixes && idol.prefixes.length > 0) {
-      optimizedIdol.px = idol.prefixes.map(prefix => ({
-        c: prefix.Code,
-        m: prefix.Mod,
-        n: prefix.Name,
-        id: prefix.id  // Preserve the trade ID
-      }));
-    }
-    
-    // Handle suffixes
-    if (idol.suffixes && idol.suffixes.length > 0) {
-      optimizedIdol.sx = idol.suffixes.map(suffix => ({
-        c: suffix.Code,
-        m: suffix.Mod,
-        n: suffix.Name,
-        id: suffix.id  // Preserve the trade ID
-      }));
-    }
-    
-    // Handle unique modifiers for unique idols
-    if (idol.isUnique && idol.uniqueModifiers) {
-      optimizedIdol.u = true;
-      optimizedIdol.um = idol.uniqueModifiers.map(mod => ({
-        m: mod.Mod,
-        id: mod.id  // Preserve ID for unique mods too
-      }));
-    }
-    
-    return optimizedIdol;
+
+  // 2. Optimize inventory data to bare minimum
+  const optimizedInventory = inventory.map((idol, index) => {
+    // Get type code (first letter lowercase)
+    const typeCode = getTypeCode(idol.type);
+
+    // Get prefix and suffix IDs - only include those with IDs
+    const prefixIds = idol.prefixes?.filter((p) => p.id).map((p) => p.id) || [];
+    const suffixIds = idol.suffixes?.filter((s) => s.id).map((s) => s.id) || [];
+
+    // Simple array: [id, typeCode, isPlaced, [prefixIds], [suffixIds]]
+    return [
+      index,
+      typeCode,
+      placedIdols.has(index) ? 1 : 0,
+      prefixIds,
+      suffixIds,
+      // Handle unique idols separately
+      idol.isUnique ? 1 : 0,
+      // Only include unique mods if it's a unique idol
+      idol.isUnique && idol.uniqueModifiers
+        ? idol.uniqueModifiers.map((m) => m.Mod)
+        : undefined,
+    ].filter((v) => v !== undefined); // Remove undefined values
   });
-  
+
   return {
     g: sparseGrid,
-    v: optimizedInventory
+    v: optimizedInventory,
   };
 }
 
 /**
- * Restore full data structure from optimized format
+ * Find a modifier by ID in the mod data
  */
-function restoreFromOptimizedData(optimizedData) {
-  // 1. Restore inventory with full structure
-  const inventory = optimizedData.v.map(opt => {
+function findModifierById(id, modData) {
+  if (!modData || !id) return null;
+
+  // Search prefixes across all idol types
+  for (const type in modData.prefixes) {
+    const foundPrefix = modData.prefixes[type].find(
+      (prefix) => prefix.id === id
+    );
+    if (foundPrefix) return { ...foundPrefix };
+  }
+
+  // Search suffixes across all idol types
+  for (const type in modData.suffixes) {
+    const foundSuffix = modData.suffixes[type].find(
+      (suffix) => suffix.id === id
+    );
+    if (foundSuffix) return { ...foundSuffix };
+  }
+
+  // Not found
+  return null;
+}
+
+/**
+ * Generate idol name from its mods
+ */
+function generateIdolName(type, prefixes, suffixes, isUnique) {
+  if (isUnique) return `Unique ${type} Idol`;
+
+  let name = type;
+
+  if (prefixes && prefixes.length > 0) {
+    name = `${prefixes[0].Name} ${name}`;
+  }
+
+  if (suffixes && suffixes.length > 0) {
+    name = `${name} ${suffixes[0].Name}`;
+  }
+
+  return name;
+}
+
+/**
+ * Restore from optimized data format
+ */
+function restoreFromOptimizedData(optimizedData, modData) {
+  if (!optimizedData || !optimizedData.v || !optimizedData.g) {
+    return null;
+  }
+
+  // 1. Restore idols from minimal data
+  const inventory = optimizedData.v.map((idolData) => {
+    // Extract data from array
+    const [
+      index,
+      typeCode,
+      isPlaced,
+      prefixIds,
+      suffixIds,
+      isUnique,
+      uniqueMods,
+    ] = idolData;
+
+    // Get full idol type from code
+    const type = getIdolTypeFromCode(typeCode);
+
+    // Restore prefixes and suffixes from IDs
+    const prefixes = (prefixIds || [])
+      .map((id) => findModifierById(id, modData))
+      .filter((m) => m !== null);
+
+    const suffixes = (suffixIds || [])
+      .map((id) => findModifierById(id, modData))
+      .filter((m) => m !== null);
+
+    // Build the idol object
     const idol = {
-      id: opt.i,
-      type: opt.t,
-      name: opt.n,
-      isPlaced: opt.p || false
+      id: `idol-${Date.now()}-${index}`, // Generate new unique ID
+      type,
+      isPlaced: isPlaced === 1,
+      prefixes,
+      suffixes,
     };
-    
-    // Restore prefixes
-    if (opt.px) {
-      idol.prefixes = opt.px.map(p => ({
-        Code: p.c,
-        Mod: p.m,
-        Name: p.n,
-        id: p.id  // Restore the trade ID
-      }));
-    } else {
-      idol.prefixes = [];
-    }
-    
-    // Restore suffixes
-    if (opt.sx) {
-      idol.suffixes = opt.sx.map(s => ({
-        Code: s.c,
-        Mod: s.m,
-        Name: s.n,
-        id: s.id  // Restore the trade ID
-      }));
-    } else {
-      idol.suffixes = [];
-    }
-    
-    // Restore unique idol properties
-    if (opt.u) {
+
+    // Handle unique idols
+    if (isUnique === 1) {
       idol.isUnique = true;
-      idol.uniqueModifiers = opt.um.map(m => ({
-        Mod: m.m,
-        Name: 'Unique',
-        Code: `Unique-${Date.now()}-${Math.random()}`,
-        id: m.id  // Restore ID for unique mods
-      }));
+      if (uniqueMods && uniqueMods.length > 0) {
+        idol.uniqueModifiers = uniqueMods.map((mod) => ({
+          Mod: mod,
+          Name: "Unique",
+          Code: `Unique-${Date.now()}-${Math.random()}`,
+        }));
+      }
     }
-    
+
+    // Generate name from modifiers
+    idol.name = generateIdolName(type, prefixes, suffixes, isUnique === 1);
+
     return idol;
   });
-  
+
   // 2. Create empty grid
-  const gridState = Array(7).fill().map(() => Array(6).fill(null));
-  
-  // 3. Place idols on the grid
+  const gridState = Array(7)
+    .fill()
+    .map(() => Array(6).fill(null));
+
+  // 3. Place idols on the grid using the optimized placement data
   for (const placement of optimizedData.g) {
-    // Find the corresponding idol in inventory
-    const idol = inventory.find(inv => inv.id === placement.i);
+    // Extract placement data
+    const [idolIndex, row, col] = placement;
+
+    // Find the corresponding idol
+    const idol = inventory[idolIndex];
     if (!idol) continue;
-    
+
     // Get idol dimensions based on type
-    let width = 1, height = 1;
-    switch (placement.t) {
-      case 'Minor':
-        width = 1; height = 1;
+    let width = 1,
+      height = 1;
+    switch (idol.type) {
+      case "Minor":
+        width = 1;
+        height = 1;
         break;
-      case 'Kamasan':
-        width = 1; height = 2;
+      case "Kamasan":
+        width = 1;
+        height = 2;
         break;
-      case 'Totemic':
-        width = 1; height = 3;
+      case "Totemic":
+        width = 1;
+        height = 3;
         break;
-      case 'Noble':
-        width = 2; height = 1;
+      case "Noble":
+        width = 2;
+        height = 1;
         break;
-      case 'Conqueror':
-        width = 2; height = 2;
+      case "Conqueror":
+        width = 2;
+        height = 2;
         break;
-      case 'Burial':
-        width = 3; height = 1;
+      case "Burial":
+        width = 3;
+        height = 1;
         break;
-	  default:
-	    // Default to 1x1 for unknown types
-	    width = 1; height = 1;
-	    break;
+      default:
+        width = 1;
+        height = 1;
+        break;
     }
-    
-    // Place the idol on all its cells
-    for (let r = placement.r; r < placement.r + height; r++) {
-      for (let c = placement.c; c < placement.c + width; c++) {
+
+    // Mark as placed
+    idol.isPlaced = true;
+
+    // Place the idol on all its grid cells
+    for (let r = row; r < row + height; r++) {
+      for (let c = col; c < col + width; c++) {
         if (r < gridState.length && c < gridState[0].length) {
           gridState[r][c] = {
             ...idol,
-            position: { row: placement.r, col: placement.c }
+            position: { row, col },
           };
         }
       }
     }
   }
-  
+
   return {
     gridState,
-    inventory
+    inventory,
   };
 }
 
@@ -291,17 +388,17 @@ export function generateShareableURL(gridState, inventory) {
   try {
     // Optimize data structure before compression
     const optimizedData = optimizeDataForSharing(gridState, inventory);
-    
+
     // Use highest compression level
     const json = JSON.stringify(optimizedData);
     const compressed = pako.deflate(json, { level: 9 });
     const base64 = uint8ToBase64(compressed);
-    
+
     const url = new URL(window.location.href);
-    url.searchParams.set('share', base64);
+    url.searchParams.set("share", base64);
     return url.toString();
   } catch (err) {
-    console.error('Failed to generate share URL:', err);
+    console.error("Failed to generate share URL:", err);
     return window.location.href;
   }
 }
@@ -309,20 +406,20 @@ export function generateShareableURL(gridState, inventory) {
 /**
  * Extract shared data from URL
  */
-export function getSharedDataFromURL() {
+export function getSharedDataFromURL(modData) {
   try {
     const url = new URL(window.location.href);
-    const shareParam = url.searchParams.get('share');
+    const shareParam = url.searchParams.get("share");
     if (!shareParam) return null;
-    
+
     const compressed = base64ToUint8Array(shareParam);
-    const json = pako.inflate(compressed, { to: 'string' });
+    const json = pako.inflate(compressed, { to: "string" });
     const optimizedData = JSON.parse(json);
-    
+
     // Convert optimized format back to full structure
-    return restoreFromOptimizedData(optimizedData);
+    return restoreFromOptimizedData(optimizedData, modData);
   } catch (err) {
-    console.error('Failed to extract shared data:', err);
+    console.error("Failed to extract shared data:", err);
     return null;
   }
 }
@@ -335,7 +432,7 @@ export async function copyToClipboard(text) {
     await navigator.clipboard.writeText(text);
     return true;
   } catch (err) {
-    console.error('Failed to copy to clipboard:', err);
+    console.error("Failed to copy to clipboard:", err);
     return false;
   }
 }
