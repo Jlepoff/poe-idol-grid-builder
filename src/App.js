@@ -341,38 +341,88 @@ function App() {
 
     // Generate idols from desired modifiers
     const handleGenerateIdols = (desiredModifiers) => {
-        const result = generateAndPlaceIdols(
-            desiredModifiers,
-            modData,
-            idolTypes,
-            gridState
-        );
+        // console.log('Received desired modifiers:', desiredModifiers); 
+
+        if (!desiredModifiers || desiredModifiers.length === 0) {
+            console.log('No modifiers provided');
+            return;
+        }
+
+        // Expand modifiers based on count
+        const expandedModifiers = [];
+        desiredModifiers.forEach(mod => {
+            const count = mod.count || 1; // Default to 1 if count is missing
+            // console.log(`Processing modifier: ${mod.Name}, count: ${count}`);
+
+            for (let i = 0; i < count; i++) {
+                // Include essential properties, excluding count
+                expandedModifiers.push({
+                    Name: mod.Name,
+                    Mod: mod.Mod,
+                    Code: mod.Code,
+                    id: mod.id,
+                    type: mod.type // prefix or suffix
+                });
+            }
+        });
+
+        // console.log('Expanded modifiers:', expandedModifiers); 
+
+        // Call the generator function
+        const result = generateAndPlaceIdols(expandedModifiers, modData, idolTypes, gridState);
+        // console.log('Generation result:', result);
+
+        if (!result || !result.idols || result.idols.length === 0) {
+            console.error('No idols were generated');
+            // Show error message
+            setGenerationResult({
+                total: 0,
+                placed: 0,
+                notPlaced: [],
+                modifiersRequested: expandedModifiers.length,
+                success: false,
+                error: 'Failed to generate idols. Try different modifiers.'
+            });
+            return;
+        }
 
         // Update grid with placed idols
         setGridState(result.grid);
         saveGridState(result.grid);
 
         // Add generated idols to inventory
-        const newInventory = [
-            ...inventory,
-            ...result.idols.map((idol) => ({
+        const newInventory = [...inventory];
+
+        // Add all generated idols to inventory
+        result.idols.forEach(idol => {
+            const isPlaced = result.placedIdols &&
+                result.placedIdols.some(placed => placed.id === idol.id);
+
+            newInventory.push({
                 ...idol,
-                isPlaced: result.placedIdols.some((placed) => placed.id === idol.id),
-            })),
-        ];
+                isPlaced: !!isPlaced
+            });
+        });
+
         setInventory(newInventory);
         saveInventory(newInventory);
+
+        // Calculate idols that couldn't be placed
+        const notPlacedIdols = result.idols.filter(idol =>
+            !result.placedIdols || !result.placedIdols.some(placed => placed.id === idol.id)
+        );
 
         // Show generation results
         setGenerationResult({
             total: result.idols.length,
-            placed: result.placedIdols.length,
-            modifiersRequested: desiredModifiers.length,
-            success: result.placedIdols.length > 0,
+            placed: result.placedIdols ? result.placedIdols.length : 0,
+            notPlaced: notPlacedIdols,
+            modifiersRequested: expandedModifiers.length,
+            success: result.idols.length > 0
         });
 
         // Switch to grid view
-        setActiveTab("builder");
+        setActiveTab('builder');
     };
 
     // Loading state
@@ -389,8 +439,8 @@ function App() {
         <div className="flex flex-wrap md:hidden border-b border-gray-700 mb-4">
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "builder"
-                        ? "border-b-2 border-yellow-400 text-yellow-400"
-                        : "text-gray-400"
+                    ? "border-b-2 border-yellow-400 text-yellow-400"
+                    : "text-gray-400"
                     }`}
                 onClick={() => setActiveTab("builder")}
             >
@@ -398,8 +448,8 @@ function App() {
             </button>
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "inventory"
-                        ? "border-b-2 border-yellow-400 text-yellow-400"
-                        : "text-gray-400"
+                    ? "border-b-2 border-yellow-400 text-yellow-400"
+                    : "text-gray-400"
                     }`}
                 onClick={() => setActiveTab("inventory")}
             >
@@ -407,8 +457,8 @@ function App() {
             </button>
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "modifiers"
-                        ? "border-b-2 border-yellow-400 text-yellow-400"
-                        : "text-gray-400"
+                    ? "border-b-2 border-yellow-400 text-yellow-400"
+                    : "text-gray-400"
                     }`}
                 onClick={() => setActiveTab("modifiers")}
             >
@@ -416,8 +466,8 @@ function App() {
             </button>
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "autogen"
-                        ? "border-b-2 border-yellow-400 text-yellow-400"
-                        : "text-gray-400"
+                    ? "border-b-2 border-yellow-400 text-yellow-400"
+                    : "text-gray-400"
                     }`}
                 onClick={() => setActiveTab("autogen")}
             >
@@ -431,12 +481,11 @@ function App() {
         if (!generationResult) return null;
 
         return (
-            <div
-                className={`mb-4 p-3 rounded-lg ${generationResult.success ? "bg-green-800" : "bg-yellow-800"
-                    }`}
-            >
+            <div className={`mb-4 p-3 rounded-lg ${generationResult.error ? 'bg-red-800' :
+                (generationResult.notPlaced && generationResult.notPlaced.length > 0) ? 'bg-yellow-800' : 'bg-green-800'
+                }`}>
                 <div className="flex justify-between">
-                    <h3 className="font-medium"> Generation Results </h3>
+                    <h3 className="font-medium">Generation Results</h3>
                     <button
                         onClick={() => setGenerationResult(null)}
                         className="text-gray-300 hover:text-white"
@@ -444,12 +493,33 @@ function App() {
                         ✕
                     </button>
                 </div>
-                <p className="text-sm">
-                    Created {generationResult.total}
-                    idols with {generationResult.modifiersRequested}
-                    desired modifiers. {generationResult.placed}
-                    idols were automatically placed on the grid.
-                </p>
+
+                {generationResult.error ? (
+                    <p className="text-sm text-red-200">{generationResult.error}</p>
+                ) : (
+                    <>
+                        <p className="text-sm">
+                            Created {generationResult.total} idols with {generationResult.modifiersRequested} desired modifiers. {' '}
+                            {generationResult.placed} idols were automatically placed on the grid.
+                        </p>
+
+                        {/* Show idols that couldn't be placed */}
+                        {generationResult.notPlaced && generationResult.notPlaced.length > 0 && (
+                            <div className="mt-2">
+                                <p className="text-sm text-yellow-300">
+                                    {generationResult.notPlaced.length} {generationResult.notPlaced.length === 1 ? 'idol' : 'idols'} couldn't be placed:
+                                </p>
+                                <ul className="mt-1 ml-4 list-disc text-xs">
+                                    {generationResult.notPlaced.map((idol, index) => (
+                                        <li key={index}>
+                                            {idol.name} - No suitable space on grid
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
         );
     };
@@ -469,7 +539,7 @@ function App() {
                     </button>
                 </div>
                 <p className="text-sm">
-                    Copy an idol from Path of Exile and paste it directly(Ctrl + V) to add
+                    Copy an idol from Path of Exile and paste it directly (Ctrl + V) to add
                     it to your inventory.
                 </p>
             </div>
@@ -506,8 +576,8 @@ function App() {
                     {/* Left column - Builder or Auto-Generate */}
                     <div
                         className={`md:col-span-4 lg:col-span-3 space-y-4 ${activeTab !== "builder" && activeTab !== "autogen"
-                                ? "hidden md:block"
-                                : ""
+                            ? "hidden md:block"
+                            : ""
                             }`}
                     >
                         {activeTab === "autogen" ? (
@@ -526,8 +596,8 @@ function App() {
                         <div className="hidden md:flex bg-gray-800 rounded-lg overflow-hidden mb-4">
                             <button
                                 className={`flex-1 py-2 px-4 ${activeTab === "builder"
-                                        ? "bg-gray-700 font-medium"
-                                        : "hover:bg-gray-700"
+                                    ? "bg-gray-700 font-medium"
+                                    : "hover:bg-gray-700"
                                     }`}
                                 onClick={() => setActiveTab("builder")}
                             >
@@ -535,8 +605,8 @@ function App() {
                             </button>
                             <button
                                 className={`flex-1 py-2 px-4 ${activeTab === "autogen"
-                                        ? "bg-gray-700 font-medium"
-                                        : "hover:bg-gray-700"
+                                    ? "bg-gray-700 font-medium"
+                                    : "hover:bg-gray-700"
                                     }`}
                                 onClick={() => setActiveTab("autogen")}
                             >

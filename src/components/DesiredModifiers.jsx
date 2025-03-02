@@ -61,21 +61,24 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
   // Generate idols from desired modifiers
   const handleGenerateIdols = () => {
     if (desiredModifiers.length === 0) return;
-
-    // Expand modifiers based on count
-    const expandedModifiers = [];
-    desiredModifiers.forEach((mod) => {
-      for (let i = 0; i < mod.count; i++) {
-        // Copy without count to avoid confusion
-        const { count, ...modWithoutCount } = mod;
-        expandedModifiers.push(modWithoutCount);
-      }
+    
+    // Create a clean copy of each modifier with its count
+    const modifiersToGenerate = desiredModifiers.map(mod => {
+      // Ensure the modifier has all required fields
+      return {
+        ...mod,
+        count: mod.count || 1, // Default to 1 if count is missing
+        // Ensure these fields are present as they might be used in generation
+        Name: mod.Name,
+        Mod: mod.Mod,
+        Code: mod.Code,
+        id: mod.id,
+        type: mod.type // prefix or suffix
+      };
     });
-
-    onGenerateIdols(expandedModifiers);
-
-    // Reset the list after generation
-    setDesiredModifiers([]);
+    
+    // console.log('Sending desired modifiers:', modifiersToGenerate);
+    onGenerateIdols(modifiersToGenerate);
   };
 
   // Track search state changes
