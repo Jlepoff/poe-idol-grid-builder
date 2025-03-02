@@ -1,9 +1,9 @@
 // components/Grid.jsx
-import React from 'react';
-import GridCell from './GridCell';
+import React from "react";
+import GridCell from "./GridCell";
 
 function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
-  // Check if a cell is blocked in the grid 
+  // Check if a cell is blocked in the grid
   const isBlockedCell = (row, col) => {
     return (
       (row === 0 && col === 0) || // Top-left corner
@@ -19,11 +19,14 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
       <div key={`row-${rowIndex}`} className="flex">
         {row.map((cell, colIndex) => {
           // Determine if this is the primary cell of an idol
-          const isPrimary = cell && 
-            (!cell.position || (cell.position.row === rowIndex && cell.position.col === colIndex));
-            
+          const isPrimary =
+            cell &&
+            (!cell.position ||
+              (cell.position.row === rowIndex &&
+                cell.position.col === colIndex));
+
           return (
-            <GridCell 
+            <GridCell
               key={`cell-${rowIndex}-${colIndex}`}
               row={rowIndex}
               col={colIndex}

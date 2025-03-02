@@ -1,6 +1,6 @@
 // components/ClearButton.jsx
-import React, { useState } from 'react';
-import { clearSavedData } from '../utils/storageUtils';
+import React, { useState } from "react";
+import { clearSavedData } from "../utils/storageUtils";
 
 function ClearButton({ onClear }) {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -12,7 +12,7 @@ function ClearButton({ onClear }) {
   const confirmClear = () => {
     // Clear localStorage data
     clearSavedData();
-    
+
     // Notify parent to reset state
     onClear();
     setShowConfirm(false);
@@ -25,15 +25,28 @@ function ClearButton({ onClear }) {
         onClick={handleClearClick}
         title="Clear all idols and grid layout"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
         </svg>
         Clear All
       </button>
-      
+
       {showConfirm && (
         <div className="absolute right-0 mt-2 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-10 w-64">
-          <p className="text-sm mb-3">Are you sure you want to clear all idols and grid layout?</p>
+          <p className="text-sm mb-3">
+            Are you sure you want to clear all idols and grid layout?
+          </p>
           <div className="flex justify-end space-x-2">
             <button
               className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded"
