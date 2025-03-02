@@ -3,7 +3,7 @@
     "id": "alch-and-go",
     "name": "Alch & Blueprints 2 Go",
     "author": "mbXtreme",
-    "description": "A straightforward 'Alch and Go' strategy combined with Heist. The primary focus is farming and selling fully revealed blueprints for consistent profit.",
+    "description": "A simple and efficient Alch and Go strategy combined with Heist for steady profit. Just run maps, open Smuggler's Caches, and collect fully revealed blueprints to sell in bulk.  Perfect for any build, this strategy guarantees consistent income with minimal effort.",
     "scarabs": [],
     "mapdevice": "Heist",
     "tags": [
@@ -16,10 +16,25 @@
     "source": "https://www.youtube.com/watch?v=pKWT2rH1xuQ"
   },
   {
+    "id": "expedition-starter",
+    "name": "Free expedition loot no DPS required",
+    "author": "LugswoPoE",
+    "description": "Leverage the Missing Life Idol with Expedition monsters. This strategy requires no DPS. Expedition enemies spawn with drastically reduced health and die instantly, giving logbooks, reroll currencies, and burial medallions.",
+    "scarabs": ["2x Expedition Scarab of Runefinding", "Expedition Scarab of Archaeology", "Expedition Scarab of Verisium Powder", "Scarab of Monstrous Lineage"],
+    "mapdevice": "",
+    "tags": [
+      "expedition",
+      "early",
+      "easy"
+    ],
+    "shareUrl": "https://jlepoff.github.io/poe-idol-grid-builder/?share=eNqVkUtLxDAUhf_KJTC7IM2rre5czM4RcVuKxDbTCbTJ0GReiP_dm44ICgMGAufS852TW_JBBvLQNIzTgrKWNhKVozJUkTR9kDgIVIVaUbSSwXBICaZwSERJxUIoKhcCc0sVR01V91QtgRo18UzQ8tpQ4CDblpJj2qWgJJJ0C23QJOa8H21n412IOr7xspalTIe0y5r_Z3kGKzJYmcGqDLbMYKsMtqZkusmyohairgSvFvY-g8VnzIBZDsxzYJEDyxxYfcO4-_ocZzMZeJy7nTZ-9MOFYJ4ztQLrutnoYHpYY50P9mjgVff2ENCCiz_MsNH7QChh_Ab-MuoO613EoBvM3xyCprfRegcb70I08-9qCHt9cnCycQfage6vsB6BiRX4LTzZrYHJhmDdgH3Ph-ndzMn4WQELA3hn8M_bzy9frTPP",
+    "source": "https://youtu.be/U_xJnYF7K2o"
+  },
+  {
     "id": "low-budget-harvest",
     "name": "Low-Budget Harvest Strat",
     "author": "Sindekus",
-    "description": "Guaranteed Tier 3 Crop spawns, affordable Idols, and zero risk of currency loss. Remove the Doubling Scarab if it becomes too difficult",
+    "description": "A low-risk, high-reward Harvest farming strategy with guaranteed Tier 3 crop spawns and affordable Idols. With 300% increased Tier 3 crop chance and 100% additional Harvest chance, each map consistently yields strong returns. Minimal investment is required, and removing the Doubling Scarab can make it even easier but not recommended.",
     "scarabs": [
       "Harvest Scarab, Harvest Scarab of Doubling"
     ],
@@ -34,9 +49,9 @@
   },
   {
     "id": "red-altar-farm",
-    "name": "Red altar idols currency farming strategy",
+    "name": "Searing Exarch currency farming strategy",
     "author": "aldodzb",
-    "description": "A midgame farming strategy focused on maximizing currency gains through Searing Exarch altars",
+    "description": "A farming strategy centered on maximizing currency gains through Searing Exarch altars by stacking small pack-size Idols. Running Mausoleum and Jungle Valley ensures boss mods wont appear, allowing consistent minion altar choices. Results vary, but consistent map spamming leads to strong returns over time.",
     "scarabs": [],
     "mapdevice": "",
     "tags": [
@@ -48,15 +63,28 @@
     "source": "https://youtu.be/D7Qszf4sgyg"
   },
   {
+    "id": "delirium-farm",
+    "name": "Delirium Farm",
+    "author": "NickZiri",
+    "description": "The setup includes budget-friendly Idols that boost reward progress and increase Delirium orb drops. Profits come mainly from Delirium orbs, Scarabs, cluster jewels, and other valuable drops (Blue or Red altars)",
+    "scarabs": ["5x Delirium Scarab of Paranoia"],
+    "mapdevice": "",
+    "tags": [
+      "delirum"
+    ],
+    "shareUrl": "https://jlepoff.github.io/poe-idol-grid-builder/?share=eNqtkk1LAzEQhv9KCHhylEyS_fKq4EEKRbyVRdZtKIHtZkmy1SL-dyfbgqiIrvT0zmSevDMM88o3_Gq1Qg0CsIYVKgoUBZI0I1WAIEhz0pSXIKc8I5XpA2niUVCQAA1qAirQk2JGwURSfXohY9CkBWn6gQg5ETXwXZpFAN9y6obAl8a3xu7Mmt1608TehMBhxW9MZ70dt-zePDd-zR72gwnM9mzvRs8WzRDYpqH0HFl0rHVjH5nrU4Fdu-3QmWhdz-Ho48bAFq4P0fjA7mzXUbtPXoN3O7s27EKKM6q0NEog5th86d3Gp8HqaRuH2QVNaV6GzrY2XobYxEcsRVllOi9KXn8rKi1LlBplObnIk7iok7jok7hkHy6_svkMtpjBljPYagZLl8_jP1YkK4EFaoHyYEO38_Rjz68wnUj7M6xQCiW0zA-wmgPrOXD2Z7h-ewf-hEYV",
+    "source": "https://youtu.be/k-LnHHAsRbw"
+  },
+  {
     "id": "destructive-play",
     "name": "Destructive Play Farming",
     "author": "Allie",
-    "description": "A midgame build required to farm scoured shaper guardian maps for maven invitations. Go for at least 25% total chance to drop shaper guardian map on idols",
+    "description": "A midgame build is probably required. Farm scoured Shaper Guardian maps for Maven invitations. Aim for at least 25% total chance to drop Shaper Guardian maps from Idols. Refer to the video for details on rolling invitations.",
     "scarabs": [],
     "mapdevice": "",
     "tags": [
       "invitation",
-      "Destructive Play"
+      "destructive play"
     ],
     "shareUrl": "https://jlepoff.github.io/poe-idol-grid-builder/?share=eNqV0mEKwjAMBeC75HeQpmk361VKERGRoYjgEEG8uy_dBdJfL5BvbeHtS1c61Jo4sDSukjFEDHtkQgZktkVk4YBhRhqYkGoL-E0oaxeSOHWiSNsUzn0Bt10iGAxY2hkZmVpjettbAtON7DaudPk878t5WXev9bQei0rIsehM-Kj1A9w0-qn6afLT7KeTn85-uvfTMlDBSF0DfclAYTLQGP5Oenht9tr2-wPjR-dQ",
     "source": "https://youtu.be/ooQ26gZDIeU"
