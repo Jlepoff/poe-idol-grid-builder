@@ -37,37 +37,10 @@ function IdolPasteHandler({ onAddIdol, modData }) {
         }
 
         // Extract type based on name/format
-        if (rarity.toLowerCase() === "magic") {
-          // For magic items, extract type from the name
-          const idolTypes = [
-            "Minor",
-            "Kamasan",
-            "Totemic",
-            "Noble",
-            "Conqueror",
-            "Burial",
-          ];
-
-          // Try to find the type in the name
-          for (const baseType of idolTypes) {
-            if (name.includes(baseType)) {
-              type = baseType;
-              break;
-            }
-          }
-
-          // If not found, look for "X Idol of" pattern
-          if (!type && name.includes("Idol of")) {
-            const idolMatch = name.match(/(\w+)\s+Idol\s+of/);
-            if (idolMatch && idolMatch[1]) {
-              type = idolMatch[1];
-            }
-          }
-        } else if (rarityIndex >= 0 && rarityIndex + 2 < lines.length) {
-          // For non-magic items, type is usually listed explicitly
+        if (rarityIndex >= 0 && rarityIndex + 2 < lines.length) {
           const typeLine = lines[rarityIndex + 2].trim();
           if (typeLine.includes("Idol")) {
-            type = typeLine.replace("Idol", "").trim();
+            type = typeLine.split(" ")[0]; // Get "Minor", "Kamasan", etc.
           }
         }
 
@@ -90,6 +63,79 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           }
         });
 
+        // For unique idols, we need to extract the mod lines differently
+        if (rarity.toLowerCase() === "unique") {
+          // Extract the unique mods - they're usually between implicit and flavor text
+          let modStart = -1;
+          let modEnd = -1;
+
+          // Find where implicits end (if any)
+          for (let i = 0; i < separatorIndices.length - 1; i++) {
+            // Check if there's an implicit section
+            if (
+              lines
+                .slice(separatorIndices[i] + 1, separatorIndices[i + 1])
+                .some((l) => l.includes("(implicit)"))
+            ) {
+              modStart = separatorIndices[i + 1] + 1;
+              break;
+            }
+          }
+
+          // If we didn't find implicits, look for the first section after item level
+          if (modStart === -1) {
+            for (let i = 0; i < separatorIndices.length - 1; i++) {
+              if (
+                lines
+                  .slice(separatorIndices[i] + 1, separatorIndices[i + 1])
+                  .some((l) => l.includes("Item Level:"))
+              ) {
+                modStart = separatorIndices[i + 1] + 1;
+                break;
+              }
+            }
+          }
+
+          // Find where the flavor text starts (usually starts with non-mechanical text)
+          for (let i = 0; i < separatorIndices.length - 1; i++) {
+            if (modStart !== -1 && separatorIndices[i] > modStart) {
+              modEnd = separatorIndices[i];
+              break;
+            }
+          }
+
+          // If we found the mod section
+          const uniqueModifiers = [];
+          if (modStart !== -1 && modEnd !== -1) {
+            for (let i = modStart; i < modEnd; i++) {
+              const line = lines[i].trim();
+              if (line && !line.includes("(implicit)")) {
+                uniqueModifiers.push({
+                  Mod: line,
+                  Name: "Unique",
+                  Code: `Unique-${Date.now()}-${Math.random()}`,
+                });
+              }
+            }
+          }
+
+          return {
+            success: true,
+            idol: {
+              type,
+              name,
+              isUnique: true,
+              uniqueModifiers,
+              uniqueName: name, // Store the unique name specifically
+              prefixes: [],
+              suffixes: [],
+              id: Date.now() + Math.random(),
+              itemLevel,
+            },
+          };
+        }
+
+        // For non-unique idols, extract mod lines
         // Extract mod lines
         const modLines = [];
         if (separatorIndices.length >= 4) {
@@ -105,41 +151,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           }
         }
 
-        // Handle unique items
-        if (rarity.toLowerCase() === "unique") {
-          const uniqueModifiers = modLines
-            .filter(
-              (line) =>
-                line.includes("your Maps") ||
-                line.includes("contain") ||
-                line.includes("increased") ||
-                line.includes("chance to") ||
-                line.includes("additional") ||
-                line.includes("more") ||
-                line.includes("reduced")
-            )
-            .map((modLine) => ({
-              Mod: modLine,
-              Name: "Unique",
-              Code: `Unique-${Date.now()}-${Math.random()}`,
-            }));
-
-          return {
-            success: true,
-            idol: {
-              type,
-              name,
-              isUnique: true,
-              uniqueModifiers,
-              prefixes: [],
-              suffixes: [],
-              id: Date.now(),
-              itemLevel,
-            },
-          };
-        }
-
-        // For non-unique idols, match mods to known prefixes/suffixes
+        // Match mods to known prefixes/suffixes
         const prefixes = [];
         const suffixes = [];
 
@@ -209,7 +221,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             name,
             prefixes,
             suffixes,
-            id: Date.now(),
+            id: Date.now() + Math.random(),
             isUnique: false,
             itemLevel,
             isMagic: rarity.toLowerCase() === "magic",

@@ -180,24 +180,35 @@ function optimizeDataForSharing(gridState, inventory) {
     // Get type code (first letter lowercase)
     const typeCode = getTypeCode(idol.type);
 
-    // Get prefix and suffix IDs - only include those with IDs
-    const prefixIds = idol.prefixes?.filter((p) => p.id).map((p) => p.id) || [];
-    const suffixIds = idol.suffixes?.filter((s) => s.id).map((s) => s.id) || [];
+    // Base data structure
+    const result = [index, typeCode, placedIdols.has(index) ? 1 : 0];
 
-    // Simple array: [id, typeCode, isPlaced, [prefixIds], [suffixIds]]
-    return [
-      index,
-      typeCode,
-      placedIdols.has(index) ? 1 : 0,
-      prefixIds,
-      suffixIds,
-      // Handle unique idols separately
-      idol.isUnique ? 1 : 0,
-      // Only include unique mods if it's a unique idol
-      idol.isUnique && idol.uniqueModifiers
-        ? idol.uniqueModifiers.map((m) => m.Mod)
-        : undefined,
-    ].filter((v) => v !== undefined); // Remove undefined values
+    // Handle unique vs normal idols differently
+    if (idol.isUnique) {
+      // For unique idols, store the name and mods
+      result.push(1); // isUnique = true
+      result.push(idol.uniqueName || idol.name); // Store unique name
+
+      if (idol.uniqueModifiers && idol.uniqueModifiers.length > 0) {
+        result.push(idol.uniqueModifiers.map((m) => m.Mod));
+      } else {
+        result.push([]);
+      }
+    } else {
+      // For normal idols, store prefix and suffix IDs
+      result.push(0); // isUnique = false
+
+      // Get prefix and suffix IDs - only include those with IDs
+      const prefixIds =
+        idol.prefixes?.filter((p) => p.id).map((p) => p.id) || [];
+      const suffixIds =
+        idol.suffixes?.filter((s) => s.id).map((s) => s.id) || [];
+
+      result.push(prefixIds);
+      result.push(suffixIds);
+    }
+
+    return result;
   });
 
   return {
@@ -261,54 +272,60 @@ function restoreFromOptimizedData(optimizedData, modData) {
 
   // 1. Restore idols from minimal data
   const inventory = optimizedData.v.map((idolData) => {
-    // Extract data from array
-    const [
-      index,
-      typeCode,
-      isPlaced,
-      prefixIds,
-      suffixIds,
-      isUnique,
-      uniqueMods,
-    ] = idolData;
+    // Extract base data
+    const [index, typeCode, isPlaced, isUnique] = idolData;
 
     // Get full idol type from code
     const type = getIdolTypeFromCode(typeCode);
 
-    // Restore prefixes and suffixes from IDs
-    const prefixes = (prefixIds || [])
-      .map((id) => findModifierById(id, modData))
-      .filter((m) => m !== null);
-
-    const suffixes = (suffixIds || [])
-      .map((id) => findModifierById(id, modData))
-      .filter((m) => m !== null);
-
-    // Build the idol object
-    const idol = {
-      id: `idol-${Date.now()}-${index}`, // Generate new unique ID
-      type,
-      isPlaced: isPlaced === 1,
-      prefixes,
-      suffixes,
-    };
-
-    // Handle unique idols
+    // Different handling for unique vs normal idols
     if (isUnique === 1) {
-      idol.isUnique = true;
-      if (uniqueMods && uniqueMods.length > 0) {
-        idol.uniqueModifiers = uniqueMods.map((mod) => ({
+      // Unique idol
+      const uniqueName = idolData[4];
+      const uniqueMods = idolData[5] || [];
+
+      return {
+        id: `idol-${Date.now()}-${index}`, // Generate new unique ID
+        type,
+        name: uniqueName,
+        uniqueName,
+        isPlaced: isPlaced === 1,
+        isUnique: true,
+        uniqueModifiers: uniqueMods.map((mod) => ({
           Mod: mod,
           Name: "Unique",
           Code: `Unique-${Date.now()}-${Math.random()}`,
-        }));
-      }
+        })),
+        prefixes: [],
+        suffixes: [],
+      };
+    } else {
+      // Normal idol
+      const prefixIds = idolData[4] || [];
+      const suffixIds = idolData[5] || [];
+
+      // Restore prefixes and suffixes from IDs
+      const prefixes = prefixIds
+        .map((id) => findModifierById(id, modData))
+        .filter((m) => m !== null);
+
+      const suffixes = suffixIds
+        .map((id) => findModifierById(id, modData))
+        .filter((m) => m !== null);
+
+      // Generate name from modifiers
+      const name = generateIdolName(type, prefixes, suffixes, false);
+
+      return {
+        id: `idol-${Date.now()}-${index}`, // Generate new unique ID
+        type,
+        name,
+        isPlaced: isPlaced === 1,
+        isUnique: false,
+        prefixes,
+        suffixes,
+      };
     }
-
-    // Generate name from modifiers
-    idol.name = generateIdolName(type, prefixes, suffixes, isUnique === 1);
-
-    return idol;
   });
 
   // 2. Create empty grid

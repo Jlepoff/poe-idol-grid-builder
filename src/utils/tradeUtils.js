@@ -9,7 +9,28 @@ export const generateTradeUrl = (idol) => {
   // Skip if no idol provided
   if (!idol) return "";
 
-  // Extract modifier IDs
+  // Handle unique idols differently
+  if (idol.isUnique) {
+    // Build query for unique idol by name
+    const query = {
+      query: {
+        name: idol.uniqueName || idol.name,
+        type: `${idol.type} Idol`,
+        stats: [{ type: "and", filters: [] }],
+        status: {
+          option: "online",
+        },
+      },
+    };
+
+    // Convert to JSON and encode for URL
+    const encodedQuery = encodeURIComponent(JSON.stringify(query));
+
+    // Return the full URL
+    return `https://www.pathofexile.com/trade/search/Phrecia?q=${encodedQuery}`;
+  }
+
+  // For normal idols, extract modifier IDs
   const modifierIds = [];
 
   // Add prefix IDs
@@ -30,8 +51,8 @@ export const generateTradeUrl = (idol) => {
     });
   }
 
-  // If no valid IDs found, return empty string
-  if (modifierIds.length === 0) return "";
+  // If no valid IDs found for normal idol, return empty string
+  if (modifierIds.length === 0 && !idol.isUnique) return "";
 
   // Build the trade query
   const query = {
@@ -39,9 +60,7 @@ export const generateTradeUrl = (idol) => {
       stats: [
         {
           type: "and",
-          filters: modifierIds.map((id) => ({
-            id,
-          })),
+          filters: modifierIds.map((id) => ({ id })),
         },
       ],
       status: {
@@ -56,6 +75,7 @@ export const generateTradeUrl = (idol) => {
   // Return the full URL
   return `https://www.pathofexile.com/trade/search/Phrecia?q=${encodedQuery}`;
 };
+
 /**
  * Checks if an idol has valid trade data
  * @param {Object} idol - The idol object with modifiers
@@ -63,6 +83,9 @@ export const generateTradeUrl = (idol) => {
  */
 export const hasValidTradeData = (idol) => {
   if (!idol) return false;
+
+  // Unique idols can always be traded by name
+  if (idol.isUnique) return true;
 
   // Check prefixes for valid IDs
   const hasValidPrefix =
