@@ -376,7 +376,7 @@
     {
       "Name": "of Incursion",
       "Code": "MapRelicIncursionAdditionalUpgradeNonResident1",
-      "Mod": "Killing non-resident Architects in your Maps has 50% chance to addan additional Upgrade Tier to the surviving Architect's Room",
+      "Mod": "Killing non-resident Architects in your Maps has 50% chance to add an additional Upgrade Tier to the surviving Architect's Room",
       "Family": "MapRelicIncursionAdditionalUpgradeNonResident",
       "id": "explicit.stat_1346625818"
     },
@@ -425,21 +425,21 @@
     {
       "Name": "of the Scourge",
       "Code": "MapRelicBeyondMoreDemonFactionDivinationCardQuantity1",
-      "Mod": "25% more Divination Cards found from Beyond Demons in your Mapsthat are followers of K'Tash",
+      "Mod": "25% more Divination Cards found from Beyond Demons in your Maps that are followers of K'Tash",
       "Family": "MapRelicBeyondMoreDemonFactionDivinationCardQuantity",
       "id": "explicit.stat_1340524145"
     },
     {
       "Name": "of the Scourge",
       "Code": "MapRelicBeyondMorePaleFactionCurrencyQuantity1",
-      "Mod": "25% more Basic Currency Items found from Beyond Demons in your Mapsthat are followers of Beidat",
+      "Mod": "25% more Basic Currency Items found from Beyond Demons in your Maps that are followers of Beidat",
       "Family": "MapRelicBeyondMorePaleFactionCurrencyQuantity",
       "id": "explicit.stat_3062743459"
     },
     {
       "Name": "of the Scourge",
       "Code": "MapRelicBeyondMoreFleshFactionUniqueQuantity1",
-      "Mod": "25% more Unique Items found from Beyond Demons in your Mapsthat are followers of Ghorr",
+      "Mod": "25% more Unique Items found from Beyond Demons in your Maps that are followers of Ghorr",
       "Family": "MapRelicBeyondMoreFleshFactionUniqueQuantity",
       "id": "explicit.stat_303527630"
     },

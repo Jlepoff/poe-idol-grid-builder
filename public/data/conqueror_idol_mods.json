@@ -156,6 +156,13 @@
     },
     {
       "Name": "Domination",
+      "Code": "MapRelicShrineNumExtraLarge",
+      "Mod": "Your Maps contain 2 additional Shrines",
+      "Family": "MapRelicShrineNum",
+      "id": "explicit.stat_1468737867"
+    },
+    {
+      "Name": "Domination",
       "Code": "MapRelicShrineIncreasedChanceExtraLarge",
       "Mod": "Your Maps have +30% chance to contain a Shrine",
       "Family": "MapRelicShrineIncreasedChance",
@@ -165,6 +172,13 @@
       "Name": "Essence",
       "Code": "MapRelicEssenceAdditionalMonolithsExtraLarge",
       "Mod": "Your Maps contain an additional Imprisoned Monster",
+      "Family": "MapRelicEssenceAdditionalMonoliths",
+      "id": "explicit.stat_395808938"
+    },
+    {
+      "Name": "Essence",
+      "Code": "MapRelicEssenceAdditionalMonolithsExtraLarge",
+      "Mod": "Your Maps contain 2 additional Imprisoned Monsters",
       "Family": "MapRelicEssenceAdditionalMonoliths",
       "id": "explicit.stat_395808938"
     },
@@ -193,6 +207,13 @@
       "Name": "Harbinger's",
       "Code": "MapRelicHarbingerExtraHarbingersExtraLarge",
       "Mod": "Your Maps contain an additional Harbinger",
+      "Family": "MapRelicHarbingerExtraHarbingers",
+      "id": "explicit.stat_504850499"
+    },
+    {
+      "Name": "Harbinger's",
+      "Code": "MapRelicHarbingerExtraHarbingersExtraLarge",
+      "Mod": "Your Maps contain 2 additional Harbingers",
       "Family": "MapRelicHarbingerExtraHarbingers",
       "id": "explicit.stat_504850499"
     },
@@ -305,6 +326,13 @@
       "Name": "Trapped",
       "Code": "MapRelicStrongboxAdditionalExtraLarge",
       "Mod": "Your Maps contain an additional Strongbox",
+      "Family": "MapRelicStrongboxAdditional",
+      "id": "explicit.stat_3240183538"
+    },
+    {
+      "Name": "Trapped",
+      "Code": "MapRelicStrongboxAdditionalExtraLarge",
+      "Mod": "Your Maps contain 2 additional Strongboxes",
       "Family": "MapRelicStrongboxAdditional",
       "id": "explicit.stat_3240183538"
     },
@@ -733,7 +761,7 @@
     {
       "Name": "of Betrayal",
       "Code": "MapRelicBetrayalBarginDropsMoreItems1",
-      "Mod": "Immortal Syndicate Members in your Maps drop 200% moreItems when Bargained with for Items",
+      "Mod": "Immortal Syndicate Members in your Maps drop 200% more Items when Bargained with for Items",
       "Family": "MapRelicBetrayalBarginDropsMoreItems",
       "id": "explicit.stat_574706723"
     },

@@ -670,7 +670,7 @@
     {
       "Name": "of Betrayal",
       "Code": "MapRelicBetrayalBarginOptionChance1",
-      "Mod": "Immortal Syndicate Members in your Maps are 160% morelikely to offer to Bargain for Items",
+      "Mod": "Immortal Syndicate Members in your Maps are 160% more likely to offer to Bargain for Items",
       "Family": "MapRelicBetrayalBarginOptionChance",
       "id": "explicit.stat_1259656520"
     },
@@ -740,7 +740,7 @@
     {
       "Name": "of Ultimatum",
       "Code": "MapRelicUltimatumExterminateReducedMonsterKillsRequired1",
-      "Mod": "Ultimatum Encounters in your Maps requiring you to Defeat waves of Enemiesrequire killing 5% reduced number of Enemies",
+      "Mod": "Ultimatum Encounters in your Maps requiring you to Defeat waves of Enemies require killing 5% reduced number of Enemies",
       "Family": "UltimatumUltimatumExterminateReducedMonsterKillsRequired",
       "id": "explicit.stat_340836576"
     },

@@ -360,7 +360,7 @@
     {
       "Name": "Cartographer's",
       "Code": "MapRelicMapTierSeventeenPacks1",
-      "Mod": "Your Maps contain 5% more Monster Packs consisting of difficult and rewarding Monstersmap chance to spawn t17 pack % [100]",
+      "Mod": "Your Maps contain 5% more Monster Packs consisting of difficult and rewarding Monsters map chance to spawn t17 pack % [100]",
       "Family": "MapRelicMapTierSeventeenPacks",
       "id": "explicit.stat_1366180761"
     }
@@ -698,14 +698,14 @@
     {
       "Name": "of Ultimatum",
       "Code": "MapRelicUltimatumTrialmasterChance1",
-      "Mod": "Ultimatum Encounters in your Maps have 20% increased chance forthe final Round to include a Boss",
+      "Mod": "Ultimatum Encounters in your Maps have 20% increased chance for the final Round to include a Boss",
       "Family": "MapRelicUltimatumTrialmasterChance",
       "id": "explicit.stat_1603263120"
     },
     {
       "Name": "of Ultimatum",
       "Code": "MapRelicUltimatumDefenceEncounterChance1",
-      "Mod": "Ultimatum Encounters in your Maps have 60% increased chance torequire you to protect the Altar",
+      "Mod": "Ultimatum Encounters in your Maps have 60% increased chance to require you to protect the Altar",
       "Family": "MapRelicUltimatumDefenceEncounterChance",
       "id": "explicit.stat_4236665456"
     },
@@ -733,14 +733,14 @@
     {
       "Name": "of Ultimatum",
       "Code": "MapRelicUltimatumExterminateChance1",
-      "Mod": "Ultimatum Encounters in your Maps have 60% increased chance torequire you to defeat waves of Enemies",
+      "Mod": "Ultimatum Encounters in your Maps have 60% increased chance to require you to defeat waves of Enemies",
       "Family": "MapRelicUltimatumExterminateChance",
       "id": "explicit.stat_2014727907"
     },
     {
       "Name": "of Ultimatum",
       "Code": "MapRelicUltimatumConquerChance1",
-      "Mod": "Ultimatum Encounters in your Maps have 60% increased chance torequire you to Stand in the Stone Circles",
+      "Mod": "Ultimatum Encounters in your Maps have 60% increased chance to require you to Stand in the Stone Circles",
       "Family": "MapRelicUltimatumConquerChance",
       "id": "explicit.stat_802960755"
     },
@@ -761,7 +761,7 @@
     {
       "Name": "of Ultimatum",
       "Code": "MapRelicUltimatumSurvivalEncounterChance1",
-      "Mod": "Ultimatum Encounters in your Maps have 60% increased chance toonly require you to Survive",
+      "Mod": "Ultimatum Encounters in your Maps have 60% increased chance to only require you to Survive",
       "Family": "MapRelicUltimatumSurvivalEncounterChance",
       "id": "explicit.stat_306537703"
     },
