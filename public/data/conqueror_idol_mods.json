@@ -376,7 +376,7 @@
       "Code": "MapRelicMapModEffectPerFiveQuality1",
       "Mod": "5% increased effect of Explicit Modifiers on your Maps per 5% Map Quality",
       "Family": "MapRelicMapModEffectPerFiveQuality",
-      "id": "explicit.stat_2792863714"
+      "id": "explicit.stat_2490189905"
     },
     {
       "Name": "Cartographer's",
@@ -411,7 +411,7 @@
     {
       "Name": "of the Abyss",
       "Code": "MapRelicAbyssTroveDropScarabChance1",
-      "Mod": "Abyssal Troves and Stygian Spires in your Maps have (0.03\u20130.05)% chance to drop an Abyss Scarab",
+      "Mod": "Abyssal Troves and Stygian Spires in your Maps have 5% chance to drop an Abyss Scarab",
       "Family": "MapRelicAbyssTroveDropScarabChance",
       "id": "explicit.stat_1028265433"
     },
@@ -796,7 +796,7 @@
     {
       "Name": "of the Legion",
       "Code": "MapRelicLegionSplinterDropAsFragmentChance1",
-      "Mod": "(0.5\u20130.75)% chance for Timeless Splinters to drop as Timeless Emblems instead in your Maps",
+      "Mod": "0.75% chance for Timeless Splinters to drop as Timeless Emblems instead in your Maps",
       "Family": "MapRelicLegionSplinterDropAsFragmentChance",
       "id": "explicit.stat_407036985"
     },

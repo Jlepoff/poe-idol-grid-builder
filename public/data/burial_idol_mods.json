@@ -327,14 +327,7 @@
       "Code": "MapRelicMapAdditionalKiracMissionOnCompletionChance1",
       "Mod": "Your Maps have 8% chance to grant an additional Kirac Mission on Completion",
       "Family": "MapRelicMapAdditionalKiracMissionOnCompletionChance",
-      "id": "explicit.stat_3174836286"
-    },
-    {
-      "Name": "Kirac's",
-      "Code": "MapRelicMapAdditionakKiracMissionOnCompletionChancePerMyriad1",
-      "Mod": "Your Maps have (2\u20132.5)% chance to grant an additional Kirac Mission on Completion",
-      "Family": "MapRelicMapAdditionakKiracMissionOnCompletionChancePerMyriad",
-      "id": "explicit.stat_3174836286"
+      "id": "explicit.stat_2771143254"
     },
     {
       "Name": "Cartographer's",
@@ -873,7 +866,7 @@
     {
       "Name": "of the Eater",
       "Code": "MapRelicTangleMonstersDropAdditionalEaterOfWorldsItem1",
-      "Mod": "Monsters Influenced by The Eater of Worlds in your Maps have (0.8\u20131.2)% chance to drop an item with an Eater of Worlds Implicit Modifier",
+      "Mod": "Monsters Influenced by The Eater of Worlds in your Maps have 1.2% chance to drop an item with an Eater of Worlds Implicit Modifier",
       "Family": "MapRelicTangleMonstersDropAdditionalEaterOfWorldsItem",
       "id": "explicit.stat_2121601076"
     },
