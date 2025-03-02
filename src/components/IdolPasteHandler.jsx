@@ -1,4 +1,3 @@
-// components/IdolPasteHandler.jsx
 import React, { useState, useEffect, useCallback } from "react";
 
 function IdolPasteHandler({ onAddIdol, modData }) {
@@ -6,29 +5,24 @@ function IdolPasteHandler({ onAddIdol, modData }) {
   const [parseError, setParseError] = useState(null);
   const [parsedIdol, setParsedIdol] = useState(null);
 
-  // Parse idol text copied from the game
   const parseIdolText = useCallback(
     (text) => {
       try {
-        // Split by lines and remove empty ones
         const lines = text.split("\n").filter((line) => line.trim() !== "");
+        console.log("DEBUG: Raw lines:", lines);
 
-        // Verify it's an idol item
         if (!lines.some((line) => line.includes("Item Class: Idols"))) {
           return { success: false, error: "Not an idol item" };
         }
 
-        // Extract basic item info
         let name = "";
         let type = "";
         let itemLevel = 0;
         let rarity = "";
 
-        // Get rarity
         const rarityLine = lines.find((line) => line.startsWith("Rarity:"));
         rarity = rarityLine ? rarityLine.replace("Rarity: ", "").trim() : "";
 
-        // Find name (line after rarity)
         const rarityIndex = lines.findIndex((line) =>
           line.startsWith("Rarity:")
         );
@@ -36,51 +30,37 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           name = lines[rarityIndex + 1].trim();
         }
 
-        // Extract type based on name/format
         if (rarityIndex >= 0 && rarityIndex + 2 < lines.length) {
           const typeLine = lines[rarityIndex + 2].trim();
           if (typeLine.includes("Idol")) {
-            type = typeLine.split(" ")[0]; // Get "Minor", "Kamasan", etc.
+            type = typeLine.split(" ")[0];
           }
         }
 
-        // For magic idols, extract type from the name
         if (rarity.toLowerCase() === "magic" && name) {
-          // Find the word before "Idol" in the name
           const match = name.match(/(\w+)\s+Idol/i);
-          if (match && match[1]) {
-            type = match[1]; // This will be the idol type.
-          }
+          if (match && match[1]) type = match[1];
         }
 
-        // Extract item level
         const itemLevelLine = lines.find((line) =>
           line.includes("Item Level:")
         );
         if (itemLevelLine) {
           const match = itemLevelLine.match(/Item Level: (\d+)/);
-          if (match && match[1]) {
-            itemLevel = parseInt(match[1]);
-          }
+          if (match && match[1]) itemLevel = parseInt(match[1]);
         }
 
-        // Find sections separated by dashes
         const separatorIndices = [];
         lines.forEach((line, index) => {
-          if (line.trim() === "--------") {
-            separatorIndices.push(index);
-          }
+          if (line.trim() === "--------") separatorIndices.push(index);
         });
+        console.log("DEBUG: Separator indices:", separatorIndices);
 
-        // For unique idols, we need to extract the mod lines differently
         if (rarity.toLowerCase() === "unique") {
-          // Extract the unique mods - they're usually between implicit and flavor text
           let modStart = -1;
           let modEnd = -1;
 
-          // Find where implicits end (if any)
           for (let i = 0; i < separatorIndices.length - 1; i++) {
-            // Check if there's an implicit section
             if (
               lines
                 .slice(separatorIndices[i] + 1, separatorIndices[i + 1])
@@ -91,7 +71,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             }
           }
 
-          // If we didn't find implicits, look for the first section after item level
           if (modStart === -1) {
             for (let i = 0; i < separatorIndices.length - 1; i++) {
               if (
@@ -105,7 +84,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             }
           }
 
-          // Find where the flavor text starts
           for (let i = 0; i < separatorIndices.length - 1; i++) {
             if (modStart !== -1 && separatorIndices[i] > modStart) {
               modEnd = separatorIndices[i];
@@ -113,20 +91,35 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             }
           }
 
-          // If we found the mod section
           const uniqueModifiers = [];
           if (modStart !== -1 && modEnd !== -1) {
+            let currentMod = "";
             for (let i = modStart; i < modEnd; i++) {
               const line = lines[i].trim();
               if (line && !line.includes("(implicit)")) {
-                uniqueModifiers.push({
-                  Mod: line,
-                  Name: "Unique",
-                  Code: `Unique-${Date.now()}-${Math.random()}`,
-                });
+                if (currentMod === "" || /^[A-Z]/.test(line)) {
+                  if (currentMod) {
+                    uniqueModifiers.push({
+                      Mod: currentMod,
+                      Name: "Unique",
+                      Code: `Unique-${Date.now()}-${Math.random()}`,
+                    });
+                  }
+                  currentMod = line;
+                } else {
+                  currentMod += " " + line;
+                }
               }
             }
+            if (currentMod) {
+              uniqueModifiers.push({
+                Mod: currentMod,
+                Name: "Unique",
+                Code: `Unique-${Date.now()}-${Math.random()}`,
+              });
+            }
           }
+          console.log("DEBUG: Unique modifiers:", uniqueModifiers);
 
           return {
             success: true,
@@ -144,66 +137,113 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           };
         }
 
-        // For non-unique idols, extract mod lines
-        // Extract mod lines
-        const modLines = [];
+        let modStart = -1;
+        let modEnd = -1;
         if (separatorIndices.length >= 4) {
-          let modStart = separatorIndices[2] + 1;
-          let modEnd = separatorIndices[3];
+          modStart = separatorIndices[2] + 1;
+          modEnd = separatorIndices[3];
+        }
+        console.log("DEBUG: Mod section start/end:", modStart, modEnd);
 
-          // Add non-implicit mod lines
+        const processedModLines = [];
+        if (modStart !== -1 && modEnd !== -1) {
+          let currentMod = "";
+          const allMods = [
+            ...Object.values(modData.prefixes).flat(),
+            ...Object.values(modData.suffixes).flat(),
+          ];
+
           for (let i = modStart; i < modEnd; i++) {
             const line = lines[i].trim();
-            if (line && !line.includes("(implicit)")) {
-              modLines.push(line);
+            if (!line || line.includes("(implicit)")) continue;
+
+            const prevMod = currentMod;
+            currentMod = currentMod ? `${currentMod} ${line}` : line;
+            console.log("DEBUG: Building mod:", currentMod);
+
+            const isCompleteMod = allMods.some((mod) => {
+              const matches = areModsEquivalent(mod.Mod, currentMod);
+              if (matches) console.log("DEBUG: Matches mod in data:", mod);
+              return matches;
+            });
+            console.log("DEBUG: Is complete mod?", isCompleteMod);
+
+            if (isCompleteMod) {
+              processedModLines.push(currentMod);
+              console.log("DEBUG: Complete mod found:", currentMod);
+              currentMod = "";
+            } else {
+              const nextIndex = i + 1;
+              const hasNextLine = nextIndex < modEnd && lines[nextIndex].trim();
+              if (!hasNextLine) {
+                if (currentMod) {
+                  processedModLines.push(currentMod);
+                  console.log("DEBUG: End of section, saving:", currentMod);
+                }
+                currentMod = "";
+              } else {
+                const nextLine = lines[nextIndex].trim();
+                if (/^[A-Z]/.test(nextLine)) {
+                  const couldBePartial = allMods.some((mod) =>
+                    normalize(mod.Mod).startsWith(normalize(prevMod))
+                  );
+                  console.log("DEBUG: Could be partial with prevMod?", couldBePartial);
+
+                  if (!couldBePartial && prevMod) {
+                    processedModLines.push(prevMod);
+                    console.log("DEBUG: New mod detected, saving:", prevMod);
+                    currentMod = line;
+                  }
+                }
+              }
             }
           }
+          if (currentMod) {
+            processedModLines.push(currentMod);
+            console.log("DEBUG: Final mod saved:", currentMod);
+          }
         }
+        console.log("DEBUG: Processed mod lines:", processedModLines);
 
-        // Match mods to known prefixes/suffixes
         const prefixes = [];
         const suffixes = [];
-
-        // Flatten all available mods for easier searching
         const allPrefixes = Object.values(modData.prefixes).flat();
         const allSuffixes = Object.values(modData.suffixes).flat();
 
-        // Process each mod line
-        for (const modLine of modLines) {
+        for (const modLine of processedModLines) {
+          if (!modLine) continue; // Skip empty entries
+
           let found = false;
 
-          // Try to match against prefixes
           for (const prefix of allPrefixes) {
             if (areModsEquivalent(prefix.Mod, modLine)) {
-              prefixes.push({
-                ...prefix,
-                Mod: modLine, // Use actual mod text from game
-              });
+              prefixes.push({ ...prefix, Mod: modLine });
+              console.log("DEBUG: Matched prefix:", modLine, prefix);
               found = true;
               break;
             }
           }
 
-          // If not found in prefixes, try suffixes
           if (!found) {
             for (const suffix of allSuffixes) {
               if (areModsEquivalent(suffix.Mod, modLine)) {
-                suffixes.push({
-                  ...suffix,
-                  Mod: modLine,
-                });
+                suffixes.push({ ...suffix, Mod: modLine });
+                console.log("DEBUG: Matched suffix:", modLine, suffix);
                 found = true;
                 break;
               }
             }
           }
 
-          // If we couldn't identify the mod, make a guess based on content
           if (!found) {
+            console.log("DEBUG: No exact match for:", modLine);
             if (
               modLine.includes("your Maps") ||
               modLine.includes("increased chance to contain") ||
-              modLine.includes("Maps contain")
+              modLine.includes("Maps contain") ||
+              modLine.includes("Map contains") ||
+              modLine.includes("chance to contain an") ||
+              modLine.includes("chance to contain a")
             ) {
               prefixes.push({
                 Name: "Unknown Prefix",
@@ -211,6 +251,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                 Code: `Unknown-${Date.now()}-${Math.random()}`,
                 Family: "Unknown",
               });
+              console.log("DEBUG: Assigned as unknown prefix:", modLine);
             } else {
               suffixes.push({
                 Name: "Unknown Suffix",
@@ -218,11 +259,14 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                 Code: `Unknown-${Date.now()}-${Math.random()}`,
                 Family: "Unknown",
               });
+              console.log("DEBUG: Assigned as unknown suffix:", modLine);
             }
           }
         }
 
-        // Create the idol object
+        console.log("DEBUG: Final prefixes:", prefixes);
+        console.log("DEBUG: Final suffixes:", suffixes);
+
         return {
           success: true,
           idol: {
@@ -244,19 +288,20 @@ function IdolPasteHandler({ onAddIdol, modData }) {
     [modData]
   );
 
-  // Helper to compare modifier text patterns
-  const areModsEquivalent = (mod1, mod2) => {
-    // Remove numbers to compare structure
-    const pattern1 = mod1.replace(/\d+(\.\d+)?%?/g, "X").trim();
-    const pattern2 = mod2.replace(/\d+(\.\d+)?%?/g, "X").trim();
+  const normalize = (str) => str.replace(/\s+/g, " ").trim();
 
+  const areModsEquivalent = (mod1, mod2) => {
+    const norm1 = normalize(mod1);
+    const norm2 = normalize(mod2);
+    if (norm1 === norm2) return true;
+
+    const pattern1 = norm1.replace(/\d+(\.\d+)?%?/g, "X");
+    const pattern2 = norm2.replace(/\d+(\.\d+)?%?/g, "X");
     return pattern1 === pattern2;
   };
 
-  // Set up paste event listener
   useEffect(() => {
     const handlePaste = (e) => {
-      // Ignore if focused on an input
       if (
         e.target.tagName === "INPUT" ||
         e.target.tagName === "TEXTAREA" ||
@@ -266,8 +311,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
       }
 
       const text = e.clipboardData.getData("text");
-
-      // Check if it's an idol
       if (text.includes("Item Class: Idols")) {
         e.preventDefault();
 
@@ -296,7 +339,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
     }
   };
 
-  // If not showing prompt, render nothing
   if (!showPrompt) return null;
 
   return (
