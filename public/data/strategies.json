@@ -1,0 +1,35 @@
+[
+  {
+    "id": "alch-and-go",
+    "name": "Alch & Blueprints 2 Go",
+    "author": "mbXtreme",
+    "description": "A straightforward 'Alch and Go' strategy combined with Heist. The primary focus is farming and selling fully revealed blueprints for consistent profit.",
+    "scarabs": [],
+    "mapdevice": "Heist",
+    "tags": ["alch", "blueprints", "heist", "early"],
+    "shareUrl": "https://jlepoff.github.io/poe-idol-grid-builder/?share=eNqtksFq3DAQhl9lEOxNLZIte-Xe2nQDObSXtPSwmKLYcizwSoskb7KUvntH9oa2pBQWdJrxP7-_mRHzgzySd_s9p4zylu4FxgJjgVFg5FuKJUxSTAbOabEINcbkbDCWqSAwqVLS0HJx8BqTpEgqFqHCmH7hJSapgOXVWWGytEPECmG0Xr0Sk8RPgmhbSk5pXkbJgaSRKPnmVRzBDRBHDTcuHFwgdE92U-9N7EZ4P0XlA9zZYZq17XQPD2f4gt57rbyxj7B7Vh59ozppqLYb6EaFNohulZQF1fcmGmfVBF-PwfSa0Ov5T6N56fIv5FqRcgPGdl6rgKDdMOgupt0-uiebXIG06VF-b3-PHeZJebh13bws_kkdAwxutv2KLJjYwMF5_cdiDxpu1cnNHpskP-7z2dk3f2kXhrFwRnGVeu-OoAJ8UMF0cDN7jxuf4S7qQ0BniFr1y4QFJV2akNE9fhH9fJxMZ-LbEFX8zoWUDZOlYIu3_J-35LwUZVMJsXjFFd7qCm99eVH2ethmW8m6qVlBXlMKxiXu0lw22WahyCyUJguFszwYngdT5MGUeTAiD6bKg8lzwjzPDfM8R8xzXHH78xdPAgpo",
+	"source": "https://www.youtube.com/watch?v=pKWT2rH1xuQ"
+  },
+  {
+    "id": "low-budget-harvest",
+    "name": "Low-Budget Harvest Strat",
+    "author": "Sindekus",
+    "description": "Guaranteed Tier 3 Crop spawns, affordable Idols, and zero risk of currency loss. Remove the Doubling Scarab if it becomes too difficult",
+    "scarabs": ["Harvest Scarab, Harvest Scarab of Doubling"],
+    "mapdevice": "",
+    "tags": ["alch", "harvest", "early"],
+    "shareUrl": "https://jlepoff.github.io/poe-idol-grid-builder/?share=eNqVkcFOxCAQhl-FkOxtYoCWtngz2oNnNR6axrAt3RK7dFNwd43x3R228eYmcvqA-fgHMl90R2-bJgMGvIVGIAWSITOkRObIAimRJXBgSC5AXMQKGQs5ZGsB8stegVz3HBcxiTPAkLYFeowNGdB3GsOgwSI158NkOxtufNDhTSglslLlWUHbS-b_XZHgZglunuDKBLdIcMsEt0pwFdDtVZdXFcuZFFKus2ApMk6uu_4KqXjBBSurVcbR7aOMl14XHUYyDySMhtzPfj97ivfrqV9s6EZyNwW9ePLohunDuM70ZPtJntF9Mnqxbkfqs17QG_XREFluSDdq1EiY1yPtiO57G-zs9EReDt72hkJ6_mm0v13-ilwrSmyIdd1itMegehhMF-LfHuaTi5bH77ffP0EmCYw",
+	"source": "https://youtu.be/lJANOz_W78g"
+  },
+    {
+    "id": "red-altar-farm",
+    "name": "Red altar idols currency farming strategy",
+    "author": "aldodzb",
+    "description": "A midgame farming strategy focused on maximizing currency gains through Searing Exarch altars",
+    "scarabs": [],
+    "mapdevice": "",
+    "tags": ["alch", "altar", "searing"],
+    "shareUrl": "https://jlepoff.github.io/poe-idol-grid-builder/?share=eNqVkU9PwzAMxb9KFGm3CNVu-o8bgh04A-JQVSi02Rqpa6c2bEOI746Twm0HfHovyc-2nPcl9_K2rjOVKGhUDQUZJKNJU9KcVJMikskCoRWoJBiqiDUFaSiBjEyoAbqPRZCTiUWVwlhEzVeWJLJBA4E0LhJYKL2anExkSSNKvdaXjEyYjCmZgASNA0sycWCq8pXVZAJbkga0ItVNo-Qp7J0oeZBhDyVfZ-N7Me2E7624n5bDtEhVy-3Qzc63vbgbvJkX8Tjuhg87trYT75_imdgna2Y37sX2YmbienOyIis2ou0NYcJP65UZhek65900mkG8HBfXWan4_c-9-5tyreX6UuFGuLGdrVmo0Xa3s60Puz1M5zFQi2ziz0oftk9UTSdpL8fBtc7fLN74txSKKi_zLCkjiww2_f3VqywCFlUFWleR1Qw2Y7A5gy0YbMlgKwYLCQcGDowcmJMdcMIDTnrAiQ84-QEnQOAkiJwEkZMgchJEToLISRA5CSInQfx_gs33D4l45fw",
+	"source": "https://youtu.be/D7Qszf4sgyg"
+  }
+]

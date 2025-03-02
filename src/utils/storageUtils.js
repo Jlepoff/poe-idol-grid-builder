@@ -423,20 +423,23 @@ export function generateShareableURL(gridState, inventory) {
 /**
  * Extract shared data from URL
  */
-export function getSharedDataFromURL(modData) {
+export function getSharedDataFromURL(modData, shareParam = null) {
   try {
-    const url = new URL(window.location.href);
-    const shareParam = url.searchParams.get("share");
-    if (!shareParam) return null;
+    // If no share parameter is provided, try to get it from the URL
+    if (!shareParam) {
+      const url = new URL(window.location.href);
+      shareParam = url.searchParams.get('share');
+      if (!shareParam) return null;
+    }
 
     const compressed = base64ToUint8Array(shareParam);
-    const json = pako.inflate(compressed, { to: "string" });
+    const json = pako.inflate(compressed, { to: 'string' });
     const optimizedData = JSON.parse(json);
 
     // Convert optimized format back to full structure
     return restoreFromOptimizedData(optimizedData, modData);
   } catch (err) {
-    console.error("Failed to extract shared data:", err);
+    console.error('Failed to extract shared data:', err);
     return null;
   }
 }
