@@ -1,6 +1,6 @@
 // components/GridCell.jsx
 import React from "react";
-import { useDrop } from "react-dnd";
+import { useDrop, useDrag } from "react-dnd";
 
 function GridCell({
   row,
@@ -16,8 +16,15 @@ function GridCell({
     accept: "IDOL",
     drop: (item) => {
       if (isBlocked || cell) return { success: false };
-
-      const success = onPlaceIdol(item.idol, { row, col });
+  
+      let success;
+      if (item.sourceType === "GRID" && item.sourcePosition) {
+        // For grid-to-grid move, pass current position
+        success = onPlaceIdol(item.idol, { row, col }, item.sourcePosition);
+      } else {
+        // For new placement from inventory
+        success = onPlaceIdol(item.idol, { row, col });
+      }
       return { success };
     },
     canDrop: () => !isBlocked && !cell,
@@ -27,12 +34,29 @@ function GridCell({
     }),
   });
 
-  // Handle cell clicks for removing idols
-  const handleCellClick = () => {
-    if (cell && isPrimary) {
-      onRemoveFromGrid({ row, col });
-    }
-  };
+  // Configure drag source for cells containing idols
+  const [{ isDragging }, drag] = useDrag({
+    type: "IDOL",
+    item: () => {
+      if (cell && isPrimary) {
+        return { 
+          type: "IDOL", 
+          idol: cell,
+          sourceType: "GRID",
+          sourcePosition: { row, col }
+        };
+      }
+      return null;
+    },
+    canDrag: () => cell && isPrimary,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+    end: (item, monitor) => {
+      // If dropped successfully somewhere else, we'll let the drop target handle it
+      // If drop failed, the idol stays in place
+    },
+  });
 
   // Handle right-click for removing idols
   const handleRightClick = (e) => {
@@ -84,9 +108,21 @@ function GridCell({
 
     // If this is the primary cell (top-left) of the idol
     if (isPrimary) {
-      cellClass += isOver ? "bg-red-700 border-red-500" : idolColors.primary;
+      // When dragging, make cell appear slightly faded
+      if (isDragging) {
+        cellClass += "opacity-50 " + idolColors.primary;
+      } else {
+        cellClass += isOver ? "bg-red-700 border-red-500" : idolColors.primary;
+      }
     } else {
-      cellClass += idolColors.secondary;
+      // Make secondary cells faded when primary is being dragged
+      if (isDragging && cell.position && 
+          cell.position.row === row - (row % cell.position.row) && 
+          cell.position.col === col - (col % cell.position.col)) {
+        cellClass += "opacity-50 " + idolColors.secondary;
+      } else {
+        cellClass += idolColors.secondary;
+      }
     }
   } else {
     // Empty cell styling
@@ -99,14 +135,24 @@ function GridCell({
     }
   }
 
+  // Combine drag and drop refs
+  const combinedRef = (node) => {
+    if (cell && isPrimary) {
+      // If it has an idol, make it draggable
+      drag(node);
+    } else if (!isBlocked) {
+      // If it's empty, make it a drop target
+      drop(node);
+    }
+  };
+
   return (
     <div
-      ref={!isBlocked ? drop : null}
+      ref={combinedRef}
       className={cellClass}
-      onClick={handleCellClick}
       onContextMenu={handleRightClick}
       title={
-        cell && isPrimary ? `${cell.name} (Click or right-click to remove)` : ""
+        cell && isPrimary ? `${cell.name} (Right-click to remove)` : ""
       }
     >
       {isPrimary && cell && (

@@ -118,6 +118,7 @@ function App() {
         saveInventory(updatedInventory);
     };
 
+
     // Removes idol from both inventory and grid
     const handleRemoveIdol = (id) => {
         // First, check if this idol is on the grid and find its position
@@ -178,69 +179,105 @@ function App() {
         saveInventory(updatedInventory);
     };
 
-    // Place idol on grid
-    const handlePlaceIdol = (idol, position) => {
+    // Check if an idol can be placed at a position on a given grid
+    const canPlaceIdol = (grid, idol, position) => {
         const { row, col } = position;
         const idolType = idolTypes.find((type) => type.name === idol.type);
-
         if (!idolType) return false;
 
         const { width, height } = idolType;
 
-        // Validate placement
+        // Check if idol fits within grid boundaries
         if (row + height > 7 || col + width > 6) return false;
 
         // Check for blocked cells and overlaps
         for (let r = row; r < row + height; r++) {
             for (let c = col; c < col + width; c++) {
-                // Check blocked cells
                 if (
                     (r === 0 && c === 0) || // Top-left corner
-                    (r === 2 && (c === 1 || c === 4)) || // Row 3: cells (1,2) and (4,2)
+                    (r === 2 && (c === 1 || c === 4)) || // Row 3
                     (r === 3 && (c === 1 || c === 2 || c === 3 || c === 4)) || // Row 4
                     (r === 4 && (c === 1 || c === 4)) || // Row 5
                     (r === 6 && c === 5) // Bottom-right
                 ) {
                     return false;
                 }
-
-                // Check for overlapping idols
-                if (gridState[r][c] !== null) {
+                if (grid[r][c] !== null) {
                     return false;
                 }
             }
         }
+        return true;
+    };
 
-        // Place the idol in grid
-        const newGrid = [...gridState];
+    // Place an idol on a grid, returning a new grid state
+    const placeIdolOnGrid = (grid, idol, position) => {
+        const newGrid = grid.map((row) => [...row]);
+        const { row, col } = position;
+        const idolType = idolTypes.find((type) => type.name === idol.type);
+        const { width, height } = idolType;
+
         for (let r = row; r < row + height; r++) {
             for (let c = col; c < col + width; c++) {
                 newGrid[r][c] = {
                     ...idol,
-                    position: {
-                        row,
-                        col,
-                    },
+                    position: { row, col },
                 };
             }
         }
+        return newGrid;
+    };
 
-        setGridState(newGrid);
-        saveGridState(newGrid);
+    // Remove an idol from a grid, returning a new grid state
+    const removeIdolFromGrid = (grid, position) => {
+        const { row, col } = position;
+        if (!grid[row][col]) return grid;
 
-        // Update inventory to mark idol as placed
-        const updatedInventory = inventory.map((invIdol) =>
-            invIdol.id === idol.id
-                ? {
-                    ...invIdol,
-                    isPlaced: true,
-                }
-                : invIdol
-        );
-        setInventory(updatedInventory);
-        saveInventory(updatedInventory);
+        const idol = grid[row][col];
+        const idolType = idolTypes.find((type) => type.name === idol.type);
+        if (!idolType) return grid;
 
-        return true;
+        const { width, height } = idolType;
+        const idolPosition = idol.position || { row, col };
+        const newGrid = grid.map((row) => [...row]);
+
+        for (let r = idolPosition.row; r < idolPosition.row + height; r++) {
+            for (let c = idolPosition.col; c < idolPosition.col + width; c++) {
+                newGrid[r][c] = null;
+            }
+        }
+        return newGrid;
+    };
+
+    // Place idol on grid
+    const handlePlaceIdol = (idol, position, currentPosition = null) => {
+        let gridForCheck = gridState;
+
+        if (currentPosition) {
+            // For moves, remove the idol from its current position first for validation
+            gridForCheck = removeIdolFromGrid(gridState, currentPosition);
+        }
+
+        if (canPlaceIdol(gridForCheck, idol, position)) {
+            const newGrid = placeIdolOnGrid(gridForCheck, idol, position);
+            setGridState(newGrid);
+            saveGridState(newGrid);
+
+            if (!currentPosition) {
+                // For new placements from inventory, update inventory
+                const updatedInventory = inventory.map((invIdol) =>
+                    invIdol.id === idol.id
+                        ? { ...invIdol, isPlaced: true }
+                        : invIdol
+                );
+                setInventory(updatedInventory);
+                saveInventory(updatedInventory);
+            }
+
+            return true;
+        }
+
+        return false;
     };
 
     // Remove idol from grid
