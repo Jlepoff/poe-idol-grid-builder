@@ -1,15 +1,43 @@
 import React, { useState, useEffect, useCallback } from "react";
-
+// This whole component became a rushed mess (don't judge me!)
 function IdolPasteHandler({ onAddIdol, modData }) {
-  const [showPrompt, setShowPrompt] = useState(false);
-  const [parseError, setParseError] = useState(null);
-  const [parsedIdol, setParsedIdol] = useState(null);
+  const normalize = useCallback(
+    (str) => str.replace(/\s+/g, " ").trim(),
+    []
+  );
+
+  const areModsEquivalent = useCallback((mod1, mod2) => {
+    const norm1 = normalize(mod1).replace(/[\u2013\u2014\u2212]/g, '-');
+    const norm2 = normalize(mod2).replace(/[\u2013\u2014\u2212]/g, '-');
+    if (norm1 === norm2) return true;
+
+    let convertedNorm1 = norm1;
+    let convertedNorm2 = norm2;
+    
+    const decimalMatch1 = norm1.match(/\+?(\d+\.\d+)%/);
+    if (decimalMatch1) {
+      convertedNorm1 = norm1.replace(/\+?(\d+\.\d+)%/, "DECIMAL_VALUE%");
+    }
+    
+    const decimalMatch2 = norm2.match(/\+?(\d+\.\d+)%/);
+    if (decimalMatch2) {
+      convertedNorm2 = norm2.replace(/\+?(\d+\.\d+)%/, "DECIMAL_VALUE%");
+    }
+    
+    convertedNorm1 = convertedNorm1.replace(/\(\d+(\.\d+)?[-\u2013\u2014\u2212]\d+(\.\d+)?\)%/g, "DECIMAL_VALUE%");
+    convertedNorm2 = convertedNorm2.replace(/\(\d+(\.\d+)?[-\u2013\u2014\u2212]\d+(\.\d+)?\)%/g, "DECIMAL_VALUE%");
+    
+    if (convertedNorm1 === convertedNorm2) return true;
+
+    const pattern1 = norm1.replace(/\d+(\.\d+)?%?/g, "X");
+    const pattern2 = norm2.replace(/\d+(\.\d+)?%?/g, "X");
+    return pattern1 === pattern2;
+  }, [normalize]);
 
   const parseIdolText = useCallback(
     (text) => {
       try {
         const lines = text.split("\n").filter((line) => line.trim() !== "");
-        console.log("DEBUG: Raw lines:", lines);
 
         if (!lines.some((line) => line.includes("Item Class: Idols"))) {
           return { success: false, error: "Not an idol item" };
@@ -23,9 +51,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
         const rarityLine = lines.find((line) => line.startsWith("Rarity:"));
         rarity = rarityLine ? rarityLine.replace("Rarity: ", "").trim() : "";
 
-        const rarityIndex = lines.findIndex((line) =>
-          line.startsWith("Rarity:")
-        );
+        const rarityIndex = lines.findIndex((line) => line.startsWith("Rarity:"));
         if (rarityIndex >= 0 && rarityIndex + 1 < lines.length) {
           name = lines[rarityIndex + 1].trim();
         }
@@ -42,9 +68,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           if (match && match[1]) type = match[1];
         }
 
-        const itemLevelLine = lines.find((line) =>
-          line.includes("Item Level:")
-        );
+        const itemLevelLine = lines.find((line) => line.includes("Item Level:"));
         if (itemLevelLine) {
           const match = itemLevelLine.match(/Item Level: (\d+)/);
           if (match && match[1]) itemLevel = parseInt(match[1]);
@@ -54,18 +78,13 @@ function IdolPasteHandler({ onAddIdol, modData }) {
         lines.forEach((line, index) => {
           if (line.trim() === "--------") separatorIndices.push(index);
         });
-        console.log("DEBUG: Separator indices:", separatorIndices);
 
         if (rarity.toLowerCase() === "unique") {
           let modStart = -1;
           let modEnd = -1;
 
           for (let i = 0; i < separatorIndices.length - 1; i++) {
-            if (
-              lines
-                .slice(separatorIndices[i] + 1, separatorIndices[i + 1])
-                .some((l) => l.includes("(implicit)"))
-            ) {
+            if (lines.slice(separatorIndices[i] + 1, separatorIndices[i + 1]).some((l) => l.includes("(implicit)"))) {
               modStart = separatorIndices[i + 1] + 1;
               break;
             }
@@ -73,11 +92,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
 
           if (modStart === -1) {
             for (let i = 0; i < separatorIndices.length - 1; i++) {
-              if (
-                lines
-                  .slice(separatorIndices[i] + 1, separatorIndices[i + 1])
-                  .some((l) => l.includes("Item Level:"))
-              ) {
+              if (lines.slice(separatorIndices[i] + 1, separatorIndices[i + 1]).some((l) => l.includes("Item Level:"))) {
                 modStart = separatorIndices[i + 1] + 1;
                 break;
               }
@@ -119,7 +134,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
               });
             }
           }
-          console.log("DEBUG: Unique modifiers:", uniqueModifiers);
 
           return {
             success: true,
@@ -143,67 +157,43 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           modStart = separatorIndices[2] + 1;
           modEnd = separatorIndices[3];
         }
-        console.log("DEBUG: Mod section start/end:", modStart, modEnd);
 
-        const processedModLines = [];
+        // Gather modifier lines
+        const modLines = [];
         if (modStart !== -1 && modEnd !== -1) {
-          let currentMod = "";
-          const allMods = [
-            ...Object.values(modData.prefixes).flat(),
-            ...Object.values(modData.suffixes).flat(),
-          ];
-
           for (let i = modStart; i < modEnd; i++) {
             const line = lines[i].trim();
-            if (!line || line.includes("(implicit)")) continue;
-
-            const prevMod = currentMod;
-            currentMod = currentMod ? `${currentMod} ${line}` : line;
-            console.log("DEBUG: Building mod:", currentMod);
-
-            const isCompleteMod = allMods.some((mod) => {
-              const matches = areModsEquivalent(mod.Mod, currentMod);
-              if (matches) console.log("DEBUG: Matches mod in data:", mod);
-              return matches;
-            });
-            console.log("DEBUG: Is complete mod?", isCompleteMod);
-
-            if (isCompleteMod) {
-              processedModLines.push(currentMod);
-              console.log("DEBUG: Complete mod found:", currentMod);
-              currentMod = "";
-            } else {
-              const nextIndex = i + 1;
-              const hasNextLine = nextIndex < modEnd && lines[nextIndex].trim();
-              if (!hasNextLine) {
-                if (currentMod) {
-                  processedModLines.push(currentMod);
-                  console.log("DEBUG: End of section, saving:", currentMod);
-                }
-                currentMod = "";
-              } else {
-                const nextLine = lines[nextIndex].trim();
-                if (/^[A-Z]/.test(nextLine)) {
-                  const couldBePartial = allMods.some((mod) =>
-                    normalize(mod.Mod).startsWith(normalize(prevMod))
-                  );
-                  console.log("DEBUG: Could be partial with prevMod?", couldBePartial);
-
-                  if (!couldBePartial && prevMod) {
-                    processedModLines.push(prevMod);
-                    console.log("DEBUG: New mod detected, saving:", prevMod);
-                    currentMod = line;
-                  }
-                }
-              }
+            if (line && !line.includes("(implicit)")) {
+              modLines.push(line);
             }
           }
-          if (currentMod) {
-            processedModLines.push(currentMod);
-            console.log("DEBUG: Final mod saved:", currentMod);
+        }
+
+        // Process mod lines into separate modifiers
+        const allMods = [
+          ...Object.values(modData.prefixes).flat(),
+          ...Object.values(modData.suffixes).flat(),
+        ];
+        
+        const processedModLines = [];
+        let currentMod = "";
+
+        for (let i = 0; i < modLines.length; i++) {
+          const line = modLines[i].trim();
+
+          // If this line could be a new modifier
+          if (currentMod === "" || isPotentialNewModifier(line, currentMod, allMods)) {
+            if (currentMod) {
+              processedModLines.push(currentMod);
+            }
+            currentMod = line;
+          } else {
+            currentMod += " " + line;
           }
         }
-        console.log("DEBUG: Processed mod lines:", processedModLines);
+        if (currentMod) {
+          processedModLines.push(currentMod);
+        }
 
         const prefixes = [];
         const suffixes = [];
@@ -211,14 +201,17 @@ function IdolPasteHandler({ onAddIdol, modData }) {
         const allSuffixes = Object.values(modData.suffixes).flat();
 
         for (const modLine of processedModLines) {
-          if (!modLine) continue; // Skip empty entries
+          if (!modLine) continue;
 
           let found = false;
 
           for (const prefix of allPrefixes) {
             if (areModsEquivalent(prefix.Mod, modLine)) {
-              prefixes.push({ ...prefix, Mod: modLine });
-              console.log("DEBUG: Matched prefix:", modLine, prefix);
+              prefixes.push({ 
+                ...prefix, 
+                Mod: modLine,
+                id: prefix.id 
+              });
               found = true;
               break;
             }
@@ -227,8 +220,11 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           if (!found) {
             for (const suffix of allSuffixes) {
               if (areModsEquivalent(suffix.Mod, modLine)) {
-                suffixes.push({ ...suffix, Mod: modLine });
-                console.log("DEBUG: Matched suffix:", modLine, suffix);
+                suffixes.push({ 
+                  ...suffix, 
+                  Mod: modLine,
+                  id: suffix.id 
+                });
                 found = true;
                 break;
               }
@@ -236,22 +232,13 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           }
 
           if (!found) {
-            console.log("DEBUG: No exact match for:", modLine);
-            if (
-              modLine.includes("your Maps") ||
-              modLine.includes("increased chance to contain") ||
-              modLine.includes("Maps contain") ||
-              modLine.includes("Map contains") ||
-              modLine.includes("chance to contain an") ||
-              modLine.includes("chance to contain a")
-            ) {
+            if (determineModifierType(modLine) === "prefix") {
               prefixes.push({
                 Name: "Unknown Prefix",
                 Mod: modLine,
                 Code: `Unknown-${Date.now()}-${Math.random()}`,
                 Family: "Unknown",
               });
-              console.log("DEBUG: Assigned as unknown prefix:", modLine);
             } else {
               suffixes.push({
                 Name: "Unknown Suffix",
@@ -259,13 +246,9 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                 Code: `Unknown-${Date.now()}-${Math.random()}`,
                 Family: "Unknown",
               });
-              console.log("DEBUG: Assigned as unknown suffix:", modLine);
             }
           }
         }
-
-        console.log("DEBUG: Final prefixes:", prefixes);
-        console.log("DEBUG: Final suffixes:", suffixes);
 
         return {
           success: true,
@@ -285,20 +268,73 @@ function IdolPasteHandler({ onAddIdol, modData }) {
         return { success: false, error: error.message };
       }
     },
-    [modData]
+    [modData, areModsEquivalent, normalize]
   );
 
-  const normalize = (str) => str.replace(/\s+/g, " ").trim();
-
-  const areModsEquivalent = (mod1, mod2) => {
-    const norm1 = normalize(mod1);
-    const norm2 = normalize(mod2);
-    if (norm1 === norm2) return true;
-
-    const pattern1 = norm1.replace(/\d+(\.\d+)?%?/g, "X");
-    const pattern2 = norm2.replace(/\d+(\.\d+)?%?/g, "X");
-    return pattern1 === pattern2;
+  // Helper to determine if a line starts a new modifier
+  const isPotentialNewModifier = (line, currentMod, allMods) => {
+    // Check if currentMod is already a complete modifier
+    const isCurrentComplete = allMods.some(mod => areModsEquivalent(mod.Mod, currentMod));
+    
+    // If currentMod is complete and this line looks like a new modifier
+    if (isCurrentComplete) {
+      // Look for typical modifier start patterns
+      return (
+        /^[A-Z]/.test(line) || // Starts with capital letter
+        line.includes("your Maps") || // Common modifier phrase
+        line.match(/\d+%/) || // Contains a percentage
+        line.includes("chance to") // Common modifier phrase
+      );
+    }
+    
+    // If currentMod isn't complete, assume this is a continuation
+    return false;
   };
+
+  // Helper function to determine if a modifier is a prefix or suffix
+  function determineModifierType(modText) {
+    if (
+      /^Your Maps have \+\d/.test(modText) ||
+      /^Your Maps have \d+%/.test(modText) ||
+      /^Your Maps contain/.test(modText) ||
+      /^Your Maps are/.test(modText) ||
+      /^Your Maps which contain/.test(modText) ||
+      /Final Map Boss/.test(modText) ||
+      /Map Bosses? (has|have)/.test(modText) ||
+      /increased Maps found/.test(modText) ||
+      /increased Pack size/.test(modText) ||
+      /increased effect of Explicit Modifiers/.test(modText) ||
+      /\d+% chance for your Maps/.test(modText) ||
+      /\+\d+% chance to grant/.test(modText)
+    ) {
+      return "prefix";
+    }
+    
+    if (
+      /Abyssal Troves/.test(modText) || 
+      /Expeditions in your Maps have \+\d+/.test(modText) ||
+      /(Blight|Delirium|Legion|Ultimatum) (Monsters|Encounters|Rewards|Bosses) in your Maps/.test(modText) ||
+      /Strongboxes (in|contained in) your Maps/.test(modText) ||
+      /Breaches in your Maps/.test(modText) ||
+      /Shrines in your Maps/.test(modText) ||
+      /Ritual Altars in your Maps/.test(modText) ||
+      /Immortal Syndicate Members in your Maps/.test(modText) ||
+      /Plants Harvested in your Maps/.test(modText) ||
+      /Oils found in your Maps/.test(modText)
+    ) {
+      return "suffix";
+    }
+    
+    if (modText.includes("Your Maps have") && !modText.includes("in your Maps have")) {
+      return "prefix";
+    }
+    
+    if (modText.includes(" in your Maps")) {
+      return "suffix"; 
+    }
+    
+    return "suffix";
+  }
 
   useEffect(() => {
     const handlePaste = (e) => {
@@ -330,6 +366,10 @@ function IdolPasteHandler({ onAddIdol, modData }) {
     document.addEventListener("paste", handlePaste);
     return () => document.removeEventListener("paste", handlePaste);
   }, [parseIdolText]);
+
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [parseError, setParseError] = useState(null);
+  const [parsedIdol, setParsedIdol] = useState(null);
 
   const handleAddParsedIdol = () => {
     if (parsedIdol) {
@@ -368,9 +408,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
               <div className="mt-2">
                 {parsedIdol.isUnique ? (
                   <>
-                    <div className="text-purple-400 font-semibold">
-                      Unique Modifiers:
-                    </div>
+                    <div className="text-purple-400 font-semibold">Unique Modifiers:</div>
                     {parsedIdol.uniqueModifiers?.length > 0 ? (
                       <ul className="list-disc list-inside text-sm">
                         {parsedIdol.uniqueModifiers.map((mod, idx) => (
@@ -378,9 +416,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                         ))}
                       </ul>
                     ) : (
-                      <div className="text-gray-400 text-sm">
-                        No modifiers found
-                      </div>
+                      <div className="text-gray-400 text-sm">No modifiers found</div>
                     )}
                   </>
                 ) : (
@@ -396,9 +432,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                       <div className="text-gray-400 text-sm">No prefixes</div>
                     )}
 
-                    <div className="text-green-400 font-semibold mt-1">
-                      Suffixes:
-                    </div>
+                    <div className="text-green-400 font-semibold mt-1">Suffixes:</div>
                     {parsedIdol.suffixes?.length > 0 ? (
                       <ul className="list-disc list-inside text-sm">
                         {parsedIdol.suffixes.map((suffix, idx) => (
@@ -428,11 +462,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           </button>
           <button
             onClick={handleAddParsedIdol}
-            className={`${
-              parsedIdol
-                ? "bg-green-600 hover:bg-green-500"
-                : "bg-gray-600 cursor-not-allowed"
-            } py-2 px-4 rounded`}
+            className={`${parsedIdol ? "bg-green-600 hover:bg-green-500" : "bg-gray-600 cursor-not-allowed"} py-2 px-4 rounded`}
             disabled={!parsedIdol}
           >
             Add to Inventory
