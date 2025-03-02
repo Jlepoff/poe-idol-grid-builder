@@ -143,14 +143,14 @@
     {
       "Name": "Shaper's",
       "Code": "MapRelicBossShaperMapDropChance1",
-      "Mod": "Final Map Boss in each Map has +(1.8\u20132.4)% chance to drop a Shaper Guardian Map (Tier 14+)",
+      "Mod": "Final Map Boss in each Map has +2.4% chance to drop a Shaper Guardian Map (Tier 14+)",
       "Family": "MapRelicBossShaperMapDropChance",
       "id": "explicit.stat_931052937"
     },
     {
       "Name": "Elder's",
       "Code": "MapRelicBossElderMapDropChance1",
-      "Mod": "Final Map Boss in each Map has +(1.8\u20132.4)% chance to drop an Elder Guardian Map (Tier 14+)",
+      "Mod": "Final Map Boss in each Map has +2.4% chance to drop an Elder Guardian Map (Tier 14+)",
       "Family": "MapRelicBossElderMapDropChance",
       "id": "explicit.stat_1377454569"
     },
@@ -290,7 +290,7 @@
     {
       "Name": "Synthesised",
       "Code": "MapRelicMapBossSynthesisMapDropChance1",
-      "Mod": "+(1.2\u20131.8)% chance for a Synthesis Map to drop from Final Map Boss in each Map (Tier 14+)",
+      "Mod": "+1.8% chance for a Synthesis Map to drop from Final Map Boss in each Map (Tier 14+)",
       "Family": "MapRelicMapBossSynthesisMapDropChance",
       "id": "explicit.stat_4098976931"
     },
@@ -523,7 +523,7 @@
     {
       "Name": "of the Exarch",
       "Code": "MapRelicCleansingFireMonsterInfluenceItemDropChance1",
-      "Mod": "Monsters Influenced by The Searing Exarch in your Maps have (0.5\u20130.7)% chance to drop an Item with a Searing Exarch Implicit Modifier",
+      "Mod": "Monsters Influenced by The Searing Exarch in your Maps have 0.7% chance to drop an Item with a Searing Exarch Implicit Modifier",
       "Family": "MapRelicCleansingFireMonsterInfluenceItemDropChance",
       "id": "explicit.stat_532540562"
     },
@@ -670,7 +670,7 @@
     {
       "Name": "of Betrayal",
       "Code": "MapRelicBetrayalBarginOptionChance1",
-      "Mod": "Immortal Syndicate Members in your Maps are 160% morelikely to offer to Bargain for Items",
+      "Mod": "Immortal Syndicate Members in your Maps are 160% more likely to offer to Bargain for Items",
       "Family": "MapRelicBetrayalBarginOptionChance",
       "id": "explicit.stat_1259656520"
     },
@@ -740,7 +740,7 @@
     {
       "Name": "of Ultimatum",
       "Code": "MapRelicUltimatumExterminateReducedMonsterKillsRequired1",
-      "Mod": "Ultimatum Encounters in your Maps requiring you to Defeat waves of Enemiesrequire killing 5% reduced number of Enemies",
+      "Mod": "Ultimatum Encounters in your Maps requiring you to Defeat waves of Enemies require killing 5% reduced number of Enemies",
       "Family": "UltimatumUltimatumExterminateReducedMonsterKillsRequired",
       "id": "explicit.stat_340836576"
     },
@@ -754,7 +754,7 @@
     {
       "Name": "of the Ritual",
       "Code": "MapRelicRitualRewardsFromRerollsNoCostChance1",
-      "Mod": "Favours Rerolled at Ritual Altars in your Maps have (0.8\u20131.2)% chance to cost no Tribute",
+      "Mod": "Favours Rerolled at Ritual Altars in your Maps have 1.2% chance to cost no Tribute",
       "Family": "MapRelicRitualRewardsFromRerollsNoCostChance",
       "id": "explicit.stat_937291386"
     },

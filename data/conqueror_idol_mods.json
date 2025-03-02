@@ -156,6 +156,13 @@
     },
     {
       "Name": "Domination",
+      "Code": "MapRelicShrineNumExtraLarge",
+      "Mod": "Your Maps contain 2 additional Shrines",
+      "Family": "MapRelicShrineNum",
+      "id": ".explicit.stat_1468737867"
+    },
+    {
+      "Name": "Domination",
       "Code": "MapRelicShrineIncreasedChanceExtraLarge",
       "Mod": "Your Maps have +30% chance to contain a Shrine",
       "Family": "MapRelicShrineIncreasedChance",
@@ -167,6 +174,13 @@
       "Mod": "Your Maps contain an additional Imprisoned Monster",
       "Family": "MapRelicEssenceAdditionalMonoliths",
       "id": "explicit.stat_395808938"
+    },
+    {
+      "Name": "Essence",
+      "Code": "MapRelicEssenceAdditionalMonolithsExtraLarge",
+      "Mod": "Your Maps contain 2 additional Imprisoned Monsters",
+      "Family": "MapRelicEssenceAdditionalMonoliths",
+      "id": ".explicit.stat_395808938"
     },
     {
       "Name": "Essence",
@@ -195,6 +209,13 @@
       "Mod": "Your Maps contain an additional Harbinger",
       "Family": "MapRelicHarbingerExtraHarbingers",
       "id": "explicit.stat_504850499"
+    },
+    {
+      "Name": "Harbinger's",
+      "Code": "MapRelicHarbingerExtraHarbingersExtraLarge",
+      "Mod": "Your Maps contain 2 additional Harbingers",
+      "Family": "MapRelicHarbingerExtraHarbingers",
+      "id": ".explicit.stat_504850499"
     },
     {
       "Name": "Harbinger's",
@@ -310,6 +331,13 @@
     },
     {
       "Name": "Trapped",
+      "Code": "MapRelicStrongboxAdditionalExtraLarge",
+      "Mod": "Your Maps contain 2 additional Strongboxes",
+      "Family": "MapRelicStrongboxAdditional",
+      "id": ".explicit.stat_3240183538"
+    },
+    {
+      "Name": "Trapped",
       "Code": "MapRelicStrongboxIncreasedChanceExtraLarge",
       "Mod": "Your Maps have +30% chance to contain a Strongbox",
       "Family": "MapRelicStrongboxIncreasedChance",
@@ -348,7 +376,7 @@
       "Code": "MapRelicMapModEffectPerFiveQuality1",
       "Mod": "5% increased effect of Explicit Modifiers on your Maps per 5% Map Quality",
       "Family": "MapRelicMapModEffectPerFiveQuality",
-      "id": "explicit.stat_2792863714"
+      "id": "explicit.stat_2490189905"
     },
     {
       "Name": "Cartographer's",
@@ -383,7 +411,7 @@
     {
       "Name": "of the Abyss",
       "Code": "MapRelicAbyssTroveDropScarabChance1",
-      "Mod": "Abyssal Troves and Stygian Spires in your Maps have (0.03\u20130.05)% chance to drop an Abyss Scarab",
+      "Mod": "Abyssal Troves and Stygian Spires in your Maps have 5% chance to drop an Abyss Scarab",
       "Family": "MapRelicAbyssTroveDropScarabChance",
       "id": "explicit.stat_1028265433"
     },
@@ -733,7 +761,7 @@
     {
       "Name": "of Betrayal",
       "Code": "MapRelicBetrayalBarginDropsMoreItems1",
-      "Mod": "Immortal Syndicate Members in your Maps drop 200% moreItems when Bargained with for Items",
+      "Mod": "Immortal Syndicate Members in your Maps drop 200% more Items when Bargained with for Items",
       "Family": "MapRelicBetrayalBarginDropsMoreItems",
       "id": "explicit.stat_574706723"
     },
@@ -768,7 +796,7 @@
     {
       "Name": "of the Legion",
       "Code": "MapRelicLegionSplinterDropAsFragmentChance1",
-      "Mod": "(0.5\u20130.75)% chance for Timeless Splinters to drop as Timeless Emblems instead in your Maps",
+      "Mod": "0.75% chance for Timeless Splinters to drop as Timeless Emblems instead in your Maps",
       "Family": "MapRelicLegionSplinterDropAsFragmentChance",
       "id": "explicit.stat_407036985"
     },
