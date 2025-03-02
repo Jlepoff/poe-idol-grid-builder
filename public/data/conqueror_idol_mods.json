@@ -159,7 +159,7 @@
       "Code": "MapRelicShrineNumExtraLarge",
       "Mod": "Your Maps contain 2 additional Shrines",
       "Family": "MapRelicShrineNum",
-      "id": "explicit.stat_1468737867"
+      "id": ".explicit.stat_1468737867"
     },
     {
       "Name": "Domination",
@@ -180,7 +180,7 @@
       "Code": "MapRelicEssenceAdditionalMonolithsExtraLarge",
       "Mod": "Your Maps contain 2 additional Imprisoned Monsters",
       "Family": "MapRelicEssenceAdditionalMonoliths",
-      "id": "explicit.stat_395808938"
+      "id": ".explicit.stat_395808938"
     },
     {
       "Name": "Essence",
@@ -215,7 +215,7 @@
       "Code": "MapRelicHarbingerExtraHarbingersExtraLarge",
       "Mod": "Your Maps contain 2 additional Harbingers",
       "Family": "MapRelicHarbingerExtraHarbingers",
-      "id": "explicit.stat_504850499"
+      "id": ".explicit.stat_504850499"
     },
     {
       "Name": "Harbinger's",
@@ -334,7 +334,7 @@
       "Code": "MapRelicStrongboxAdditionalExtraLarge",
       "Mod": "Your Maps contain 2 additional Strongboxes",
       "Family": "MapRelicStrongboxAdditional",
-      "id": "explicit.stat_3240183538"
+      "id": ".explicit.stat_3240183538"
     },
     {
       "Name": "Trapped",

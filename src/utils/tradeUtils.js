@@ -1,6 +1,34 @@
 // utils/tradeUtils.js
 
 /**
+ * Extracts numeric values only for "contain X additional" pattern
+ * @param {string} modText - The modifier text to analyze
+ * @returns {number|null} - The extracted numeric value or null if not found
+ */
+function extractNumericValue(modText) {
+  // "contain X additional" pattern - explicitly looks for a number followed by "additional"
+  const additionalMatch = modText.match(/contain\s+(\d+)\s+additional/i);
+  if (additionalMatch) {
+    return parseInt(additionalMatch[1], 10);
+  }
+
+  return null;
+}
+
+/**
+ * Clean modifier ID by removing leading period if present
+ * This handles our workaround for duplicate IDs
+ * @param {string} id - The modifier ID which may have a leading period
+ * @returns {string} - The cleaned ID for use in trade site queries
+ */
+function cleanModifierId(id) {
+  if (id && id.startsWith('.')) {
+    return id.substring(1); // Remove the leading period
+  }
+  return id;
+}
+
+/**
  * Generates a Path of Exile trade URL for an idol based on its modifiers
  * @param {Object} idol - The idol object with modifiers
  * @returns {string} - The formatted trade URL
@@ -30,29 +58,63 @@ export const generateTradeUrl = (idol) => {
     return `https://www.pathofexile.com/trade/search/Phrecia?q=${encodedQuery}`;
   }
 
-  // For normal idols, extract modifier IDs
-  const modifierIds = [];
+  // For normal idols, create filters with values where applicable
+  const filters = [];
 
-  // Add prefix IDs
+  // Process prefixes
   if (idol.prefixes && idol.prefixes.length > 0) {
-    idol.prefixes.forEach((prefix) => {
+    idol.prefixes.forEach(prefix => {
       if (prefix.id) {
-        modifierIds.push(prefix.id);
+        // Clean the ID by removing any leading period
+        const cleanId = cleanModifierId(prefix.id);
+        const numericValue = extractNumericValue(prefix.Mod);
+
+        if (numericValue !== null) {
+          // Add filter with value - only for "contain X additional" pattern
+          filters.push({
+            id: cleanId,
+            value: {
+              min: numericValue,
+              max: numericValue
+            },
+            disabled: false
+          });
+        } else {
+          // Add filter without value
+          filters.push({ id: cleanId });
+        }
       }
     });
   }
 
-  // Add suffix IDs
+  // Process suffixes
   if (idol.suffixes && idol.suffixes.length > 0) {
-    idol.suffixes.forEach((suffix) => {
+    idol.suffixes.forEach(suffix => {
       if (suffix.id) {
-        modifierIds.push(suffix.id);
+        // Clean the ID by removing any leading period
+        const cleanId = cleanModifierId(suffix.id);
+        const numericValue = extractNumericValue(suffix.Mod);
+
+        if (numericValue !== null) {
+          // Add filter with value - only for "contain X additional" pattern
+          filters.push({
+            id: cleanId,
+            value: {
+              min: numericValue,
+              max: numericValue
+            },
+            disabled: false
+          });
+        } else {
+          // Add filter without value
+          filters.push({ id: cleanId });
+        }
       }
     });
   }
 
-  // If no valid IDs found for normal idol, return empty string
-  if (modifierIds.length === 0 && !idol.isUnique) return "";
+  // If no valid filters, return empty string
+  if (filters.length === 0) return "";
 
   // Build the trade query
   const query = {
@@ -60,13 +122,13 @@ export const generateTradeUrl = (idol) => {
       stats: [
         {
           type: "and",
-          filters: modifierIds.map((id) => ({ id })),
-        },
+          filters: filters
+        }
       ],
       status: {
-        option: "online",
-      },
-    },
+        option: "online"
+      }
+    }
   };
 
   // Convert to JSON and encode for URL
