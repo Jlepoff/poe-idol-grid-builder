@@ -220,10 +220,31 @@ function optimizeDataForSharing(gridState, inventory) {
 /**
  * Find a modifier by ID in the mod data
  */
-function findModifierById(id, modData) {
+function findModifierById(id, modData, idolType) {
   if (!modData || !id) return null;
 
-  // Search prefixes across all idol types
+  // First, try to find the modifier in the specific idol type's data
+  if (idolType) {
+    const normalizedType = idolType.charAt(0).toUpperCase() + idolType.slice(1).toLowerCase();
+
+    // Search prefixes for this idol type
+    if (modData.prefixes[normalizedType]) {
+      const foundPrefix = modData.prefixes[normalizedType].find(
+        (prefix) => prefix.id === id
+      );
+      if (foundPrefix) return { ...foundPrefix };
+    }
+
+    // Search suffixes for this idol type
+    if (modData.suffixes[normalizedType]) {
+      const foundSuffix = modData.suffixes[normalizedType].find(
+        (suffix) => suffix.id === id
+      );
+      if (foundSuffix) return { ...foundSuffix };
+    }
+  }
+
+  // Fallback: Search all prefixes across all idol types
   for (const type in modData.prefixes) {
     const foundPrefix = modData.prefixes[type].find(
       (prefix) => prefix.id === id
@@ -231,7 +252,7 @@ function findModifierById(id, modData) {
     if (foundPrefix) return { ...foundPrefix };
   }
 
-  // Search suffixes across all idol types
+  // Fallback: Search all suffixes across all idol types
   for (const type in modData.suffixes) {
     const foundSuffix = modData.suffixes[type].find(
       (suffix) => suffix.id === id
@@ -239,7 +260,6 @@ function findModifierById(id, modData) {
     if (foundSuffix) return { ...foundSuffix };
   }
 
-  // Not found
   return null;
 }
 
@@ -272,20 +292,15 @@ function restoreFromOptimizedData(optimizedData, modData) {
 
   // 1. Restore idols from minimal data
   const inventory = optimizedData.v.map((idolData) => {
-    // Extract base data
     const [index, typeCode, isPlaced, isUnique] = idolData;
-
-    // Get full idol type from code
     const type = getIdolTypeFromCode(typeCode);
 
-    // Different handling for unique vs normal idols
     if (isUnique === 1) {
-      // Unique idol
       const uniqueName = idolData[4];
       const uniqueMods = idolData[5] || [];
 
       return {
-        id: `idol-${Date.now()}-${index}`, // Generate new unique ID
+        id: `idol-${Date.now()}-${index}`,
         type,
         name: uniqueName,
         uniqueName,
@@ -300,24 +315,22 @@ function restoreFromOptimizedData(optimizedData, modData) {
         suffixes: [],
       };
     } else {
-      // Normal idol
       const prefixIds = idolData[4] || [];
       const suffixIds = idolData[5] || [];
 
-      // Restore prefixes and suffixes from IDs
+      // Restore prefixes and suffixes using idol type
       const prefixes = prefixIds
-        .map((id) => findModifierById(id, modData))
+        .map((id) => findModifierById(id, modData, type))
         .filter((m) => m !== null);
 
       const suffixes = suffixIds
-        .map((id) => findModifierById(id, modData))
+        .map((id) => findModifierById(id, modData, type))
         .filter((m) => m !== null);
 
-      // Generate name from modifiers
       const name = generateIdolName(type, prefixes, suffixes, false);
 
       return {
-        id: `idol-${Date.now()}-${index}`, // Generate new unique ID
+        id: `idol-${Date.now()}-${index}`,
         type,
         name,
         isPlaced: isPlaced === 1,
@@ -333,69 +346,35 @@ function restoreFromOptimizedData(optimizedData, modData) {
     .fill()
     .map(() => Array(6).fill(null));
 
-  // 3. Place idols on the grid using the optimized placement data
+  // 3. Place idols on the grid
   for (const placement of optimizedData.g) {
-    // Extract placement data
     const [idolIndex, row, col] = placement;
-
-    // Find the corresponding idol
     const idol = inventory[idolIndex];
     if (!idol) continue;
 
-    // Get idol dimensions based on type
-    let width = 1,
-      height = 1;
+    let width = 1, height = 1;
     switch (idol.type) {
-      case "Minor":
-        width = 1;
-        height = 1;
-        break;
-      case "Kamasan":
-        width = 1;
-        height = 2;
-        break;
-      case "Totemic":
-        width = 1;
-        height = 3;
-        break;
-      case "Noble":
-        width = 2;
-        height = 1;
-        break;
-      case "Conqueror":
-        width = 2;
-        height = 2;
-        break;
-      case "Burial":
-        width = 3;
-        height = 1;
-        break;
-      default:
-        width = 1;
-        height = 1;
-        break;
+      case "Minor": width = 1; height = 1; break;
+      case "Kamasan": width = 1; height = 2; break;
+      case "Totemic": width = 1; height = 3; break;
+      case "Noble": width = 2; height = 1; break;
+      case "Conqueror": width = 2; height = 2; break;
+      case "Burial": width = 3; height = 1; break;
+      default: width = 1; height = 1; break;
     }
 
-    // Mark as placed
     idol.isPlaced = true;
 
-    // Place the idol on all its grid cells
     for (let r = row; r < row + height; r++) {
       for (let c = col; c < col + width; c++) {
         if (r < gridState.length && c < gridState[0].length) {
-          gridState[r][c] = {
-            ...idol,
-            position: { row, col },
-          };
+          gridState[r][c] = { ...idol, position: { row, col } };
         }
       }
     }
   }
 
-  return {
-    gridState,
-    inventory,
-  };
+  return { gridState, inventory };
 }
 
 /**
