@@ -100,7 +100,7 @@ function ImprovedModifierSearch({
     return Array.from(uniqueNames).sort();
   }, [modifierNames.prefixes, modifierNames.suffixes, filterType]);
 
-  // Filter modifiers based on search criteria
+      // Filter modifiers based on search criteria
   const filteredModifiers = useMemo(() => {
     if (!modData.prefixes || !modData.suffixes)
       return { prefixes: [], suffixes: [] };
@@ -113,59 +113,64 @@ function ImprovedModifierSearch({
         const modsSeen = new Set();
 
         // Collect unique prefixes by Mod text across all idol types
-        Object.entries(modData.prefixes).forEach(([typeName, prefixList]) => {
-          prefixList.forEach((prefix) => {
-            if (prefix.Name === nameFilter) {
-              const modText = prefix.Mod;
+        // Only if we're showing all or specifically prefixes
+        if (filterType === "all" || filterType === "prefix") {
+          Object.entries(modData.prefixes).forEach(([typeName, prefixList]) => {
+            prefixList.forEach((prefix) => {
+              if (prefix.Name === nameFilter) {
+                const modText = prefix.Mod;
 
-              if (!modsSeen.has(modText)) {
-                modsSeen.add(modText);
+                if (!modsSeen.has(modText)) {
+                  modsSeen.add(modText);
 
-                // Track which idol types support this modifier
-                const supportedTypes = Object.entries(modData.prefixes)
-                  .filter(([_, typeList]) =>
-                    typeList.some((p) => p.Mod === modText)
-                  )
-                  .map(([type, _]) => type);
+                  // Track which idol types support this modifier
+                  const supportedTypes = Object.entries(modData.prefixes)
+                    .filter(([_, typeList]) =>
+                      typeList.some((p) => p.Mod === modText)
+                    )
+                    .map(([type, _]) => type);
 
-                combinedPrefixes.push({
-                  ...prefix,
-                  supportedTypes,
-                });
+                  combinedPrefixes.push({
+                    ...prefix,
+                    supportedTypes,
+                  });
+                }
               }
-            }
+            });
           });
-        });
+        }
 
-        // Same for suffixes
+        // Same for suffixes - only if we're showing all or specifically suffixes
         const combinedSuffixes = [];
         modsSeen.clear();
 
-        Object.entries(modData.suffixes).forEach(([typeName, suffixList]) => {
-          suffixList.forEach((suffix) => {
-            if (
-              suffix.Name === nameFilter ||
-              suffix.Name === `of ${nameFilter}`
-            ) {
-              const modText = suffix.Mod;
+        if (filterType === "all" || filterType === "suffix") {
+          Object.entries(modData.suffixes).forEach(([typeName, suffixList]) => {
+            suffixList.forEach((suffix) => {
+              if (
+                suffix.Name === nameFilter ||
+                suffix.Name === `of ${nameFilter}`
+              ) {
+                const modText = suffix.Mod;
 
-              if (!modsSeen.has(modText)) {
-                modsSeen.add(modText);
+                if (!modsSeen.has(modText)) {
+                  modsSeen.add(modText);
 
-                const supportedTypes = Object.entries(modData.suffixes)
-                  .filter(([_, typeList]) =>
-                    typeList.some((s) => s.Mod === modText)
-                  )
-                  .map(([type, _]) => type);
+                  const supportedTypes = Object.entries(modData.suffixes)
+                    .filter(([_, typeList]) =>
+                      typeList.some((s) => s.Mod === modText)
+                    )
+                    .map(([type, _]) => type);
 
-                combinedSuffixes.push({
-                  ...suffix,
-                  supportedTypes,
-                });
+                  combinedSuffixes.push({
+                    ...suffix,
+                    supportedTypes,
+                  });
+                }
               }
-            }
+            });
           });
-        });
+        }
 
         return {
           prefixes: combinedPrefixes,
@@ -177,65 +182,71 @@ function ImprovedModifierSearch({
         const lowerTerm = searchTerm.toLowerCase();
 
         // Get unique prefixes across all idol types
+        // Only if we're showing all or specifically prefixes
         const combinedPrefixes = [];
         const prefixModsSeen = new Set();
 
-        Object.entries(modData.prefixes).forEach(([typeName, prefixList]) => {
-          prefixList.forEach((prefix) => {
-            if (
-              prefix.Name.toLowerCase().includes(lowerTerm) ||
-              prefix.Mod.toLowerCase().includes(lowerTerm)
-            ) {
-              const modText = prefix.Mod;
+        if (filterType === "all" || filterType === "prefix") {
+          Object.entries(modData.prefixes).forEach(([typeName, prefixList]) => {
+            prefixList.forEach((prefix) => {
+              if (
+                prefix.Name.toLowerCase().includes(lowerTerm) ||
+                prefix.Mod.toLowerCase().includes(lowerTerm)
+              ) {
+                const modText = prefix.Mod;
 
-              if (!prefixModsSeen.has(modText)) {
-                prefixModsSeen.add(modText);
+                if (!prefixModsSeen.has(modText)) {
+                  prefixModsSeen.add(modText);
 
-                // Find all idol types that support this modifier
-                const supportedTypes = Object.entries(modData.prefixes)
-                  .filter(([_, typeList]) =>
-                    typeList.some((p) => p.Mod === modText)
-                  )
-                  .map(([type, _]) => type);
+                  // Find all idol types that support this modifier
+                  const supportedTypes = Object.entries(modData.prefixes)
+                    .filter(([_, typeList]) =>
+                      typeList.some((p) => p.Mod === modText)
+                    )
+                    .map(([type, _]) => type);
 
-                combinedPrefixes.push({
-                  ...prefix,
-                  supportedTypes,
-                });
+                  combinedPrefixes.push({
+                    ...prefix,
+                    supportedTypes,
+                  });
+                }
               }
-            }
+            });
           });
-        });
+        }
 
         // Do the same for suffixes
+        // Only if we're showing all or specifically suffixes
         const combinedSuffixes = [];
         const suffixModsSeen = new Set();
 
-        Object.entries(modData.suffixes).forEach(([typeName, suffixList]) => {
-          suffixList.forEach((suffix) => {
-            if (
-              suffix.Name.toLowerCase().includes(lowerTerm) ||
-              suffix.Mod.toLowerCase().includes(lowerTerm)
-            ) {
-              const modText = suffix.Mod;
+        if (filterType === "all" || filterType === "suffix") {
+          Object.entries(modData.suffixes).forEach(([typeName, suffixList]) => {
+            suffixList.forEach((suffix) => {
+              if (
+                suffix.Name.toLowerCase().includes(lowerTerm) ||
+                suffix.Mod.toLowerCase().includes(lowerTerm)
+              ) {
+                const modText = suffix.Mod;
 
-              if (!suffixModsSeen.has(modText)) {
-                suffixModsSeen.add(modText);
+                if (!suffixModsSeen.has(modText)) {
+                  suffixModsSeen.add(modText);
 
-                const supportedTypes = Object.entries(modData.suffixes)
-                  .filter(([_, typeList]) =>
-                    typeList.some((s) => s.Mod === modText)
-                  )
-                  .map(([type, _]) => type);
+                  const supportedTypes = Object.entries(modData.suffixes)
+                    .filter(([_, typeList]) =>
+                      typeList.some((s) => s.Mod === modText)
+                    )
+                    .map(([type, _]) => type);
 
-                combinedSuffixes.push({
-                  ...suffix,
-                  supportedTypes,
-                });
+                  combinedSuffixes.push({
+                    ...suffix,
+                    supportedTypes,
+                  });
+                }
               }
-            }
+            });
           });
-        });
+        }
 
         // Sort results by relevance
         combinedPrefixes.sort((a, b) => {
