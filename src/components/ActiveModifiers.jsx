@@ -21,13 +21,12 @@ function ActiveModifiers({ gridState }) {
       }
     }
 
-    // Map to track modifier groups by their base effect
     const modGroups = new Map();
 
     placedIdols.forEach((idol) => {
       if (idol.isUnique && idol.uniqueModifiers) {
         idol.uniqueModifiers.forEach((mod) => {
-          const modKey = mod.Mod; // Unique mods remain separate
+          const modKey = mod.Mod;
           if (!modGroups.has(modKey)) {
             modGroups.set(modKey, {
               name: "Unique",
@@ -46,7 +45,6 @@ function ActiveModifiers({ gridState }) {
         return;
       }
 
-      // Process prefixes
       if (idol.prefixes) {
         idol.prefixes.forEach((prefix) => {
           const baseKey = getBaseEffectKey(prefix.Mod);
@@ -68,7 +66,6 @@ function ActiveModifiers({ gridState }) {
         });
       }
 
-      // Process suffixes
       if (idol.suffixes) {
         idol.suffixes.forEach((suffix) => {
           const baseKey = getBaseEffectKey(suffix.Mod);
@@ -91,14 +88,17 @@ function ActiveModifiers({ gridState }) {
       }
     });
 
-    // Process and stack modifier groups
     const stackedModifiers = Array.from(modGroups.values()).map((group) => {
       if (group.matchPattern.type === "unstackable" || group.isUnique) {
-        return group; 
+        return group;
       }
 
-      // Stack numeric values
-      const totalValue = group.instances.reduce((sum, inst) => sum + (inst.value || 0), 0);
+      // Stack numeric values and round to 1 decimal place
+      const totalValue = Number(
+        group.instances
+          .reduce((sum, inst) => sum + (inst.value || 0), 0)
+          .toFixed(1)
+      );
       const stackedMod = { ...group };
 
       if (group.matchPattern.type === "additional" && !totalValue) {
@@ -119,7 +119,6 @@ function ActiveModifiers({ gridState }) {
     });
   }, [gridState]);
 
-  // Group modifiers by name for display
   const groupedModifiers = useMemo(() => {
     const groups = {};
     groups["Unique"] = activeModifiers.filter((mod) => mod.isUnique);
@@ -139,7 +138,6 @@ function ActiveModifiers({ gridState }) {
     return groups;
   }, [activeModifiers]);
 
-  // Extract numeric values and patterns from modifier text (unchanged)
   function getMatchPattern(modText) {
     const patterns = [
       { type: "plusChance", regex: /\+(\d+(?:\.\d+)?)%\s+chance/i },
@@ -167,11 +165,10 @@ function ActiveModifiers({ gridState }) {
     return { type: "unstackable", value: null, fullText: modText };
   }
 
-  // Create a key for grouping similar effects
   function getBaseEffectKey(modText) {
     return modText
-      .replace(/(\d+(?:\.\d+)?)(%|\s|$)/g, "X$2") // Replace numbers with "X"
-      .replace(/\s+/g, " ") // Normalize spaces
+      .replace(/(\d+(?:\.\d+)?)(%|\s|$)/g, "X$2")
+      .replace(/\s+/g, " ")
       .trim();
   }
 
