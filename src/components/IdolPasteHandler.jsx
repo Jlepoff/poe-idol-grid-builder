@@ -9,20 +9,16 @@ function IdolPasteHandler({ onAddIdol, modData }) {
   const areModsEquivalent = useCallback((mod1, mod2) => {
     const norm1 = normalize(mod1).replace(/[\u2013\u2014\u2212]/g, '-');
     const norm2 = normalize(mod2).replace(/[\u2013\u2014\u2212]/g, '-');
-    
-    // Exact match check
+
     if (norm1 === norm2) return true;
-  
-    // Replace only percentage values (e.g., "125%") with a placeholder, preserving other numbers
+
     let convertedNorm1 = norm1.replace(/(\d+(?:\.\d+)?)%/g, "PERCENTAGE");
     let convertedNorm2 = norm2.replace(/(\d+(?:\.\d+)?)%/g, "PERCENTAGE");
-  
-    // Check if the converted strings match
+
     if (convertedNorm1 === convertedNorm2) return true;
-  
-    // If no match yet, compare with full text (including job levels)
+
     return false;
-  }, [normalize]);
+  }, [normalize]); // include normalize
 
   const parseIdolText = useCallback(
     (text) => {
@@ -75,7 +71,11 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           let modEnd = -1;
 
           for (let i = 0; i < separatorIndices.length - 1; i++) {
-            if (lines.slice(separatorIndices[i] + 1, separatorIndices[i + 1]).some((l) => l.includes("(implicit)"))) {
+            if (
+              lines
+                .slice(separatorIndices[i] + 1, separatorIndices[i + 1])
+                .some((l) => l.includes("(implicit)"))
+            ) {
               modStart = separatorIndices[i + 1] + 1;
               break;
             }
@@ -83,7 +83,11 @@ function IdolPasteHandler({ onAddIdol, modData }) {
 
           if (modStart === -1) {
             for (let i = 0; i < separatorIndices.length - 1; i++) {
-              if (lines.slice(separatorIndices[i] + 1, separatorIndices[i + 1]).some((l) => l.includes("Item Level:"))) {
+              if (
+                lines
+                  .slice(separatorIndices[i] + 1, separatorIndices[i + 1])
+                  .some((l) => l.includes("Item Level:"))
+              ) {
                 modStart = separatorIndices[i + 1] + 1;
                 break;
               }
@@ -175,46 +179,49 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           while (i < modLines.length) {
             const line = modLines[i].trim();
             
-            // Start a new potential mod
             if (currentMod === "") {
               currentMod = line;
               i++;
               continue;
             }
             
-            // Check if combining with the next line forms a known mod
             const combinedMod = currentMod + " " + line;
-            const combinedIsKnown = allMods.some(m => areModsEquivalent(m.Mod, combinedMod));
+            const combinedIsKnown = allMods.some((m) =>
+              areModsEquivalent(m.Mod, combinedMod)
+            );
+            const current = currentMod;
+            const currentIsKnown = allMods.some((m) =>
+              areModsEquivalent(m.Mod, current)
+            );
             
-            // Check if current mod by itself is already a known mod
-            const currentIsKnown = allMods.some(m => areModsEquivalent(m.Mod, currentMod));
+            const nextLineStartsNewMod =
+              /^[A-Z]/.test(line) ||
+              line.includes("your Maps") ||
+              line.includes("Maps") ||
+              line.match(/^\d+%/) ||
+              line.includes("chance to");
             
-            // Check if the next line starts a new mod (capital letter or certain patterns)
-            const nextLineStartsNewMod = /^[A-Z]/.test(line) || 
-                                         line.includes("your Maps") || 
-                                         line.includes("Maps") || 
-                                         line.match(/^\d+%/) ||
-                                         line.includes("chance to");
-            
-            // If combining helps us match a known mod, do it
             if (combinedIsKnown) {
               currentMod = combinedMod;
               i++;
-            }
-            // If current is already a complete mod and next line looks like a new mod start
-            else if (currentIsKnown && nextLineStartsNewMod) {
+            } else if (currentIsKnown && nextLineStartsNewMod) {
               result.push(currentMod);
               currentMod = line;
               i++;
-            }
-            // If we're not sure, try looking ahead multiple lines
-            else {
-              // Look ahead up to 3 lines to see if we can form a known mod
+            } else {
               let foundMatch = false;
-              for (let lookahead = 1; lookahead <= 3 && i + lookahead - 1 < modLines.length; lookahead++) {
-                const testMod = currentMod + " " + modLines.slice(i, i + lookahead).join(" ");
-                if (allMods.some(m => areModsEquivalent(m.Mod, testMod))) {
-                  // Found a multi-line match
+              for (
+                let lookahead = 1;
+                lookahead <= 3 && i + lookahead - 1 < modLines.length;
+                lookahead++
+              ) {
+                const testMod =
+                  currentMod +
+                  " " +
+                  modLines.slice(i, i + lookahead).join(" ");
+                if (
+                  allMods.some((m) => areModsEquivalent(m.Mod, testMod))
+                ) {
                   currentMod = testMod;
                   i += lookahead;
                   foundMatch = true;
@@ -222,7 +229,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                 }
               }
               
-              // If no better match found, just add this line and continue
               if (!foundMatch) {
                 if (nextLineStartsNewMod) {
                   result.push(currentMod);
@@ -235,7 +241,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             }
           }
           
-          // Don't forget the last mod
           if (currentMod) {
             result.push(currentMod);
           }
@@ -321,10 +326,9 @@ function IdolPasteHandler({ onAddIdol, modData }) {
         return { success: false, error: error.message };
       }
     },
-    [modData, areModsEquivalent, normalize]
+    [modData, areModsEquivalent] // removed normalize dependency here
   );
 
-  // Helper function to determine if a modifier is a prefix or suffix
   function determineModifierType(modText) {
     if (
       /^Your Maps have \+\d/.test(modText) ||
@@ -442,7 +446,9 @@ function IdolPasteHandler({ onAddIdol, modData }) {
               <div className="mt-2">
                 {parsedIdol.isUnique ? (
                   <>
-                    <div className="text-purple-400 font-semibold">Unique Modifiers:</div>
+                    <div className="text-purple-400 font-semibold">
+                      Unique Modifiers:
+                    </div>
                     {parsedIdol.uniqueModifiers?.length > 0 ? (
                       <ul className="list-disc list-inside text-sm">
                         {parsedIdol.uniqueModifiers.map((mod, idx) => (
@@ -450,12 +456,16 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                         ))}
                       </ul>
                     ) : (
-                      <div className="text-gray-400 text-sm">No modifiers found</div>
+                      <div className="text-gray-400 text-sm">
+                        No modifiers found
+                      </div>
                     )}
                   </>
                 ) : (
                   <>
-                    <div className="text-blue-400 font-semibold">Prefixes:</div>
+                    <div className="text-blue-400 font-semibold">
+                      Prefixes:
+                    </div>
                     {parsedIdol.prefixes?.length > 0 ? (
                       <ul className="list-disc list-inside text-sm">
                         {parsedIdol.prefixes.map((prefix, idx) => (
@@ -463,10 +473,14 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                         ))}
                       </ul>
                     ) : (
-                      <div className="text-gray-400 text-sm">No prefixes</div>
+                      <div className="text-gray-400 text-sm">
+                        No prefixes
+                      </div>
                     )}
 
-                    <div className="text-green-400 font-semibold mt-1">Suffixes:</div>
+                    <div className="text-green-400 font-semibold mt-1">
+                      Suffixes:
+                    </div>
                     {parsedIdol.suffixes?.length > 0 ? (
                       <ul className="list-disc list-inside text-sm">
                         {parsedIdol.suffixes.map((suffix, idx) => (
@@ -474,7 +488,9 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                         ))}
                       </ul>
                     ) : (
-                      <div className="text-gray-400 text-sm">No suffixes</div>
+                      <div className="text-gray-400 text-sm">
+                        No suffixes
+                      </div>
                     )}
                   </>
                 )}
@@ -496,7 +512,11 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           </button>
           <button
             onClick={handleAddParsedIdol}
-            className={`${parsedIdol ? "bg-green-600 hover:bg-green-500" : "bg-gray-600 cursor-not-allowed"} py-2 px-4 rounded`}
+            className={`${
+              parsedIdol
+                ? "bg-green-600 hover:bg-green-500"
+                : "bg-gray-600 cursor-not-allowed"
+            } py-2 px-4 rounded`}
             disabled={!parsedIdol}
           >
             Add to Inventory
