@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-// This whole component became a rushed mess (don't judge me!)
+
 function IdolPasteHandler({ onAddIdol, modData }) {
   const normalize = useCallback(
     (str) => str.replace(/\s+/g, " ").trim(),
@@ -9,29 +9,19 @@ function IdolPasteHandler({ onAddIdol, modData }) {
   const areModsEquivalent = useCallback((mod1, mod2) => {
     const norm1 = normalize(mod1).replace(/[\u2013\u2014\u2212]/g, '-');
     const norm2 = normalize(mod2).replace(/[\u2013\u2014\u2212]/g, '-');
+    
+    // Exact match check
     if (norm1 === norm2) return true;
-
-    let convertedNorm1 = norm1;
-    let convertedNorm2 = norm2;
-    
-    const decimalMatch1 = norm1.match(/\+?(\d+\.\d+)%/);
-    if (decimalMatch1) {
-      convertedNorm1 = norm1.replace(/\+?(\d+\.\d+)%/, "DECIMAL_VALUE%");
-    }
-    
-    const decimalMatch2 = norm2.match(/\+?(\d+\.\d+)%/);
-    if (decimalMatch2) {
-      convertedNorm2 = norm2.replace(/\+?(\d+\.\d+)%/, "DECIMAL_VALUE%");
-    }
-    
-    convertedNorm1 = convertedNorm1.replace(/\(\d+(\.\d+)?[-\u2013\u2014\u2212]\d+(\.\d+)?\)%/g, "DECIMAL_VALUE%");
-    convertedNorm2 = convertedNorm2.replace(/\(\d+(\.\d+)?[-\u2013\u2014\u2212]\d+(\.\d+)?\)%/g, "DECIMAL_VALUE%");
-    
+  
+    // Replace only percentage values (e.g., "125%") with a placeholder, preserving other numbers
+    let convertedNorm1 = norm1.replace(/(\d+(?:\.\d+)?)%/g, "PERCENTAGE");
+    let convertedNorm2 = norm2.replace(/(\d+(?:\.\d+)?)%/g, "PERCENTAGE");
+  
+    // Check if the converted strings match
     if (convertedNorm1 === convertedNorm2) return true;
-
-    const pattern1 = norm1.replace(/\d+(\.\d+)?%?/g, "X");
-    const pattern2 = norm2.replace(/\d+(\.\d+)?%?/g, "X");
-    return pattern1 === pattern2;
+  
+    // If no match yet, compare with full text (including job levels)
+    return false;
   }, [normalize]);
 
   const parseIdolText = useCallback(
@@ -79,6 +69,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           if (line.trim() === "--------") separatorIndices.push(index);
         });
 
+        // Handle unique idols
         if (rarity.toLowerCase() === "unique") {
           let modStart = -1;
           let modEnd = -1;
@@ -151,6 +142,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           };
         }
 
+        // For non-unique idols, find the modifier section
         let modStart = -1;
         let modEnd = -1;
         if (separatorIndices.length >= 4) {
@@ -158,7 +150,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           modEnd = separatorIndices[3];
         }
 
-        // Gather modifier lines
+        // Extract lines that contain mod text
         const modLines = [];
         if (modStart !== -1 && modEnd !== -1) {
           for (let i = modStart; i < modEnd; i++) {
@@ -169,32 +161,90 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           }
         }
 
-        // Process mod lines into separate modifiers
-        const allMods = [
-          ...Object.values(modData.prefixes).flat(),
-          ...Object.values(modData.suffixes).flat(),
-        ];
-        
-        const processedModLines = [];
-        let currentMod = "";
-
-        for (let i = 0; i < modLines.length; i++) {
-          const line = modLines[i].trim();
-
-          // If this line could be a new modifier
-          if (currentMod === "" || isPotentialNewModifier(line, currentMod, allMods)) {
-            if (currentMod) {
-              processedModLines.push(currentMod);
+        // Improved modifier construction algorithm
+        const constructModifiers = (modLines) => {
+          const allMods = [
+            ...Object.values(modData.prefixes).flat(),
+            ...Object.values(modData.suffixes).flat(),
+          ];
+          
+          const result = [];
+          let currentMod = "";
+          let i = 0;
+          
+          while (i < modLines.length) {
+            const line = modLines[i].trim();
+            
+            // Start a new potential mod
+            if (currentMod === "") {
+              currentMod = line;
+              i++;
+              continue;
             }
-            currentMod = line;
-          } else {
-            currentMod += " " + line;
+            
+            // Check if combining with the next line forms a known mod
+            const combinedMod = currentMod + " " + line;
+            const combinedIsKnown = allMods.some(m => areModsEquivalent(m.Mod, combinedMod));
+            
+            // Check if current mod by itself is already a known mod
+            const currentIsKnown = allMods.some(m => areModsEquivalent(m.Mod, currentMod));
+            
+            // Check if the next line starts a new mod (capital letter or certain patterns)
+            const nextLineStartsNewMod = /^[A-Z]/.test(line) || 
+                                         line.includes("your Maps") || 
+                                         line.includes("Maps") || 
+                                         line.match(/^\d+%/) ||
+                                         line.includes("chance to");
+            
+            // If combining helps us match a known mod, do it
+            if (combinedIsKnown) {
+              currentMod = combinedMod;
+              i++;
+            }
+            // If current is already a complete mod and next line looks like a new mod start
+            else if (currentIsKnown && nextLineStartsNewMod) {
+              result.push(currentMod);
+              currentMod = line;
+              i++;
+            }
+            // If we're not sure, try looking ahead multiple lines
+            else {
+              // Look ahead up to 3 lines to see if we can form a known mod
+              let foundMatch = false;
+              for (let lookahead = 1; lookahead <= 3 && i + lookahead - 1 < modLines.length; lookahead++) {
+                const testMod = currentMod + " " + modLines.slice(i, i + lookahead).join(" ");
+                if (allMods.some(m => areModsEquivalent(m.Mod, testMod))) {
+                  // Found a multi-line match
+                  currentMod = testMod;
+                  i += lookahead;
+                  foundMatch = true;
+                  break;
+                }
+              }
+              
+              // If no better match found, just add this line and continue
+              if (!foundMatch) {
+                if (nextLineStartsNewMod) {
+                  result.push(currentMod);
+                  currentMod = line;
+                } else {
+                  currentMod += " " + line;
+                }
+                i++;
+              }
+            }
           }
-        }
-        if (currentMod) {
-          processedModLines.push(currentMod);
-        }
+          
+          // Don't forget the last mod
+          if (currentMod) {
+            result.push(currentMod);
+          }
+          
+          return result;
+        };
 
+        const processedModLines = constructModifiers(modLines);
+        
         const prefixes = [];
         const suffixes = [];
         const allPrefixes = Object.values(modData.prefixes).flat();
@@ -205,6 +255,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
 
           let found = false;
 
+          // First try to match with known prefixes
           for (const prefix of allPrefixes) {
             if (areModsEquivalent(prefix.Mod, modLine)) {
               prefixes.push({ 
@@ -217,6 +268,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             }
           }
 
+          // If not a prefix, try suffixes
           if (!found) {
             for (const suffix of allSuffixes) {
               if (areModsEquivalent(suffix.Mod, modLine)) {
@@ -231,6 +283,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             }
           }
 
+          // If still not found, use heuristics to determine type
           if (!found) {
             if (determineModifierType(modLine) === "prefix") {
               prefixes.push({
@@ -271,26 +324,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
     [modData, areModsEquivalent, normalize]
   );
 
-  // Helper to determine if a line starts a new modifier
-  const isPotentialNewModifier = (line, currentMod, allMods) => {
-    // Check if currentMod is already a complete modifier
-    const isCurrentComplete = allMods.some(mod => areModsEquivalent(mod.Mod, currentMod));
-    
-    // If currentMod is complete and this line looks like a new modifier
-    if (isCurrentComplete) {
-      // Look for typical modifier start patterns
-      return (
-        /^[A-Z]/.test(line) || // Starts with capital letter
-        line.includes("your Maps") || // Common modifier phrase
-        line.match(/\d+%/) || // Contains a percentage
-        line.includes("chance to") // Common modifier phrase
-      );
-    }
-    
-    // If currentMod isn't complete, assume this is a continuation
-    return false;
-  };
-
   // Helper function to determine if a modifier is a prefix or suffix
   function determineModifierType(modText) {
     if (
@@ -312,9 +345,10 @@ function IdolPasteHandler({ onAddIdol, modData }) {
     
     if (
       /Abyssal Troves/.test(modText) || 
-      /Expeditions in your Maps have \+\d+/.test(modText) ||
+      /Expeditions in your Maps/.test(modText) ||
       /(Blight|Delirium|Legion|Ultimatum) (Monsters|Encounters|Rewards|Bosses) in your Maps/.test(modText) ||
       /Strongboxes (in|contained in) your Maps/.test(modText) ||
+      /Blight Towers in your Maps/.test(modText) ||
       /Breaches in your Maps/.test(modText) ||
       /Shrines in your Maps/.test(modText) ||
       /Ritual Altars in your Maps/.test(modText) ||
