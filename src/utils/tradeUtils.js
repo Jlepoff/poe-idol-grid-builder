@@ -94,6 +94,7 @@ export const generateTradeUrl = (idol) => {
 
   const query = {
     query: {
+      type: `${idol.type} Idol`,
       stats: [{ type: "and", filters: filters }],
       status: { option: "online" }
     }
