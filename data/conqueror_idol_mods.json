@@ -9,13 +9,6 @@
     },
     {
       "Name": "Abyssal",
-      "Code": "MapRelicAbyssIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain an Abyss",
-      "Family": "MapRelicIncreasedAbyssChance",
-      "id": "explicit.stat_4111037980"
-    },
-    {
-      "Name": "Abyssal",
       "Code": "MapRelicAbyssIncreasedChancePerPackSize1",
       "Mod": "Your Maps have +5% chance to contain an Abyss per 2% increased Pack Size",
       "Family": "MapRelicIncreasedAbyssChancePerPackSize",
@@ -27,13 +20,6 @@
       "Mod": "Your Maps have +70% chance to contain Alva",
       "Family": "MapRelicAdditionalIncursionChance",
       "id": "explicit.stat_2709296039"
-    },
-    {
-      "Name": "Alva's",
-      "Code": "MapRelicIncreasedIncursionChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain Alva",
-      "Family": "MapRelicIncreasedIncursionChance",
-      "id": "explicit.stat_3629418990"
     },
     {
       "Name": "Exiled",
@@ -50,25 +36,11 @@
       "id": "explicit.stat_1123357133"
     },
     {
-      "Name": "Exiled",
-      "Code": "MapRelicAnarchyExileChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to contain a Rogue Exile",
-      "Family": "MapRelicAnarchyExileChance",
-      "id": "explicit.stat_2974922599"
-    },
-    {
       "Name": "Bestial",
       "Code": "MapRelicBestiaryAdditionalChanceExtraLarge",
       "Mod": "Your Maps have +70% chance to contain Einhar",
       "Family": "MapRelicBestiaryAdditionalChance",
       "id": "explicit.stat_1566972708"
-    },
-    {
-      "Name": "Bestial",
-      "Code": "MapRelicBestiaryIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain Einhar",
-      "Family": "MapRelicBestiaryIncreasedChance",
-      "id": "explicit.stat_1301096166"
     },
     {
       "Name": "Demonic",
@@ -85,25 +57,11 @@
       "id": "explicit.stat_764545335"
     },
     {
-      "Name": "Blighted",
-      "Code": "MapRelicBlightIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain a Blight Encounter",
-      "Family": "MapRelicBlightAdditionalChance",
-      "id": "explicit.stat_1393318927"
-    },
-    {
       "Name": "Breachlord's",
       "Code": "MapRelicBreachAdditionalChanceExtraLarge",
       "Mod": "Your Maps have +70% chance to contain Breaches",
       "Family": "MapRelicBreachAdditionalChance",
       "id": "explicit.stat_1133841298"
-    },
-    {
-      "Name": "Breachlord's",
-      "Code": "MapRelicBreachIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain a Breach",
-      "Family": "MapRelicBreachIncreasedChance",
-      "id": "explicit.stat_2372432713"
     },
     {
       "Name": "Breachlord's",
@@ -121,13 +79,6 @@
     },
     {
       "Name": "Delirious",
-      "Code": "MapRelicDeliriumIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain a Mirror of Delirium",
-      "Family": "MapRelicDeliriumIncreasedChance",
-      "id": "explicit.stat_3573600538"
-    },
-    {
-      "Name": "Delirious",
       "Code": "MapRelicDeliriumDeliriousMapChance1",
       "Mod": "Maps found in your Maps have 5% chance to have layers of Delirium",
       "Family": "MapRelicDeliriumDeliriousMapChance",
@@ -139,13 +90,6 @@
       "Mod": "Your Maps have +70% chance to contain Niko",
       "Family": "MapRelicDelveAdditionalChance",
       "id": "explicit.stat_4267923742"
-    },
-    {
-      "Name": "Niko's",
-      "Code": "MapRelicDelveIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain Niko",
-      "Family": "MapRelicDelveIncreasedChance",
-      "id": "explicit.stat_399319107"
     },
     {
       "Name": "Domination",
@@ -162,13 +106,6 @@
       "id": ".explicit.stat_1468737867"
     },
     {
-      "Name": "Domination",
-      "Code": "MapRelicShrineIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to contain a Shrine",
-      "Family": "MapRelicShrineIncreasedChance",
-      "id": "explicit.stat_2571125745"
-    },
-    {
       "Name": "Essence",
       "Code": "MapRelicEssenceAdditionalMonolithsExtraLarge",
       "Mod": "Your Maps contain an additional Imprisoned Monster",
@@ -183,25 +120,11 @@
       "id": ".explicit.stat_395808938"
     },
     {
-      "Name": "Essence",
-      "Code": "MapRelicEssenceIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to contain an Imprisoned Monster",
-      "Family": "MapRelicEssenceIncreasedChance",
-      "id": "explicit.stat_4098286334"
-    },
-    {
       "Name": "Ruinic",
       "Code": "MapRelicExpeditionAdditionalChanceExtraLarge",
       "Mod": "Your Maps have +70% chance to contain an Expedition Encounter",
       "Family": "MapRelicExpeditionAdditionalChance",
       "id": "explicit.stat_4154778375"
-    },
-    {
-      "Name": "Ruinic",
-      "Code": "MapRelicExpeditionIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain an Expedition Encounter",
-      "Family": "MapRelicExpeditionIncreasedChance",
-      "id": "explicit.stat_1561678231"
     },
     {
       "Name": "Harbinger's",
@@ -218,25 +141,11 @@
       "id": ".explicit.stat_504850499"
     },
     {
-      "Name": "Harbinger's",
-      "Code": "MapRelicHarbingerAdditionalHarbingerChanceExtraLarge",
-      "Mod": "Your Maps have a 30% chance to contain an additional Harbinger",
-      "Family": "MapRelicHarbingerAdditionalHarbingerChance",
-      "id": "explicit.stat_266448395"
-    },
-    {
       "Name": "Bountiful",
       "Code": "MapRelicHarvestAdditionalChanceExtraLarge",
       "Mod": "Your Maps have +70% chance to contain The Sacred Grove",
       "Family": "MapRelicHarvestAdditionalChance",
       "id": "explicit.stat_1145451936"
-    },
-    {
-      "Name": "Bountiful",
-      "Code": "MapRelicHarvestIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain The Sacred Grove",
-      "Family": "MapRelicHarvestIncreasedChance",
-      "id": "explicit.stat_2936740844"
     },
     {
       "Name": "Smuggler's",
@@ -246,13 +155,6 @@
       "id": "explicit.stat_1975869602"
     },
     {
-      "Name": "Smuggler's",
-      "Code": "MapRelicHeistIncreasedCacheChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain a Smuggler's Cache",
-      "Family": "MapRelicHeistIncreasedCacheChance",
-      "id": "explicit.stat_4069523014"
-    },
-    {
       "Name": "Syndicate's",
       "Code": "MapRelicBetrayalAdditionalChanceExtraLarge",
       "Mod": "Your Maps have +70% chance to contain Jun",
@@ -260,25 +162,11 @@
       "id": "explicit.stat_527292219"
     },
     {
-      "Name": "Syndicate's",
-      "Code": "MapRelicBetrayalIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain Jun",
-      "Family": "MapRelicBetrayalIncreasedChance",
-      "id": "explicit.stat_4116217552"
-    },
-    {
       "Name": "General's",
       "Code": "MapRelicLegionAdditionalChanceExtraLarge",
       "Mod": "Your Maps have +70% chance to contain a Legion Encounter",
       "Family": "MapRelicLegionAdditionalChance",
       "id": "explicit.stat_1981273563"
-    },
-    {
-      "Name": "General's",
-      "Code": "MapRelicLegionIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain a Legion Encounter",
-      "Family": "MapRelicLegionIncreasedChance",
-      "id": "explicit.stat_310950600"
     },
     {
       "Name": "Cartographer's",
@@ -296,13 +184,6 @@
     },
     {
       "Name": "Trialmaster's",
-      "Code": "MapRelicUltimatumIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain an Ultimatum Encounter",
-      "Family": "MapRelicUltimatumIncreasedChance",
-      "id": "explicit.stat_880963174"
-    },
-    {
-      "Name": "Trialmaster's",
       "Code": "MapRelicUltimatumAdditionalChanceExtraLarge",
       "Mod": "Your Maps have +70% chance to contain an Ultimatum Encounter",
       "Family": "MapRelicUltimatumAdditionalChance",
@@ -314,13 +195,6 @@
       "Mod": "Your Maps have +70% chance to contain Ritual Altars",
       "Family": "MapRelicRitualAdditionalChance",
       "id": "explicit.stat_1314822783"
-    },
-    {
-      "Name": "Ritualistic",
-      "Code": "MapRelicRitualIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have 280% increased chance to contain Ritual Altars",
-      "Family": "MapRelicRitualIncreasedChance",
-      "id": "explicit.stat_1777351949"
     },
     {
       "Name": "Trapped",
@@ -335,20 +209,6 @@
       "Mod": "Your Maps contain 2 additional Strongboxes",
       "Family": "MapRelicStrongboxAdditional",
       "id": ".explicit.stat_3240183538"
-    },
-    {
-      "Name": "Trapped",
-      "Code": "MapRelicStrongboxIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to contain a Strongbox",
-      "Family": "MapRelicStrongboxIncreasedChance",
-      "id": "explicit.stat_2388936716"
-    },
-    {
-      "Name": "Tormented",
-      "Code": "MapRelicTormentIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to be haunted by a Tormented Spirit",
-      "Family": "MapRelicTormentIncreasedChance",
-      "id": "explicit.stat_2750973094"
     },
     {
       "Name": "Tormented",
@@ -544,7 +404,7 @@
     {
       "Name": "of Blight",
       "Code": "MapRelicBlightTowersAreChests1",
-      "Mod": "Blight Towers in your Maps can be Salvaged after the Blight EncounterHigher Tier Towers grant better Salvaged RewardsSalvaged Rewards are improved for each different Tower Type built during Encounter",
+      "Mod": "Blight Towers in your Maps can be Salvaged after the Blight Encounter Higher Tier Towers grant better Salvaged Rewards Salvaged Rewards are improved for each different Tower Type built during Encounter",
       "Family": "MapRelicBlightTowersAreChests",
       "id": "explicit.stat_1421406768"
     },
@@ -561,6 +421,13 @@
       "Mod": "Breaches in your Maps contain 3 additional Clasped Hands",
       "Family": "MapRelicBreachAdditionalChests",
       "id": "explicit.stat_2224050171"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachAdditionalChests1",
+      "Mod": "Breaches in your Maps contain 2 additional Clasped Hands",
+      "Family": "MapRelicBreachAdditionalChests",
+      "id": ".explicit.stat_2224050171"
     },
     {
       "Name": "of the Breach",
