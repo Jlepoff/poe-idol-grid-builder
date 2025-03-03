@@ -7,18 +7,102 @@ function IdolPasteHandler({ onAddIdol, modData }) {
   );
 
   const areModsEquivalent = useCallback((mod1, mod2) => {
+    // Clean and normalize the text for both mods
     const norm1 = normalize(mod1).replace(/[\u2013\u2014\u2212]/g, '-');
     const norm2 = normalize(mod2).replace(/[\u2013\u2014\u2212]/g, '-');
 
+    // If they're exactly the same, no need for further checks
     if (norm1 === norm2) return true;
 
-    let convertedNorm1 = norm1.replace(/(\d+(?:\.\d+)?)%/g, "PERCENTAGE");
-    let convertedNorm2 = norm2.replace(/(\d+(?:\.\d+)?)%/g, "PERCENTAGE");
+    // Handle variations of "an additional" vs "1 additional" etc.
+    const additionalPattern1 = norm1.replace(/\b(?:an|a|1|one)\s+additional\b/g, "NUMBER additional");
+    const additionalPattern2 = norm2.replace(/\b(?:an|a|1|one)\s+additional\b/g, "NUMBER additional");
+    
+    if (additionalPattern1 === additionalPattern2) return true;
 
-    if (convertedNorm1 === convertedNorm2) return true;
+    // List of common modifier patterns to normalize
+    const poePatterns = [
+        // Percentage values (like "25%" -> "PERCENTAGE")
+        { regex: /(\d+(?:\.\d+)?)%/g, replace: "PERCENTAGE" },
+        
+        // "+X%" values (like "+25%" -> "+PERCENTAGE")
+        { regex: /\+(\d+(?:\.\d+)?)%/g, replace: "+PERCENTAGE" },
+        
+        // Plain "+X" values (like "+3" -> "+NUMBER")
+        { regex: /\+(\d+(?:\.\d+)?)\b(?!%)/g, replace: "+NUMBER" },
+        
+        // "X additional" pattern
+        { regex: /(\d+(?:\.\d+)?)\s+additional/g, replace: "NUMBER additional" },
+        
+        // "lasts X additional seconds" pattern
+        { regex: /lasts\s+(\d+(?:\.\d+)?)\s+additional\s+seconds/g, replace: "lasts NUMBER additional seconds" },
+        
+        // "have X% chance" variations
+        { regex: /have\s+(?:a\s+)?(\d+(?:\.\d+)?)%\s+(?:increased\s+)?chance/g, replace: "have PERCENTAGE chance" },
+        
+        // Plain "X% chance" pattern
+        { regex: /(\d+(?:\.\d+)?)%\s+chance/g, replace: "PERCENTAGE chance" },
+        
+        // Common modifier words with numbers
+        { regex: /(\d+(?:\.\d+)?)\s+(increased|more|reduced|faster|slower)/g, replace: "NUMBER $2" },
+        
+        // "contain X additional" pattern
+        { regex: /contain\s+(\d+(?:\.\d+)?)\s+additional/g, replace: "contain NUMBER additional" },
+        
+        // Life missing pattern for Expedition mods
+        { regex: /spawn\s+with\s+(?:an\s+)?(?:additional\s+)?(\d+(?:\.\d+)?)%\s+of\s+Life\s+missing/g, 
+          replace: "spawn with PERCENTAGE of Life missing" }
+    ];
 
+    // Try each pattern one by one
+    for (const { regex, replace } of poePatterns) {
+        const normalized1 = norm1.replace(regex, replace);
+        const normalized2 = norm2.replace(regex, replace);
+        
+        if (normalized1 === normalized2) {
+            return true;
+        }
+    }
+    
+    // Last resort: try normalizing ALL numbers if the strings are similar enough
+    const allNumbersReplaced1 = norm1.replace(/\d+(?:\.\d+)?/g, "NUMBER");
+    const allNumbersReplaced2 = norm2.replace(/\d+(?:\.\d+)?/g, "NUMBER");
+    
+    // Helper function to check if two strings are similar enough
+    // to avoid false positive matches
+    const areSimilarEnough = (s1, s2) => {
+        // Remove all numbers for comparison
+        const textOnly1 = s1.replace(/\d+(?:\.\d+)?/g, "");
+        const textOnly2 = s2.replace(/\d+(?:\.\d+)?/g, "");
+        
+        // If they're identical after removing numbers, that's a good match
+        if (textOnly1 === textOnly2) return true;
+        
+        // For longer strings, check for substantial similarity
+        if (textOnly1.length > 15 && textOnly2.length > 15) {
+            // Use 80% of the shorter string as our comparison length
+            const minLength = Math.min(textOnly1.length, textOnly2.length);
+            const comparisonLength = Math.floor(minLength * 0.8);
+            
+            // Check if either string contains a large portion of the other
+            const sample1 = textOnly1.substring(0, comparisonLength);
+            const sample2 = textOnly2.substring(0, comparisonLength);
+            
+            return textOnly1.includes(sample2) || textOnly2.includes(sample1);
+        }
+        
+        return false;
+    };
+    
+    // If the strings match after replacing all numbers AND they're similar enough,
+    // consider them equivalent
+    if (allNumbersReplaced1 === allNumbersReplaced2 && areSimilarEnough(norm1, norm2)) {
+        return true;
+    }
+
+    // No match found
     return false;
-  }, [normalize]); // include normalize
+  }, [normalize]);
 
   const parseIdolText = useCallback(
     (text) => {
