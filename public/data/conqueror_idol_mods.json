@@ -544,7 +544,7 @@
     {
       "Name": "of Blight",
       "Code": "MapRelicBlightTowersAreChests1",
-      "Mod": "Blight Towers in your Maps can be Salvaged after the Blight EncounterHigher Tier Towers grant better Salvaged RewardsSalvaged Rewards are improved for each different Tower Type built during Encounter",
+      "Mod": "Blight Towers in your Maps can be Salvaged after the Blight Encounter Higher Tier Towers grant better Salvaged Rewards Salvaged Rewards are improved for each different Tower Type built during Encounter",
       "Family": "MapRelicBlightTowersAreChests",
       "id": "explicit.stat_1421406768"
     },
@@ -561,6 +561,13 @@
       "Mod": "Breaches in your Maps contain 3 additional Clasped Hands",
       "Family": "MapRelicBreachAdditionalChests",
       "id": "explicit.stat_2224050171"
+    },
+    {
+      "Name": "of the Breach",
+      "Code": "MapRelicBreachAdditionalChests1",
+      "Mod": "Breaches in your Maps contain 2 additional Clasped Hands",
+      "Family": "MapRelicBreachAdditionalChests",
+      "id": ".explicit.stat_2224050171"
     },
     {
       "Name": "of the Breach",
