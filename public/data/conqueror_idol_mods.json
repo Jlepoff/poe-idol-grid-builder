@@ -36,13 +36,6 @@
       "id": "explicit.stat_1123357133"
     },
     {
-      "Name": "Exiled",
-      "Code": "MapRelicAnarchyExileChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to contain a Rogue Exile",
-      "Family": "MapRelicAnarchyExileChance",
-      "id": "explicit.stat_2974922599"
-    },
-    {
       "Name": "Bestial",
       "Code": "MapRelicBestiaryAdditionalChanceExtraLarge",
       "Mod": "Your Maps have +70% chance to contain Einhar",
@@ -113,13 +106,6 @@
       "id": ".explicit.stat_1468737867"
     },
     {
-      "Name": "Domination",
-      "Code": "MapRelicShrineIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to contain a Shrine",
-      "Family": "MapRelicShrineIncreasedChance",
-      "id": "explicit.stat_2571125745"
-    },
-    {
       "Name": "Essence",
       "Code": "MapRelicEssenceAdditionalMonolithsExtraLarge",
       "Mod": "Your Maps contain an additional Imprisoned Monster",
@@ -132,13 +118,6 @@
       "Mod": "Your Maps contain 2 additional Imprisoned Monsters",
       "Family": "MapRelicEssenceAdditionalMonoliths",
       "id": ".explicit.stat_395808938"
-    },
-    {
-      "Name": "Essence",
-      "Code": "MapRelicEssenceIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to contain an Imprisoned Monster",
-      "Family": "MapRelicEssenceIncreasedChance",
-      "id": "explicit.stat_4098286334"
     },
     {
       "Name": "Ruinic",
@@ -160,13 +139,6 @@
       "Mod": "Your Maps contain 2 additional Harbingers",
       "Family": "MapRelicHarbingerExtraHarbingers",
       "id": ".explicit.stat_504850499"
-    },
-    {
-      "Name": "Harbinger's",
-      "Code": "MapRelicHarbingerAdditionalHarbingerChanceExtraLarge",
-      "Mod": "Your Maps have a 30% chance to contain an additional Harbinger",
-      "Family": "MapRelicHarbingerAdditionalHarbingerChance",
-      "id": "explicit.stat_266448395"
     },
     {
       "Name": "Bountiful",
@@ -237,20 +209,6 @@
       "Mod": "Your Maps contain 2 additional Strongboxes",
       "Family": "MapRelicStrongboxAdditional",
       "id": ".explicit.stat_3240183538"
-    },
-    {
-      "Name": "Trapped",
-      "Code": "MapRelicStrongboxIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to contain a Strongbox",
-      "Family": "MapRelicStrongboxIncreasedChance",
-      "id": "explicit.stat_2388936716"
-    },
-    {
-      "Name": "Tormented",
-      "Code": "MapRelicTormentIncreasedChanceExtraLarge",
-      "Mod": "Your Maps have +30% chance to be haunted by a Tormented Spirit",
-      "Family": "MapRelicTormentIncreasedChance",
-      "id": "explicit.stat_2750973094"
     },
     {
       "Name": "Tormented",

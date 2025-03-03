@@ -23,13 +23,6 @@
     },
     {
       "Name": "Exiled",
-      "Code": "MapRelicAnarchyExileChanceSmall",
-      "Mod": "Your Maps have +10% chance to contain a Rogue Exile",
-      "Family": "MapRelicAnarchyExileChance",
-      "id": "explicit.stat_2974922599"
-    },
-    {
-      "Name": "Exiled",
       "Code": "MapRelicAnarchyMapBossExileGuardsChance1",
       "Mod": "Map Bosses have 10% chance to be accompanied by two Rogue Exile Bodyguards",
       "Family": "MapRelicAnarchyMapBossExileGuardsChance",
@@ -121,24 +114,10 @@
     },
     {
       "Name": "Domination",
-      "Code": "MapRelicShrineIncreasedChanceSmall",
-      "Mod": "Your Maps have +10% chance to contain a Shrine",
-      "Family": "MapRelicShrineIncreasedChance",
-      "id": "explicit.stat_2571125745"
-    },
-    {
-      "Name": "Domination",
       "Code": "MapRelicShrineAdditionalChanceSmall",
       "Mod": "Your Maps have a 50% chance to contain an additional Shrine",
       "Family": "MapRelicShrineAdditionalChance",
       "id": "explicit.stat_1260233365"
-    },
-    {
-      "Name": "Essence",
-      "Code": "MapRelicEssenceIncreasedChanceSmall",
-      "Mod": "Your Maps have +10% chance to contain an Imprisoned Monster",
-      "Family": "MapRelicEssenceIncreasedChance",
-      "id": "explicit.stat_4098286334"
     },
     {
       "Name": "Essence",
@@ -237,13 +216,6 @@
       "Mod": "Your Maps have a 50% chance to be haunted by an additional Tormented Spirit",
       "Family": "MapRelicTormentAdditionalChance",
       "id": "explicit.stat_846433713"
-    },
-    {
-      "Name": "Tormented",
-      "Code": "MapRelicTormentIncreasedChanceSmall",
-      "Mod": "Your Maps have +10% chance to be haunted by a Tormented Spirit",
-      "Family": "MapRelicTormentIncreasedChance",
-      "id": "explicit.stat_2750973094"
     },
     {
       "Name": "Scout's",
