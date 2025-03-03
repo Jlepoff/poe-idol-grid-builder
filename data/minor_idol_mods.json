@@ -29,13 +29,6 @@
       "id": "explicit.stat_472880157"
     },
     {
-      "Name": "Exiled",
-      "Code": "MapRelicAnarchyMapBossTwoExileChance1",
-      "Mod": "Map Bosses have 3% chance to be accompanied by two Rogue Exiles",
-      "Family": "MapRelicAnarchyMapBossTwoExileChance",
-      "id": "explicit.stat_3408085256"
-    },
-    {
       "Name": "Bestial",
       "Code": "MapRelicBestiaryAdditionalChanceSmall",
       "Mod": "Your Maps have +25% chance to contain Einhar",
@@ -234,7 +227,7 @@
     {
       "Name": "Cartographer's",
       "Code": "MapRelicMapTierSeventeenPacks1",
-      "Mod": "Your Maps contain 5% more Monster Packs consisting of difficult and rewarding Monsters map chance to spawn t17 pack % [100]",
+      "Mod": "Your Maps contain 5% more Monster Packs consisting of difficult and rewarding Monsters",
       "Family": "MapRelicMapTierSeventeenPacks",
       "id": "explicit.stat_1366180761"
     }

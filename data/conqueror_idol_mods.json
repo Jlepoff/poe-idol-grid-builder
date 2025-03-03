@@ -218,6 +218,13 @@
       "id": "explicit.stat_358129101"
     },
     {
+      "Name": "Tormented",
+      "Code": "MapRelicTormentExtraSpiritsExtraLarge",
+      "Mod": "Your Maps are haunted by 2 additional Tormented Spirits",
+      "Family": "MapRelicTormentExtraSpirits",
+      "id": "explicit.stat_358129101"
+    },
+    {
       "Name": "Cartographer's",
       "Code": "MapRelicIncreasedItemQuantity1",
       "Mod": "6% increased Quantity of Items found in your Maps",
@@ -252,7 +259,7 @@
       "Code": "MapRelicAbyssJewelsCorruptedExtraMods1",
       "Mod": "Abyss Jewels found in Abyssal Troves or dropped by Stygian Spires in your Maps have 25% chance to be Corrupted and have 5 or 6 random Modifiers",
       "Family": "MapRelicAbyssJewelsCorruptedExtraMods",
-      "id": ""
+      "id": "explicit.stat_4842372"
     },
     {
       "Name": "of the Abyss",
@@ -362,7 +369,7 @@
     {
       "Name": "of Beasts",
       "Code": "MapRelicBestiaryBeastBreakFreeChance1",
-      "Mod": "Beasts in your Maps have a 20% chance to break freeBeasts which break free in your Maps gain Bestial RageDefeating Beasts grants Hunters' Cunning per Bestial Rage on the defeated Beast",
+      "Mod": "Beasts in your Maps have a 20% chance to break free Beasts which break free in your Maps gain Bestial Rage Defeating Beasts grants Hunters' Cunning per Bestial Rage on the defeated Beast",
       "Family": "MapRelicBestiaryBeastBreakFreeChance",
       "id": "explicit.stat_3241030924"
     },
@@ -533,13 +540,6 @@
       "Mod": "Imprisoned Monsters in your Maps have at least 1 Essence at the highest possible tier",
       "Family": "MapRelicEssenceNumAtMaxTier",
       "id": "explicit.stat_2175157402"
-    },
-    {
-      "Name": "of Essences",
-      "Code": "MapRelicEssenceOneTierHigherChance1",
-      "Mod": "Essences found in your Maps have 35% chance to be a tier higher",
-      "Family": "MapRelicEssenceOneTierHigherChance",
-      "id": ""
     },
     {
       "Name": "of Essences",
