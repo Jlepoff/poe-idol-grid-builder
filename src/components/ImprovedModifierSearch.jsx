@@ -1,4 +1,3 @@
-// components/ImprovedModifierSearch.jsx
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 
 function ImprovedModifierSearch({
@@ -49,7 +48,7 @@ function ImprovedModifierSearch({
 
   const handleNameFilterChange = (name) => setNameFilter(name);
 
-  // Get all unique modifier names for browsing
+  // Get all unique modifier names for browsing, with deduplication
   const modifierNames = useMemo(() => {
     if (!modData.prefixes || !modData.suffixes)
       return { prefixes: [], suffixes: [] };
@@ -86,6 +85,20 @@ function ImprovedModifierSearch({
       suffixes: Array.from(suffixNames).sort(),
     };
   }, [modData, selectedType, searchContext]);
+
+  // Get combined unique modifier names (for when showing "all types")
+  const combinedUniqueNames = useMemo(() => {
+    // If we're not showing "all types", just return empty array
+    if (filterType !== "all") return [];
+    
+    // Create a Set to deduplicate names that appear in both prefixes and suffixes
+    const uniqueNames = new Set([
+      ...modifierNames.prefixes,
+      ...modifierNames.suffixes,
+    ]);
+    
+    return Array.from(uniqueNames).sort();
+  }, [modifierNames.prefixes, modifierNames.suffixes, filterType]);
 
   // Filter modifiers based on search criteria
   const filteredModifiers = useMemo(() => {
@@ -421,6 +434,17 @@ function ImprovedModifierSearch({
     [onAddModifier]
   );
 
+  // Determine which names to display in the cloud based on filter type
+  const nameTagsToDisplay = useMemo(() => {
+    if (filterType === "all") {
+      return combinedUniqueNames;
+    } else if (filterType === "prefix") {
+      return modifierNames.prefixes;
+    } else {
+      return modifierNames.suffixes;
+    }
+  }, [filterType, modifierNames, combinedUniqueNames]);
+
   return (
     <div className="bg-gray-800 rounded-lg">
       {/* View mode toggle */}
@@ -469,47 +493,25 @@ function ImprovedModifierSearch({
             />
           </div>
 
-          {/* Name tag cloud */}
+          {/* Deduplicated name tag cloud */}
           <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
-            {/* Show prefix names */}
-            {filterType !== "suffix" &&
-              modifierNames.prefixes
-                .filter(
-                  (name) =>
-                    nameSearchTerm === "" ||
-                    name.toLowerCase().includes(nameSearchTerm.toLowerCase())
-                )
-                .map((name) => (
-                  <button
-                    key={`prefix-name-${name}`}
-                    className={`px-2 py-1 text-sm rounded ${
-                      nameFilter === name ? "bg-blue-600" : "bg-gray-700"
-                    }`}
-                    onClick={() => handleNameFilterChange(name)}
-                  >
-                    {name}
-                  </button>
-                ))}
-
-            {/* Show suffix names */}
-            {filterType !== "prefix" &&
-              modifierNames.suffixes
-                .filter(
-                  (name) =>
-                    nameSearchTerm === "" ||
-                    name.toLowerCase().includes(nameSearchTerm.toLowerCase())
-                )
-                .map((name) => (
-                  <button
-                    key={`suffix-name-${name}`}
-                    className={`px-2 py-1 text-sm rounded ${
-                      nameFilter === name ? "bg-blue-600" : "bg-gray-700"
-                    }`}
-                    onClick={() => handleNameFilterChange(name)}
-                  >
-                    {name}
-                  </button>
-                ))}
+            {nameTagsToDisplay
+              .filter(
+                (name) =>
+                  nameSearchTerm === "" ||
+                  name.toLowerCase().includes(nameSearchTerm.toLowerCase())
+              )
+              .map((name) => (
+                <button
+                  key={`name-tag-${name}`}
+                  className={`px-2 py-1 text-sm rounded ${
+                    nameFilter === name ? "bg-blue-600" : "bg-gray-700"
+                  }`}
+                  onClick={() => handleNameFilterChange(name)}
+                >
+                  {name}
+                </button>
+              ))}
           </div>
         </div>
       ) : (
