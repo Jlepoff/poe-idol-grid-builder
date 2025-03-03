@@ -377,93 +377,91 @@ function App() {
         };
     };
 
-    // Generate idols from desired modifiers
     const handleGenerateIdols = (desiredModifiers) => {
-        // console.log('Received desired modifiers:', desiredModifiers);
-
         if (!desiredModifiers || desiredModifiers.length === 0) {
-            console.log("No modifiers provided");
+            // console.log("No modifiers provided");
             return;
         }
 
-        // Expand modifiers based on count
-        const expandedModifiers = [];
-        desiredModifiers.forEach((mod) => {
-            const count = mod.count || 1; // Default to 1 if count is missing
-            // console.log(`Processing modifier: ${mod.Name}, count: ${count}`);
+        // console.log(`Starting idol generation for ${desiredModifiers.length} modifiers`);
 
-            for (let i = 0; i < count; i++) {
-                // Include essential properties, excluding count
-                expandedModifiers.push({
-                    Name: mod.Name,
-                    Mod: mod.Mod,
-                    Code: mod.Code,
-                    id: mod.id,
-                    type: mod.type, // prefix or suffix
-                });
-            }
-        });
-
-        // console.log('Expanded modifiers:', expandedModifiers);
-
-        // Call the generator function
+        // Call the generator function - it now just creates idols without placement
         const result = generateAndPlaceIdols(
-            expandedModifiers,
+            desiredModifiers,
             modData,
             idolTypes,
             gridState
         );
-        // console.log('Generation result:', result);
 
         if (!result || !result.idols || result.idols.length === 0) {
-            console.error("No idols were generated");
+            // console.error("No idols were generated");
             // Show error message
             setGenerationResult({
                 total: 0,
                 placed: 0,
                 notPlaced: [],
-                modifiersRequested: expandedModifiers.length,
+                modifiersRequested: desiredModifiers.length,
                 success: false,
                 error: "Failed to generate idols. Try different modifiers.",
             });
             return;
         }
 
-        // Update grid with placed idols
-        setGridState(result.grid);
-        saveGridState(result.grid);
+        // console.log(`Generated ${result.idols.length} idols, now adding to inventory`);
 
         // Add generated idols to inventory
         const newInventory = [...inventory];
-
-        // Add all generated idols to inventory
         result.idols.forEach((idol) => {
-            const isPlaced =
-                result.placedIdols &&
-                result.placedIdols.some((placed) => placed.id === idol.id);
-
             newInventory.push({
                 ...idol,
-                isPlaced: !!isPlaced,
+                isPlaced: false, // All start as not placed
             });
         });
 
+        // Update inventory state
         setInventory(newInventory);
         saveInventory(newInventory);
 
-        // Calculate idols that couldn't be placed
-        const notPlacedIdols = result.idols.filter(
-            (idol) =>
-                !result.placedIdols ||
-                !result.placedIdols.some((placed) => placed.id === idol.id)
-        );
+        // console.log(`Idols added to inventory, now optimizing placement`);
+
+        // Now use the existing optimization function to place the idols
+        const optimizationResult = optimizeGrid(newInventory, idolTypes, gridState);
+
+        // console.log(`Optimization complete: placed ${optimizationResult.placedCount} idols`);
+
+        // Update grid with optimized layout
+        setGridState(optimizationResult.grid);
+        saveGridState(optimizationResult.grid);
+
+        // Update inventory to mark placed idols
+        const updatedInventory = newInventory.map((idol) => {
+            // Check if this idol is in the grid
+            let isPlaced = false;
+            for (let row = 0; row < optimizationResult.grid.length; row++) {
+                for (let col = 0; col < optimizationResult.grid[row].length; col++) {
+                    const cell = optimizationResult.grid[row][col];
+                    if (cell && cell.id === idol.id) {
+                        isPlaced = true;
+                        break;
+                    }
+                }
+                if (isPlaced) break;
+            }
+            return {
+                ...idol,
+                isPlaced,
+            };
+        });
+
+        setInventory(updatedInventory);
+        saveInventory(updatedInventory);
 
         // Show generation results
         setGenerationResult({
             total: result.idols.length,
-            placed: result.placedIdols ? result.placedIdols.length : 0,
-            notPlaced: notPlacedIdols,
-            modifiersRequested: expandedModifiers.length,
+            placed: optimizationResult.placedCount,
+            notPlaced: optimizationResult.notPlacedIdols,
+            modifiersRequested: desiredModifiers.length,
             success: result.idols.length > 0,
         });
 
