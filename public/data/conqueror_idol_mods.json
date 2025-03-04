@@ -535,14 +535,14 @@
       "id": "explicit.stat_2831543675"
     },
     {
-      "Name": "Essences",
+      "Name": "Essence",
       "Code": "MapRelicEssenceNumAtMaxTier1",
       "Mod": "Imprisoned Monsters in your Maps have at least 1 Essence at the highest possible tier",
       "Family": "MapRelicEssenceNumAtMaxTier",
       "id": "explicit.stat_2175157402"
     },
     {
-      "Name": "Essences",
+      "Name": "Essence",
       "Code": "MapRelicEssenceCorruptConvert1",
       "Mod": "Using Remnants of Corruption on Imprisoned Monsters in your Maps replaces all Essences with one of the Essences on the Imprisoned Monster",
       "Family": "MapRelicEssenceCorruptConvert",

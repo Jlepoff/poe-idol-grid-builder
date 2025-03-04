@@ -416,7 +416,7 @@
       "id": "explicit.stat_3275918621"
     },
     {
-      "Name": "Essences",
+      "Name": "Essence",
       "Code": "MapRelicEssenceThreeAdditionalEssenceChance1",
       "Mod": "Imprisoned Monsters in your Maps have 17% chance to have 3 additional Essences",
       "Family": "MapRelicEssenceThreeAdditionalEssenceChance",
