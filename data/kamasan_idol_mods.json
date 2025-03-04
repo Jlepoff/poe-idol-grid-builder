@@ -458,7 +458,7 @@
       "id": "explicit.stat_866902458"
     },
     {
-      "Name": "Essences",
+      "Name": "Essence",
       "Code": "MapRelicEssenceMonolithsHaveCorrutptionEssenceChance1",
       "Mod": "Monsters Imprisoned by Essences have a 25% chance to contain a Remnant of Corruption",
       "Family": "MapRelicEssenceMonolithsHaveCorrutptionEssenceChance",

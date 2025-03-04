@@ -437,14 +437,14 @@
       "id": "explicit.stat_495713612"
     },
     {
-      "Name": "Essences",
+      "Name": "Essence",
       "Code": "MapRelicEssenceRareItemWithModChance1",
       "Mod": "Imprisoned Monsters in your Maps have 60% chance to drop an additional Rare Item with an Essence Modifier",
       "Family": "MapRelicEssenceRareItemWithModChance",
       "id": "explicit.stat_1445968994"
     },
     {
-      "Name": "Essences",
+      "Name": "Essence",
       "Code": "MapRelicEssenceAdditionalEssenceChance1",
       "Mod": "Imprisoned Monsters in your Maps have 12% chance to have an additional Essence",
       "Family": "MapRelicEssenceAdditionalEssenceChance",
