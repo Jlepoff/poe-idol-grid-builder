@@ -1,4 +1,4 @@
-/* App.css - Minimalist theme styling */
+/* App.css - Enhanced styling with mobile fixes */
 
 .App {
   text-align: center;
@@ -141,4 +141,56 @@ input:focus, select:focus, textarea:focus {
 
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+/* Fix for mobile button alignment */
+@media (max-width: 640px) {
+  header .flex.justify-center.mt-3.space-x-4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0 0.5rem;
+  }
+  
+  header .flex.justify-center.mt-3.space-x-4 > * {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  header .flex.justify-center.mt-3.space-x-4 button {
+    width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+.preview-valid {
+  background-color: rgba(22, 163, 74, 0.5) !important; /* green-600 with transparency */
+  border-color: rgb(22, 163, 74) !important; /* green-600 */
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.3);
+}
+
+.preview-invalid {
+  background-color: rgba(220, 38, 38, 0.5) !important; /* red-600 with transparency */
+  border-color: rgb(220, 38, 38) !important; /* red-600 */
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
+}
+
+/* Subtle animation for valid preview */
+@keyframes pulseValid {
+  0% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.0);
+  }
+}
+
+.preview-valid {
+  animation: pulseValid 2s infinite;
 }

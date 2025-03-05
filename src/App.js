@@ -525,12 +525,50 @@ function App() {
         );
     }
 
-    // Filter inventory based on search term
+
     const filteredInventory = inventory.filter(
-        (idol) =>
-            !inventorySearchTerm ||
-            idol.name.toLowerCase().includes(inventorySearchTerm.toLowerCase()) ||
-            idol.type.toLowerCase().includes(inventorySearchTerm.toLowerCase())
+        (idol) => {
+            if (!inventorySearchTerm) return true;
+
+            const searchTerm = inventorySearchTerm.toLowerCase();
+
+            // Search by name or type
+            if (idol.name.toLowerCase().includes(searchTerm) ||
+                idol.type.toLowerCase().includes(searchTerm)) {
+                return true;
+            }
+
+            // Search through prefixes
+            if (idol.prefixes && idol.prefixes.length > 0) {
+                for (const prefix of idol.prefixes) {
+                    if (prefix.Name.toLowerCase().includes(searchTerm) ||
+                        prefix.Mod.toLowerCase().includes(searchTerm)) {
+                        return true;
+                    }
+                }
+            }
+
+            // Search through suffixes
+            if (idol.suffixes && idol.suffixes.length > 0) {
+                for (const suffix of idol.suffixes) {
+                    if (suffix.Name.toLowerCase().includes(searchTerm) ||
+                        suffix.Mod.toLowerCase().includes(searchTerm)) {
+                        return true;
+                    }
+                }
+            }
+
+            // Search through unique modifiers
+            if (idol.isUnique && idol.uniqueModifiers && idol.uniqueModifiers.length > 0) {
+                for (const mod of idol.uniqueModifiers) {
+                    if (mod.Mod.toLowerCase().includes(searchTerm)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     );
 
     // Mobile tab navigation
@@ -538,8 +576,8 @@ function App() {
         <div className="flex flex-wrap md:hidden border-b border-slate-700 mb-4">
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "builder"
-                        ? "border-b-2 border-amber-400 text-amber-400"
-                        : "text-slate-400"
+                    ? "border-b-2 border-amber-400 text-amber-400"
+                    : "text-slate-400"
                     }`}
                 onClick={() => setActiveTab("builder")}
             >
@@ -547,8 +585,8 @@ function App() {
             </button>
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "inventory"
-                        ? "border-b-2 border-amber-400 text-amber-400"
-                        : "text-slate-400"
+                    ? "border-b-2 border-amber-400 text-amber-400"
+                    : "text-slate-400"
                     }`}
                 onClick={() => setActiveTab("inventory")}
             >
@@ -556,8 +594,8 @@ function App() {
             </button>
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "modifiers"
-                        ? "border-b-2 border-amber-400 text-amber-400"
-                        : "text-slate-400"
+                    ? "border-b-2 border-amber-400 text-amber-400"
+                    : "text-slate-400"
                     }`}
                 onClick={() => setActiveTab("modifiers")}
             >
@@ -565,8 +603,8 @@ function App() {
             </button>
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "autogen"
-                        ? "border-b-2 border-amber-400 text-amber-400"
-                        : "text-slate-400"
+                    ? "border-b-2 border-amber-400 text-amber-400"
+                    : "text-slate-400"
                     }`}
                 onClick={() => setActiveTab("autogen")}
             >
@@ -574,8 +612,8 @@ function App() {
             </button>
             <button
                 className={`flex-1 py-2 px-3 ${activeTab === "unique"
-                        ? "border-b-2 border-amber-400 text-amber-400"
-                        : "text-slate-400"
+                    ? "border-b-2 border-amber-400 text-amber-400"
+                    : "text-slate-400"
                     }`}
                 onClick={() => setActiveTab("unique")}
             >
@@ -591,11 +629,11 @@ function App() {
         return (
             <div
                 className={`mb-4 p-3 rounded-lg ${generationResult.error
-                        ? "bg-red-900/50 border border-red-800"
-                        : generationResult.notPlaced &&
-                            generationResult.notPlaced.length > 0
-                            ? "bg-amber-900/30 border border-amber-800"
-                            : "bg-green-900/30 border border-green-800"
+                    ? "bg-red-900/50 border border-red-800"
+                    : generationResult.notPlaced &&
+                        generationResult.notPlaced.length > 0
+                        ? "bg-amber-900/30 border border-amber-800"
+                        : "bg-green-900/30 border border-green-800"
                     }`}
             >
                 <div className="flex justify-between">
@@ -685,7 +723,7 @@ function App() {
     // Help button in corner
     const renderHelpButton = () => (
         <button
-            className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 flex items-center justify-center text-xl text-white shadow-lg z-30 transition-colors"
+            className="fixed bottom-16 right-6 w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 flex items-center justify-center text-xl text-white shadow-lg z-50 transition-colors"
             onClick={() => setShowHelp(true)}
             title="Show keyboard shortcuts (Press ?)"
         >
@@ -702,7 +740,9 @@ function App() {
                         Path of Exile Idol Grid Builder
                     </h1>
                     <div className="w-full h-px bg-slate-700 my-4"></div>
-                    <div className="flex justify-center mt-3 space-x-4">
+
+                    {/* buttons container */}
+                    <div className="flex flex-wrap justify-center mt-3 space-x-0 sm:space-x-4 gap-2 sm:gap-0 px-2 sm:px-0">
                         <StrategiesButton onLoadStrategy={handleLoadStrategy} />
                         <ShareButton gridState={gridState} inventory={inventory} />
                         <OptimizeButton onOptimize={handleOptimizeGrid} />
@@ -726,8 +766,8 @@ function App() {
                             <div className="bg-slate-800 rounded-lg overflow-hidden flex w-full">
                                 <button
                                     className={`py-2 px-6 flex-1 ${activeTab === "builder"
-                                            ? "bg-indigo-600 text-white font-medium"
-                                            : "hover:bg-slate-700 text-slate-300"
+                                        ? "bg-indigo-600 text-white font-medium"
+                                        : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("builder")}
                                 >
@@ -735,8 +775,8 @@ function App() {
                                 </button>
                                 <button
                                     className={`py-2 px-6 flex-1 ${activeTab === "autogen"
-                                            ? "bg-indigo-600 text-white font-medium"
-                                            : "hover:bg-slate-700 text-slate-300"
+                                        ? "bg-indigo-600 text-white font-medium"
+                                        : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("autogen")}
                                 >
@@ -744,8 +784,8 @@ function App() {
                                 </button>
                                 <button
                                     className={`py-2 px-6 flex-1 ${activeTab === "unique"
-                                            ? "bg-indigo-600 text-white font-medium"
-                                            : "hover:bg-slate-700 text-slate-300"
+                                        ? "bg-indigo-600 text-white font-medium"
+                                        : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("unique")}
                                 >
@@ -757,10 +797,10 @@ function App() {
                         {/* Left Column Content */}
                         <div
                             className={`space-y-4 ${activeTab !== "builder" &&
-                                    activeTab !== "autogen" &&
-                                    activeTab !== "unique"
-                                    ? "hidden md:block"
-                                    : ""
+                                activeTab !== "autogen" &&
+                                activeTab !== "unique"
+                                ? "hidden md:block"
+                                : ""
                                 }`}
                         >
                             {activeTab === "autogen" ? (
@@ -819,7 +859,7 @@ function App() {
                                 <div className="mt-3 relative">
                                     <input
                                         type="text"
-                                        placeholder="Search by name or type..."
+                                        placeholder="Search idols..."
                                         className="w-full bg-slate-800 py-2 px-3 pr-8 rounded-md text-sm border border-slate-700 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                                         value={inventorySearchTerm}
                                         onChange={(e) => setInventorySearchTerm(e.target.value)}
@@ -878,13 +918,13 @@ function App() {
                 </div>
 
                 {/* Footer */}
-                <footer className="mt-auto pt-6 pb-4 border-t border-slate-800 text-center text-sm text-slate-500">
+                <footer className="mt-auto pt-3 pb-2 border-t border-slate-800 text-center text-sm text-slate-500">
                     <div className="max-w-4xl mx-auto flex flex-col items-center">
                         <a
                             href="https://github.com/Jlepoff/poe-idol-grid-builder/issues"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center hover:text-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none mb-2"
+                            className="inline-flex items-center hover:text-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none mb-1"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

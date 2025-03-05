@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDrop, useDrag } from "react-dnd";
 
 function GridCell({
@@ -9,10 +9,60 @@ function GridCell({
   isBlocked,
   onPlaceIdol,
   onRemoveFromGrid,
+  idolTypes,
+  gridState,
 }) {
-  // Configure drop target
+  // State to track preview status
+  const [previewStatus, setPreviewStatus] = useState(null);
+
+  // Configure drop target with preview functionality
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: "IDOL",
+    hover: (item, monitor) => {
+      if (isBlocked || cell) {
+        setPreviewStatus("invalid");
+        return;
+      }
+
+      // Validate if the idol can be placed at this position
+      if (item.idol && idolTypes) {
+        const idolType = idolTypes.find((type) => type.name === item.idol.type);
+        if (!idolType) {
+          setPreviewStatus("invalid");
+          return;
+        }
+
+        const { width, height } = idolType;
+        
+        // Check if placement would be valid
+        let valid = true;
+        
+        // Check grid bounds
+        if (row + height > 7 || col + width > 6) {
+          valid = false;
+        } else {
+          // Check for blocked cells or overlaps with other idols
+          for (let r = row; r < row + height; r++) {
+            for (let c = col; c < col + width; c++) {
+              if (isBlockedCell(r, c)) {
+                valid = false;
+                break;
+              }
+              
+              // Check if cell is occupied by another idol
+              // Skip cells occupied by the currently dragged idol if it's from the grid
+              if (gridState[r] && gridState[r][c] && isOccupiedByOtherIdol(r, c, item)) {
+                valid = false;
+                break;
+              }
+            }
+            if (!valid) break;
+          }
+        }
+
+        setPreviewStatus(valid ? "valid" : "invalid");
+      }
+    },
     drop: (item) => {
       if (isBlocked || cell) return { success: false };
   
@@ -24,6 +74,10 @@ function GridCell({
         // For new placement from inventory
         success = onPlaceIdol(item.idol, { row, col });
       }
+      
+      // Reset preview status
+      setPreviewStatus(null);
+      
       return { success };
     },
     canDrop: () => !isBlocked && !cell,
@@ -32,6 +86,55 @@ function GridCell({
       canDrop: !!monitor.canDrop(),
     }),
   });
+
+  // Reset preview status when drag ends
+  useEffect(() => {
+    if (!isOver) {
+      setPreviewStatus(null);
+    }
+  }, [isOver]);
+
+  // Helper function to check if a cell is blocked in the grid
+  const isBlockedCell = (r, c) => {
+    return (
+      (r === 0 && c === 0) || // Top-left corner
+      (r === 2 && (c === 1 || c === 4)) || // Row 3: specific cells
+      (r === 3 && (c === 1 || c === 2 || c === 3 || c === 4)) || // Row 4
+      (r === 4 && (c === 1 || c === 4)) || // Row 5
+      (r === 6 && c === 5) // Bottom-right
+    );
+  };
+  
+  // Helper function to check if a cell is occupied by an idol other than the currently dragged one
+  const isOccupiedByOtherIdol = (r, c, dragItem) => {
+    // If no cell at this position, it's not occupied
+    if (!gridState[r] || !gridState[r][c]) return false;
+    
+    // If this is a grid-to-grid move, we need to check if the cell is occupied by the dragged idol
+    if (dragItem.sourceType === "GRID" && dragItem.sourcePosition) {
+      const { row: sourceRow, col: sourceCol } = dragItem.sourcePosition;
+      const draggedIdol = gridState[sourceRow][sourceCol];
+      
+      if (!draggedIdol) return true; // Safety check
+      
+      // Get the size of the dragged idol
+      const idolType = idolTypes.find((type) => type.name === draggedIdol.type);
+      if (!idolType) return true; // Safety check
+      
+      const { width, height } = idolType;
+      
+      // Check if the current cell is within the bounds of the dragged idol's current position
+      const isWithinDraggedIdol = 
+        r >= sourceRow && r < sourceRow + height &&
+        c >= sourceCol && c < sourceCol + width;
+        
+      // If it's within the dragged idol's bounds, then this cell is not considered occupied
+      if (isWithinDraggedIdol) return false;
+    }
+    
+    // Cell is occupied by another idol
+    return true;
+  };
 
   // Configure drag source for cells containing idols
   const [{ isDragging }, drag] = useDrag({
@@ -51,9 +154,9 @@ function GridCell({
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
-    end: (item, monitor) => {
-      // If dropped successfully somewhere else, we'll let the drop target handle it
-      // If drop failed, the idol stays in place
+    end: () => {
+      // Reset any preview statuses when drag ends
+      setPreviewStatus(null);
     },
   });
 
@@ -133,13 +236,17 @@ function GridCell({
       }
     }
   } else {
-    // Empty cell styling
-    if (isOver) {
+    // Empty cell styling with preview highlighting - using direct Tailwind classes
+    if (previewStatus === "valid") {
+      cellClass += "bg-green-600 border-green-500 "; // Valid placement
+    } else if (previewStatus === "invalid") {
+      cellClass += "bg-red-600 border-red-500 "; // Invalid placement
+    } else if (isOver) {
       cellClass += canDrop
-        ? "bg-green-800 border-green-700"
-        : "bg-red-800 border-red-700";
+        ? "bg-green-800 border-green-700 "
+        : "bg-red-800 border-red-700 ";
     } else {
-      cellClass += "bg-slate-800 border-slate-700 hover:bg-slate-700";
+      cellClass += "bg-slate-800 border-slate-700 hover:bg-slate-700 ";
     }
   }
 

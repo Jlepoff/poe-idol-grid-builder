@@ -36,6 +36,7 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
               onPlaceIdol={onPlaceIdol}
               onRemoveFromGrid={onRemoveFromGrid}
               idolTypes={idolTypes}
+              gridState={gridState} // Pass entire grid state for validation
             />
           );
         })}
