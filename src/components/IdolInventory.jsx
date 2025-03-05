@@ -46,10 +46,10 @@ function IdolItem({ idol, onRemoveIdol }) {
   };
 
   // Special color for unique idols - changed to pinkish
-  const bgColor = idol.isUnique 
-    ? "bg-pink-700 bg-opacity-30 border-pink-600" 
+  const bgColor = idol.isUnique
+    ? "bg-pink-700 bg-opacity-30 border-pink-600"
     : typeColors[idol.type] || "bg-slate-800 bg-opacity-30 border-slate-700";
-  
+
   const opacity = isDragging ? "opacity-50" : "";
 
   // Check for valid trade data
@@ -65,7 +65,10 @@ function IdolItem({ idol, onRemoveIdol }) {
       title="Drag to place on grid or right-click to remove"
     >
       <div className="flex justify-between items-start">
-        <h3 className="font-bold text-white">{idol.name}</h3>
+        <div>
+          <h3 className="font-bold text-white">{idol.name}</h3>
+          <p className="text-xs text-slate-400 mt-1">{idol.type} Idol</p>
+        </div>
         <div className="flex items-center space-x-2">
           {canTrade && (
             <button
@@ -120,7 +123,9 @@ function IdolItem({ idol, onRemoveIdol }) {
           idol.uniqueModifiers &&
           idol.uniqueModifiers.length > 0 && (
             <div>
-              <h4 className="text-xs font-medium text-pink-400">Unique Modifiers:</h4>
+              <h4 className="text-xs font-medium text-pink-400">
+                Unique Modifiers:
+              </h4>
               <ul className="text-xs space-y-1 mt-1">
                 {idol.uniqueModifiers.map((mod, idx) => (
                   <li key={`unique-${idx}`} className="text-slate-300">
@@ -142,7 +147,8 @@ function IdolInventory({ inventory, onRemoveIdol }) {
       {inventory.length > 0 ? (
         <>
           <div className="text-sm text-slate-400 mb-4">
-            {inventory.length} {inventory.length === 1 ? 'idol' : 'idols'} in inventory •
+            {inventory.length} {inventory.length === 1 ? "idol" : "idols"} in
+            inventory •
             <span className="text-xs ml-1">
               Drag to place • Right-click to remove
             </span>

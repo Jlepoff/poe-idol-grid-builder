@@ -2,12 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { generateTradeUrl } from "../utils/tradeUtils";
 
-function UniqueIdols({ onAddIdol }) {
+function UniqueIdols({ onAddIdol, inventory }) {
   const [uniqueIdols, setUniqueIdols] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [addedIdols, setAddedIdols] = useState(new Set());
 
   // Load unique idols from JSON file
   useEffect(() => {
@@ -22,19 +21,19 @@ function UniqueIdols({ onAddIdol }) {
         }
 
         const data = await response.json();
-        
+
         // Convert data into a more usable format
-        const formattedIdols = data.map(idol => ({
+        const formattedIdols = data.map((idol) => ({
           id: idol.id || `unique-${Date.now()}-${Math.random()}`,
           name: idol.Item,
           type: idol.Type.split(" ")[0], // Extract the idol type (Minor, Kamasan, etc.)
           fullType: idol.Type,
           isUnique: true,
-          uniqueModifiers: idol.Mods.map(mod => ({
+          uniqueModifiers: idol.Mods.map((mod) => ({
             Mod: mod,
             Name: "Unique",
             Code: `Unique-${Date.now()}-${Math.random()}`,
-          }))
+          })),
         }));
 
         setUniqueIdols(formattedIdols);
@@ -56,22 +55,23 @@ function UniqueIdols({ onAddIdol }) {
       searchTerm === "" ||
       idol.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       idol.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      idol.uniqueModifiers.some(mod => 
+      idol.uniqueModifiers.some((mod) =>
         mod.Mod.toLowerCase().includes(searchTerm.toLowerCase())
       )
   );
 
+  // Check if a unique idol is already in inventory
+  const isIdolInInventory = (uniqueIdolName) => {
+    if (!inventory) return false;
+    return inventory.some(
+      (inventoryIdol) =>
+        inventoryIdol.isUnique && inventoryIdol.name === uniqueIdolName
+    );
+  };
+
   // Handle adding a unique idol to inventory
   const handleAddIdol = (idol) => {
-    // Check if this idol was already added
-    if (addedIdols.has(idol.id)) {
-      return;
-    }
-    
-    // Add to added idols set
-    setAddedIdols(new Set([...addedIdols, idol.id]));
-    
-    // Add to main inventory
+    // Add to main inventory with unique instance ID
     onAddIdol({
       ...idol,
       id: `${idol.id}-${Date.now()}`, // Ensure unique ID for inventory
@@ -84,9 +84,9 @@ function UniqueIdols({ onAddIdol }) {
       isUnique: true,
       name: idol.name,
       uniqueName: idol.name,
-      type: idol.type
+      type: idol.type,
     });
-    
+
     if (tradeUrl) {
       window.open(tradeUrl, "_blank");
     }
@@ -97,9 +97,25 @@ function UniqueIdols({ onAddIdol }) {
       <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
         <h2 className="text-xl font-bold mb-4 text-white">Unique Idols</h2>
         <div className="py-12 text-center text-slate-400">
-          <svg className="animate-spin h-8 w-8 mx-auto mb-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <svg
+            className="animate-spin h-8 w-8 mx-auto mb-4 text-indigo-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
           </svg>
           Loading unique idols...
         </div>
@@ -161,7 +177,9 @@ function UniqueIdols({ onAddIdol }) {
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-bold text-white">{idol.name}</h3>
-                    <p className="text-xs text-pink-300 mt-1">{idol.fullType}</p>
+                    <p className="text-xs text-pink-300 mt-1">
+                      {idol.fullType}
+                    </p>
                   </div>
                   <div className="flex items-center space-x-2">
                     <button
@@ -174,24 +192,26 @@ function UniqueIdols({ onAddIdol }) {
                     <button
                       onClick={() => handleAddIdol(idol)}
                       className={`text-xs py-1 px-2 rounded transition-colors border ${
-                        addedIdols.has(idol.id)
+                        isIdolInInventory(idol.name)
                           ? "bg-slate-700 text-slate-400 border-slate-600 cursor-not-allowed"
                           : "bg-green-600 hover:bg-green-500 text-white border-green-500"
                       }`}
-                      disabled={addedIdols.has(idol.id)}
+                      disabled={isIdolInInventory(idol.name)}
                       title={
-                        addedIdols.has(idol.id)
+                        isIdolInInventory(idol.name)
                           ? "Already added to inventory"
                           : "Add to inventory"
                       }
                     >
-                      {addedIdols.has(idol.id) ? "Added" : "Add"}
+                      {isIdolInInventory(idol.name) ? "Added" : "Add"}
                     </button>
                   </div>
                 </div>
 
                 <div className="mt-3">
-                  <h4 className="text-xs font-medium text-pink-300">Unique Modifiers:</h4>
+                  <h4 className="text-xs font-medium text-pink-300">
+                    Unique Modifiers:
+                  </h4>
                   <ul className="space-y-1 mt-1.5">
                     {idol.uniqueModifiers.map((mod, idx) => (
                       <li key={idx} className="text-xs text-slate-300">
