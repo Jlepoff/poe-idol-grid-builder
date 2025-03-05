@@ -43,8 +43,9 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
     ));
   };
 
+  // Slightly smaller grid container with centered content
   return (
-    <div className="grid-container border-2 border-indigo-600 rounded-xl p-2 bg-slate-950 inline-block shadow-sm">
+    <div className="grid-container border-2 border-indigo-600 rounded-xl p-1 bg-slate-950 inline-block shadow-sm mx-auto scale-95">
       {renderGrid()}
     </div>
   );

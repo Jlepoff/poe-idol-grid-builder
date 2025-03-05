@@ -1,4 +1,3 @@
-// components/IdolInventory.jsx
 import React from "react";
 import { useDrag } from "react-dnd";
 import { generateTradeUrl, hasValidTradeData } from "../utils/tradeUtils";
@@ -36,17 +35,21 @@ function IdolItem({ idol, onRemoveIdol }) {
     }
   };
 
-  // Color based on idol type
+  // Color based on idol type - Updated for Burial and Unique
   const typeColors = {
     Minor: "bg-blue-800 bg-opacity-30 border-blue-700",
     Kamasan: "bg-green-800 bg-opacity-30 border-green-700",
     Totemic: "bg-yellow-800 bg-opacity-30 border-yellow-700",
     Noble: "bg-purple-800 bg-opacity-30 border-purple-700",
     Conqueror: "bg-red-800 bg-opacity-30 border-red-700",
-    Burial: "bg-orange-800 bg-opacity-30 border-orange-700",
+    Burial: "bg-orange-600 bg-opacity-30 border-orange-500", // More orangeish
   };
 
-  const bgColor = typeColors[idol.type] || "bg-slate-800 bg-opacity-30 border-slate-700";
+  // Special color for unique idols - changed to pinkish
+  const bgColor = idol.isUnique 
+    ? "bg-pink-700 bg-opacity-30 border-pink-600" 
+    : typeColors[idol.type] || "bg-slate-800 bg-opacity-30 border-slate-700";
+  
   const opacity = isDragging ? "opacity-50" : "";
 
   // Check for valid trade data
@@ -117,7 +120,7 @@ function IdolItem({ idol, onRemoveIdol }) {
           idol.uniqueModifiers &&
           idol.uniqueModifiers.length > 0 && (
             <div>
-              <h4 className="text-xs font-medium text-purple-400">Unique Modifiers:</h4>
+              <h4 className="text-xs font-medium text-pink-400">Unique Modifiers:</h4>
               <ul className="text-xs space-y-1 mt-1">
                 {idol.uniqueModifiers.map((mod, idx) => (
                   <li key={`unique-${idx}`} className="text-slate-300">
@@ -135,7 +138,6 @@ function IdolItem({ idol, onRemoveIdol }) {
 // Main inventory component
 function IdolInventory({ inventory, onRemoveIdol }) {
   return (
-    
     <div className="max-h-96 overflow-y-auto pr-1">
       {inventory.length > 0 ? (
         <>

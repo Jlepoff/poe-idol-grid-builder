@@ -1,18 +1,15 @@
 import React, { useMemo, useState, useEffect } from "react";
 
-
 function ActiveModifiers({ gridState }) {
   const [showExportModal, setShowExportModal] = useState(false);
   const [selectedStrategies, setSelectedStrategies] = useState([]);
   const [copySuccess, setCopySuccess] = useState(false);
-  
-  // We'll derive available strategies directly from grouped modifiers
+  const [includeUniques, setIncludeUniques] = useState(false); // Back to false for unchecked by default
 
   const activeModifiers = useMemo(() => {
     const processedCells = new Set();
     const placedIdols = [];
 
-    // Collect all placed idols
     for (let row = 0; row < gridState.length; row++) {
       for (let col = 0; col < gridState[row].length; col++) {
         const cell = gridState[row][col];
@@ -100,7 +97,6 @@ function ActiveModifiers({ gridState }) {
         return group;
       }
 
-      // Stack numeric values and round to 1 decimal place
       const totalValue = Number(
         group.instances
           .reduce((sum, inst) => sum + (inst.value || 0), 0)
@@ -179,16 +175,12 @@ function ActiveModifiers({ gridState }) {
       .trim();
   }
 
-  // Filter out unique modifiers for export
   const exportableModifiers = useMemo(() => {
-    return activeModifiers.filter(mod => !mod.isUnique);
-  }, [activeModifiers]);
+    return activeModifiers.filter(mod => includeUniques || !mod.isUnique);
+  }, [activeModifiers, includeUniques]);
 
-  // Count idol types for export
   const idolTypeCounts = useMemo(() => {
     const typeCounts = {};
-    
-    // Collect all placed idols
     const processedCells = new Set();
     
     for (let row = 0; row < gridState.length; row++) {
@@ -202,51 +194,72 @@ function ActiveModifiers({ gridState }) {
         if (!processedCells.has(cellKey)) {
           processedCells.add(cellKey);
           
-          // Count by type
-          const type = cell.type;
-          typeCounts[type] = (typeCounts[type] || 0) + 1;
+          // Only count as minor idol if not unique or if uniques are included
+          if (!cell.isUnique || includeUniques) {
+            const type = cell.type || "Minor Idol"; // Default to "Minor Idol" if type is undefined
+            typeCounts[type] = (typeCounts[type] || 0) + 1;
+          }
         }
       }
     }
     
     return typeCounts;
-  }, [gridState]);
+  }, [gridState, includeUniques]); // Added includeUniques as dependency
 
   useEffect(() => {
     setSelectedStrategies([]);
   }, [gridState]);
 
-  // Get available strategies directly from groupedModifiers
   const availableStrategies = useMemo(() => {
     return Object.keys(groupedModifiers)
       .filter(key => key !== "Unique")
       .sort();
   }, [groupedModifiers]);
 
-  // Generate export text
   const generateExportText = () => {
-    // Format strategy name
     const strategyText = selectedStrategies.length > 0
-      ? `Strategy: ${selectedStrategies.join(', ')}` 
+      ? `Strategy: ${selectedStrategies.join(', ')}`
       : 'Strategy:';
     
-    // Format modifier stats
     const statsText = exportableModifiers.map(mod => {
       if (mod.count > 1) {
         return `- ${mod.mod} (${mod.count}x)`;
       }
       return `- ${mod.mod}`;
     }).join('\n');
+
+    let uniqueIdolsText = '';
+    if (includeUniques) {
+      const processedCells = new Set();
+      const uniqueIdols = [];
+
+      for (let row = 0; row < gridState.length; row++) {
+        for (let col = 0; col < gridState[row].length; col++) {
+          const cell = gridState[row][col];
+          if (!cell || !cell.isUnique) continue;
+
+          const idolPos = cell.position || { row, col };
+          const cellKey = `${idolPos.row}-${idolPos.col}`;
+
+          if (!processedCells.has(cellKey)) {
+            processedCells.add(cellKey);
+            uniqueIdols.push(cell.name || 'Unnamed Unique Idol');
+          }
+        }
+      }
+
+      uniqueIdolsText = uniqueIdols.length > 0
+        ? `\n\nUnique Idols:\n${uniqueIdols.map(name => `- ${name}`).join('\n')}`
+        : '';
+    }
     
-    // Format idol types
     const typesText = Object.entries(idolTypeCounts)
       .map(([type, count]) => `- ${count}x ${type}`)
       .join('\n');
     
-    return `${strategyText}\nIdol Stats:\n${statsText}\n\nIdol Types:\n${typesText}`;
+    return `${strategyText}\nIdol Stats:\n${statsText}${uniqueIdolsText}\n\nIdol Types:\n${typesText}`;
   };
 
-  // Handle copy to clipboard
   const handleCopyText = () => {
     const textToCopy = generateExportText();
     navigator.clipboard.writeText(textToCopy).then(() => {
@@ -296,7 +309,6 @@ function ActiveModifiers({ gridState }) {
         ))}
       </div>
       
-      {/* Export Modal */}
       {showExportModal && (
         <div className="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-slate-900 rounded-xl p-6 max-w-lg w-full shadow-lg border border-slate-800">
@@ -323,11 +335,10 @@ function ActiveModifiers({ gridState }) {
                       <div 
                         key={strategy}
                         onClick={() => {
-                          // Toggle strategy selection
                           setSelectedStrategies(prev => 
                             prev.includes(strategy)
-                              ? prev.filter(s => s !== strategy) // Remove if already selected
-                              : [...prev, strategy]              // Add if not selected
+                              ? prev.filter(s => s !== strategy)
+                              : [...prev, strategy]
                           );
                         }}
                         className={`cursor-pointer p-2 rounded-md text-center text-sm ${
@@ -342,6 +353,22 @@ function ActiveModifiers({ gridState }) {
                   </>
                 )}
               </div>
+
+              <div className="flex items-center mb-4">
+                <input
+                  type="checkbox"
+                  id="includeUniques"
+                  checked={includeUniques}
+                  onChange={(e) => setIncludeUniques(e.target.checked)}
+                  className="mr-2 h-4 w-4 rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500 focus:ring-opacity-50 focus:ring-offset-0 transition-colors cursor-pointer"
+                />
+                <label 
+                  htmlFor="includeUniques" 
+                  className="text-sm text-slate-300 hover:text-slate-200 transition-colors cursor-pointer select-none"
+                >
+                  Include Unique(s)
+                </label>
+              </div>
             </div>
             
             <div className="bg-slate-800 p-4 rounded-lg max-h-60 overflow-y-auto font-mono text-sm text-slate-300 mb-5">
@@ -355,7 +382,7 @@ function ActiveModifiers({ gridState }) {
                   copySuccess 
                     ? 'bg-green-600 text-white' 
                     : 'bg-indigo-600 hover:bg-indigo-500 text-white'
-                }`}
+                } transition-colors`}
               >
                 {copySuccess ? 'Copied!' : 'Copy Text'}
               </button>

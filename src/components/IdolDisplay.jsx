@@ -1,4 +1,3 @@
-// components/IdolDisplay.jsx
 import React from "react";
 
 /**
@@ -7,17 +6,20 @@ import React from "react";
 function IdolDisplay({ idol }) {
   if (!idol) return null;
 
-  // Determine background color based on idol type
+  // Determine background color based on idol type - Updated colors
   const typeColors = {
     Minor: "bg-blue-900",
     Kamasan: "bg-green-900",
     Totemic: "bg-yellow-900",
     Noble: "bg-purple-900",
     Conqueror: "bg-red-900",
-    Burial: "bg-orange-900",
+    Burial: "bg-orange-700", // More orangeish
   };
 
-  const colorClass = typeColors[idol.type] || "bg-slate-800";
+  // Special color for unique idols
+  const colorClass = idol.isUnique 
+    ? "bg-pink-800" // More pinkish for unique idols
+    : (typeColors[idol.type] || "bg-slate-800");
 
   return (
     <div className={`${colorClass} p-2 rounded-lg shadow-md w-full h-full`}>
@@ -56,7 +58,7 @@ function IdolDisplay({ idol }) {
         {/* Show unique modifiers */}
         {idol.isUnique && idol.uniqueModifiers?.length > 0 && (
           <div className="mt-1">
-            <div className="text-xs text-purple-300 font-medium">Unique:</div>
+            <div className="text-xs text-pink-300 font-medium">Unique:</div>
             <ul className="text-xs text-slate-300">
               {idol.uniqueModifiers.map((mod, index) => (
                 <li key={index} className="truncate">

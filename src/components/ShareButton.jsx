@@ -1,6 +1,6 @@
 // components/ShareButton.jsx
 import React, { useState } from "react";
-// import { generateShareableURL, copyToClipboard } from "../utils/storageUtils";
+import { generateShareableURL, copyToClipboard } from "../utils/storageUtils";
 
 function ShareButton({ gridState, inventory }) {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -9,8 +9,8 @@ function ShareButton({ gridState, inventory }) {
   const handleShare = async () => {
     setIsCopying(true);
 
-    // const shareableURL = generateShareableURL(gridState, inventory);
-    // const copied = await copyToClipboard(shareableURL);
+    const shareableURL = generateShareableURL(gridState, inventory);
+    const copied = await copyToClipboard(shareableURL);
 
     setShowTooltip(true);
     setIsCopying(false);
@@ -21,7 +21,7 @@ function ShareButton({ gridState, inventory }) {
   return (
     <div className="relative">
       <button
-        className="bg-slate-800 hover:bg-slate-700 text-white py-2 px-4 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
         onClick={handleShare}
         disabled={isCopying}
         title="Share your idol layout with a link"

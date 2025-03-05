@@ -1,4 +1,3 @@
-// components/GridCell.jsx
 import React from "react";
 import { useDrop, useDrag } from "react-dnd";
 
@@ -72,38 +71,47 @@ function GridCell({
   if (isBlocked) {
     cellClass += "bg-slate-950 border-slate-900"; // Blocked cell
   } else if (cell) {
-    // Color based on idol type
+    // Updated color based on idol type - matching inventory colors with modified Unique and Burial
     const colors = {
       Minor: {
-        primary: "bg-blue-700 border-blue-600",
-        secondary: "bg-blue-600 border-blue-500",
+        primary: "bg-blue-800 bg-opacity-70 border-blue-700",
+        secondary: "bg-blue-800 bg-opacity-50 border-blue-700",
       },
       Kamasan: {
-        primary: "bg-green-700 border-green-600",
-        secondary: "bg-green-600 border-green-500",
+        primary: "bg-green-800 bg-opacity-70 border-green-700",
+        secondary: "bg-green-800 bg-opacity-50 border-green-700",
       },
       Totemic: {
-        primary: "bg-yellow-700 border-yellow-600",
-        secondary: "bg-yellow-600 border-yellow-500",
+        primary: "bg-yellow-800 bg-opacity-70 border-yellow-700",
+        secondary: "bg-yellow-800 bg-opacity-50 border-yellow-700",
       },
       Noble: {
-        primary: "bg-purple-700 border-purple-600",
-        secondary: "bg-purple-600 border-purple-500",
+        primary: "bg-purple-800 bg-opacity-70 border-purple-700",
+        secondary: "bg-purple-800 bg-opacity-50 border-purple-700",
       },
       Conqueror: {
-        primary: "bg-red-700 border-red-600",
-        secondary: "bg-red-600 border-red-500",
+        primary: "bg-red-800 bg-opacity-70 border-red-700",
+        secondary: "bg-red-800 bg-opacity-50 border-red-700",
       },
       Burial: {
-        primary: "bg-orange-700 border-orange-600",
-        secondary: "bg-orange-600 border-orange-500",
+        primary: "bg-orange-600 bg-opacity-70 border-orange-500",
+        secondary: "bg-orange-600 bg-opacity-50 border-orange-500",
       },
     };
+    
+    // Special color for unique idols - updated to be more pinkish
+    if (cell.isUnique) {
+      colors[cell.type] = {
+        primary: "bg-pink-700 bg-opacity-70 border-pink-600",
+        secondary: "bg-pink-700 bg-opacity-50 border-pink-600",
+      };
+    }
 
     const defaultColor = {
       primary: "bg-slate-700 border-slate-600",
       secondary: "bg-slate-600 border-slate-500",
     };
+    
     const idolColors = colors[cell.type] || defaultColor;
 
     // If this is the primary cell (top-left) of the idol

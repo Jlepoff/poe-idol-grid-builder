@@ -47,6 +47,9 @@ function App() {
     const [showHelp, setShowHelp] = useState(false);
     const [firstVisit, setFirstVisit] = useState(true);
 
+    // Inventory search state
+    const [inventorySearchTerm, setInventorySearchTerm] = useState("");
+
     // Load data and check for shared URL
     useEffect(() => {
         const fetchData = async () => {
@@ -85,6 +88,8 @@ function App() {
         if (!hasVisited) {
             localStorage.setItem("hasVisitedBefore", "true");
             setFirstVisit(true);
+        } else {
+            setFirstVisit(false); // Don't show tip for returning users
         }
     }, []);
 
@@ -505,6 +510,13 @@ function App() {
         }
     };
 
+    // Filter inventory based on search term
+    const filteredInventory = inventory.filter(idol =>
+        !inventorySearchTerm ||
+        idol.name.toLowerCase().includes(inventorySearchTerm.toLowerCase()) ||
+        idol.type.toLowerCase().includes(inventorySearchTerm.toLowerCase())
+    );
+
     // Mobile tab navigation
     const renderMobileTabNav = () => (
         <div className="flex flex-wrap md:hidden border-b border-slate-700 mb-4">
@@ -541,28 +553,31 @@ function App() {
         </div>
     );
 
-    const renderDesktopTabs = () => (
-        <div className="hidden md:flex bg-slate-800 rounded-lg overflow-hidden mb-4">
-            <button
-                className={`flex-1 py-2 px-4 ${activeTab === 'builder' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
-                onClick={() => setActiveTab('builder')}
-            >
-                Manual Builder
-            </button>
-            <button
-                className={`flex-1 py-2 px-4 ${activeTab === 'autogen' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
-                onClick={() => setActiveTab('autogen')}
-            >
-                Auto-Generate
-            </button>
-            <button
-                className={`flex-1 py-2 px-4 ${activeTab === 'strategies' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
-                onClick={() => setActiveTab('strategies')}
-            >
-                Strategies
-            </button>
-        </div>
-    );
+    // Desktop menu tabs - now positioned at top center
+    // const renderDesktopTabs = () => (
+    //     <div className="hidden md:block w-full mb-4">
+    //         <div className="bg-slate-800 rounded-lg overflow-hidden inline-flex w-full">
+    //             <button
+    //                 className={`py-2 px-6 flex-1 ${activeTab === 'builder' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
+    //                 onClick={() => setActiveTab('builder')}
+    //             >
+    //                 Manual Builder
+    //             </button>
+    //             <button
+    //                 className={`py-2 px-6 flex-1 ${activeTab === 'autogen' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
+    //                 onClick={() => setActiveTab('autogen')}
+    //             >
+    //                 Auto-Generate
+    //             </button>
+    //             <button
+    //                 className={`py-2 px-6 flex-1 ${activeTab === 'strategies' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
+    //                 onClick={() => setActiveTab('strategies')}
+    //             >
+    //                 Strategies
+    //             </button>
+    //         </div>
+    //     </div>
+    // );
 
     // Notification components
     const renderGenerationResult = () => {
@@ -625,24 +640,24 @@ function App() {
         );
     };
 
+    // Non-intrusive tip banner
     const renderFirstVisitTip = () => {
         if (!firstVisit) return null;
 
         return (
-            <div className="mb-4 p-3 rounded-lg bg-indigo-900/30 border border-indigo-800">
-                <div className="flex justify-between">
-                    <h3 className="font-medium text-white">Tip: Paste Idols from Path of Exile</h3>
-                    <button
-                        onClick={() => setFirstVisit(false)}
-                        className="text-slate-300 hover:text-white transition-colors"
-                    >
-                        ✕
-                    </button>
-                </div>
-                <p className="text-sm text-slate-300 mt-1">
-                    Copy an idol from Path of Exile and paste it directly (Ctrl + V) to
-                    add it to your inventory.
-                </p>
+            <div className="bg-slate-800/80 text-sm py-2 px-4 rounded-lg mb-4 flex justify-between items-center border-l-4 border-indigo-500">
+                <span className="text-slate-300">
+                    <span className="font-bold text-indigo-400">Pro Tip:</span> Press <kbd className="bg-slate-700 px-1.5 py-0.5 rounded text-xs">Ctrl+V</kbd> to paste idols directly from Path of Exile
+                </span>
+                <button
+                    onClick={() => setFirstVisit(false)}
+                    className="text-slate-400 hover:text-slate-300 ml-3"
+                    aria-label="Dismiss tip"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                </button>
             </div>
         );
     };
@@ -661,6 +676,7 @@ function App() {
     return (
         <DndProvider backend={HTML5Backend}>
             <div className="min-h-screen bg-slate-950 text-white p-4">
+                {/* Header */}
                 <header className="mb-6">
                     <h1 className="text-3xl font-bold text-center text-amber-400">
                         Path of Exile Idol Grid Builder
@@ -671,39 +687,84 @@ function App() {
                         <ClearButton onClear={handleClearAll} />
                     </div>
                 </header>
+
+                {/* Mobile Tab Navigation */}
                 {renderMobileTabNav()}
+
+                {/* Notification Areas */}
                 {generationResult && renderGenerationResult()}
                 {renderFirstVisitTip()}
+
+                {/* Main Content Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                    {/* Left column - Builder or Auto-Generate */}
-                    <div className={`md:col-span-4 lg:col-span-3 space-y-4 ${activeTab !== 'builder' && activeTab !== 'autogen' && activeTab !== 'strategies' ? 'hidden md:block' : ''
-                        }`}>
-                        {activeTab === 'autogen' ? (
-                            <DesiredModifiers
-                                modData={modData}
-                                onGenerateIdols={handleGenerateIdols}
-                            />
-                        ) : activeTab === 'strategies' ? (
-                            <StrategiesPanel onLoadStrategy={handleLoadStrategy} />
-                        ) : (
-                            <ImprovedIdolBuilder
-                                modData={modData}
-                                idolTypes={idolTypes}
-                                onAddIdol={handleAddIdol}
-                            />
-                        )}
+                    {/* Left Column - Builder or Auto-Generate */}
+                    <div className="md:col-span-3 lg:col-span-4">
+                        {/* Desktop Tabs */}
+                        <div className="hidden md:block mb-4">
+                            <div className="bg-slate-800 rounded-lg overflow-hidden flex w-full">
+                                <button
+                                    className={`py-2 px-6 flex-1 ${activeTab === 'builder'
+                                        ? 'bg-indigo-600 text-white font-medium'
+                                        : 'hover:bg-slate-700 text-slate-300'
+                                        } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
+                                    onClick={() => setActiveTab('builder')}
+                                >
+                                    Manual Builder
+                                </button>
+                                <button
+                                    className={`py-2 px-6 flex-1 ${activeTab === 'autogen'
+                                        ? 'bg-indigo-600 text-white font-medium'
+                                        : 'hover:bg-slate-700 text-slate-300'
+                                        } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
+                                    onClick={() => setActiveTab('autogen')}
+                                >
+                                    Auto-Generate
+                                </button>
+                                <button
+                                    className={`py-2 px-6 flex-1 ${activeTab === 'strategies'
+                                        ? 'bg-indigo-600 text-white font-medium'
+                                        : 'hover:bg-slate-700 text-slate-300'
+                                        } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
+                                    onClick={() => setActiveTab('strategies')}
+                                >
+                                    Strategies
+                                </button>
+                            </div>
+                        </div>
 
-                        {renderDesktopTabs()}
-
+                        {/* Left Column Content */}
+                        <div
+                            className={`space-y-4 ${activeTab !== 'builder' &&
+                                activeTab !== 'autogen' &&
+                                activeTab !== 'strategies'
+                                ? 'hidden md:block'
+                                : ''
+                                }`}
+                        >
+                            {activeTab === 'autogen' ? (
+                                <DesiredModifiers
+                                    modData={modData}
+                                    onGenerateIdols={handleGenerateIdols}
+                                />
+                            ) : activeTab === 'strategies' ? (
+                                <StrategiesPanel onLoadStrategy={handleLoadStrategy} />
+                            ) : (
+                                <ImprovedIdolBuilder
+                                    modData={modData}
+                                    idolTypes={idolTypes}
+                                    onAddIdol={handleAddIdol}
+                                />
+                            )}
+                        </div>
                     </div>
-                    {/* Middle column - Grid */}
-                    <div className="md:col-span-5 lg:col-span-6 flex flex-col items-center">
+
+                    {/* Middle Column - Grid */}
+                    <div className="md:col-span-6 lg:col-span-4 flex flex-col items-center">
                         <div className="bg-slate-900 p-5 rounded-xl shadow-sm w-full">
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-xl font-bold text-white">Idol Grid</h2>
                             </div>
-                            {/* Added proper centering wrapper */}
-                            <div className="flex justify-center items-center">
+                            <div className="flex justify-center items-center max-w-full overflow-x-auto">
                                 <Grid
                                     gridState={gridState}
                                     onPlaceIdol={handlePlaceIdol}
@@ -712,33 +773,113 @@ function App() {
                                 />
                             </div>
                         </div>
-                        {/* Active Modifiers (desktop) */}
+                        {/* Active Modifiers (Desktop) */}
                         <div className="hidden md:block mt-4 w-full">
                             <ActiveModifiers gridState={gridState} />
                         </div>
                     </div>
-                    {/* Right column - Inventory */}
+
+                    {/* Right Column - Inventory */}
                     <div
-                        className={`md:col-span-3 space-y-4 ${activeTab !== "inventory" && "hidden md:block"
+                        className={`md:col-span-3 lg:col-span-4 space-y-4 ${activeTab !== 'inventory' && 'hidden md:block'
                             }`}
                     >
                         <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-                            <h2 className="text-xl font-bold mb-4 text-white">Inventory</h2>
+                            <div className="mb-4">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-xl font-bold text-white">Inventory</h2>
+                                    <div className="text-sm text-slate-400">
+                                        {filteredInventory.length}{' '}
+                                        {filteredInventory.length === 1 ? 'idol' : 'idols'}
+                                    </div>
+                                </div>
+
+                                {/* Search Bar */}
+                                <div className="mt-3 relative">
+                                    <input
+                                        type="text"
+                                        placeholder="Search by name or type..."
+                                        className="w-full bg-slate-800 py-2 px-3 pr-8 rounded-md text-sm border border-slate-700 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                                        value={inventorySearchTerm}
+                                        onChange={(e) => setInventorySearchTerm(e.target.value)}
+                                    />
+                                    <div className="absolute right-3 top-2.5 text-slate-500">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-4 w-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                {/* Paste Tip */}
+                                <div className="mt-2 text-xs text-slate-400 flex items-center">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-3.5 w-3.5 mr-1 text-indigo-400"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                    Copy an idol from Path of Exile and press Ctrl+V to add it
+                                </div>
+                            </div>
                             <IdolInventory
-                                inventory={inventory}
+                                inventory={filteredInventory}
                                 onRemoveIdol={handleRemoveIdol}
                             />
                         </div>
                     </div>
-                    {/* Modifiers tab content (mobile) */}
-                    <div
-                        className={`col-span-12 ${activeTab !== "modifiers" && "hidden md:hidden"
-                            }`}
-                    >
+
+                    {/* Modifiers Tab Content (Mobile) */}
+                    <div className={`col-span-12 ${activeTab === "modifiers" ? "md:hidden" : "hidden"}`}>
                         <ActiveModifiers gridState={gridState} />
                     </div>
                 </div>
-                {/* Global components */}
+
+                {/* Footer */}
+                <footer className="mt-12 pb-4 text-center text-sm text-slate-500">
+                    <a
+                        href="https://github.com/Jlepoff/poe-idol-grid-builder/issues"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center hover:text-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4 mr-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                        </svg>
+                        Report Issues Here
+                    </a>
+                </footer>
+
+                {/* Global Components */}
                 {renderHelpButton()}
                 {showHelp && <KeyboardShortcuts onClose={() => setShowHelp(false)} />}
                 <IdolPasteHandler onAddIdol={handleAddIdol} modData={modData} />

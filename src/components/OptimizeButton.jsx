@@ -45,7 +45,7 @@ function OptimizeButton({ onOptimize }) {
           isOptimizing
             ? "bg-slate-700 text-slate-300 cursor-not-allowed"
             : "bg-indigo-600 hover:bg-indigo-500 text-white"
-        }`}
+        } `}
         onClick={handleOptimize}
         disabled={isOptimizing}
         title="Automatically arrange inventory idols on the grid"
