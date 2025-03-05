@@ -21,7 +21,7 @@ function ShareButton({ gridState, inventory }) {
   return (
     <div className="relative">
       <button
-        className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
+        className="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-colors"
         onClick={handleShare}
         disabled={isCopying}
         title="Share your idol layout with a link"

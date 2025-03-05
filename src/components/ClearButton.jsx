@@ -21,7 +21,7 @@ function ClearButton({ onClear }) {
   return (
     <div className="relative">
       <button
-        className="bg-red-600 hover:bg-red-500 text-white py-2 px-3 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-colors"
+        className="bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-colors"
         onClick={handleClearClick}
         title="Clear all idols and grid layout"
       >

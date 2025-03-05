@@ -41,7 +41,7 @@ function OptimizeButton({ onOptimize }) {
   return (
     <div className="relative">
       <button
-        className={`px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-colors ${
+        className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-colors ${
           isOptimizing
             ? "bg-slate-700 text-slate-300 cursor-not-allowed"
             : "bg-indigo-600 hover:bg-indigo-500 text-white"

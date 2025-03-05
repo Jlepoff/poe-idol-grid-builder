@@ -13,7 +13,8 @@ import KeyboardShortcuts from "./components/KeyboardShortcuts";
 import IdolPasteHandler from "./components/IdolPasteHandler";
 import ShareButton from "./components/ShareButton";
 import ClearButton from "./components/ClearButton";
-import StrategiesPanel from "./components/StrategiesPanel";
+import StrategiesButton from "./components/StrategiesButton";
+import UniqueIdols from "./components/UniqueIdols";
 
 // Utils
 import { loadIdolData, optimizeGrid } from "./utils";
@@ -192,7 +193,7 @@ function App() {
 
         const { width, height } = idolType;
 
-        // Check if idol fits within grid boundaries
+        // Check if placement is within grid bounds
         if (row + height > 7 || col + width > 6) return false;
 
         // Check for blocked cells and overlaps
@@ -464,21 +465,7 @@ function App() {
         setActiveTab("builder");
     };
 
-    // Loading state
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center h-screen bg-slate-950 text-white">
-                <div className="text-center">
-                    <svg className="animate-spin h-12 w-12 mx-auto mb-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <p className="text-xl">Loading idol data...</p>
-                </div>
-            </div>
-        );
-    }
-
+    // Handle loading strategy from the StrategiesButton component
     const handleLoadStrategy = (shareUrl) => {
         // Extract the share parameter from the URL
         const url = new URL(shareUrl);
@@ -509,6 +496,21 @@ function App() {
             }
         }
     };
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-screen bg-slate-950 text-white">
+                <div className="text-center">
+                    <svg className="animate-spin h-12 w-12 mx-auto mb-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p className="text-xl">Loading idol data...</p>
+                </div>
+            </div>
+        );
+    }
 
     // Filter inventory based on search term
     const filteredInventory = inventory.filter(idol =>
@@ -545,39 +547,13 @@ function App() {
                 Auto
             </button>
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === 'strategies' ? 'border-b-2 border-amber-400 text-amber-400' : 'text-slate-400'}`}
-                onClick={() => setActiveTab('strategies')}
+                className={`flex-1 py-2 px-3 ${activeTab === 'unique' ? 'border-b-2 border-amber-400 text-amber-400' : 'text-slate-400'}`}
+                onClick={() => setActiveTab('unique')}
             >
-                Strategies
+                Unique
             </button>
         </div>
     );
-
-    // Desktop menu tabs - now positioned at top center
-    // const renderDesktopTabs = () => (
-    //     <div className="hidden md:block w-full mb-4">
-    //         <div className="bg-slate-800 rounded-lg overflow-hidden inline-flex w-full">
-    //             <button
-    //                 className={`py-2 px-6 flex-1 ${activeTab === 'builder' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
-    //                 onClick={() => setActiveTab('builder')}
-    //             >
-    //                 Manual Builder
-    //             </button>
-    //             <button
-    //                 className={`py-2 px-6 flex-1 ${activeTab === 'autogen' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
-    //                 onClick={() => setActiveTab('autogen')}
-    //             >
-    //                 Auto-Generate
-    //             </button>
-    //             <button
-    //                 className={`py-2 px-6 flex-1 ${activeTab === 'strategies' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
-    //                 onClick={() => setActiveTab('strategies')}
-    //             >
-    //                 Strategies
-    //             </button>
-    //         </div>
-    //     </div>
-    // );
 
     // Notification components
     const renderGenerationResult = () => {
@@ -675,7 +651,7 @@ function App() {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className="min-h-screen bg-slate-950 text-white p-4">
+            <div className="min-h-screen bg-slate-950 text-white p-4 flex flex-col">
                 {/* Header */}
                 <header className="mb-6">
                     <h1 className="text-3xl font-bold text-center text-amber-400">
@@ -685,8 +661,12 @@ function App() {
                         <ShareButton gridState={gridState} inventory={inventory} />
                         <OptimizeButton onOptimize={handleOptimizeGrid} />
                         <ClearButton onClear={handleClearAll} />
+                        <StrategiesButton onLoadStrategy={handleLoadStrategy} />
                     </div>
                 </header>
+
+                {/* Header separator */}
+                <div className="w-full h-px bg-slate-700 mb-6"></div>
 
                 {/* Mobile Tab Navigation */}
                 {renderMobileTabNav()}
@@ -696,7 +676,7 @@ function App() {
                 {renderFirstVisitTip()}
 
                 {/* Main Content Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 flex-grow">
                     {/* Left Column - Builder or Auto-Generate */}
                     <div className="md:col-span-3 lg:col-span-4">
                         {/* Desktop Tabs */}
@@ -721,13 +701,13 @@ function App() {
                                     Auto-Generate
                                 </button>
                                 <button
-                                    className={`py-2 px-6 flex-1 ${activeTab === 'strategies'
+                                    className={`py-2 px-6 flex-1 ${activeTab === 'unique'
                                         ? 'bg-indigo-600 text-white font-medium'
                                         : 'hover:bg-slate-700 text-slate-300'
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
-                                    onClick={() => setActiveTab('strategies')}
+                                    onClick={() => setActiveTab('unique')}
                                 >
-                                    Strategies
+                                    Unique Idols
                                 </button>
                             </div>
                         </div>
@@ -736,7 +716,7 @@ function App() {
                         <div
                             className={`space-y-4 ${activeTab !== 'builder' &&
                                 activeTab !== 'autogen' &&
-                                activeTab !== 'strategies'
+                                activeTab !== 'unique'
                                 ? 'hidden md:block'
                                 : ''
                                 }`}
@@ -746,8 +726,8 @@ function App() {
                                     modData={modData}
                                     onGenerateIdols={handleGenerateIdols}
                                 />
-                            ) : activeTab === 'strategies' ? (
-                                <StrategiesPanel onLoadStrategy={handleLoadStrategy} />
+                            ) : activeTab === 'unique' ? (
+                                <UniqueIdols onAddIdol={handleAddIdol} />
                             ) : (
                                 <ImprovedIdolBuilder
                                     modData={modData}
@@ -778,7 +758,6 @@ function App() {
                             <ActiveModifiers gridState={gridState} />
                         </div>
                     </div>
-
                     {/* Right Column - Inventory */}
                     <div
                         className={`md:col-span-3 lg:col-span-4 space-y-4 ${activeTab !== 'inventory' && 'hidden md:block'
@@ -854,29 +833,32 @@ function App() {
                 </div>
 
                 {/* Footer */}
-                <footer className="mt-12 pb-4 text-center text-sm text-slate-500">
-                    <a
-                        href="https://github.com/Jlepoff/poe-idol-grid-builder/issues"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center hover:text-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 mr-1"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                <footer className="mt-12 pt-6 pb-4 border-t border-slate-800 text-center text-sm text-slate-500">
+                    <div className="max-w-4xl mx-auto flex flex-col items-center">
+                        <a
+                            href="https://github.com/Jlepoff/poe-idol-grid-builder/issues"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center hover:text-indigo-400 transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none mb-2"
                         >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                        </svg>
-                        Report Issues Here
-                    </a>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4 mr-1"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                            </svg>
+                            Report Issues Here
+                        </a>
+                        <p className="text-xs text-slate-600 mt-1">Created for Path of Exile • The Idol Grid Builder © 2025</p>
+                    </div>
                 </footer>
 
                 {/* Global Components */}
