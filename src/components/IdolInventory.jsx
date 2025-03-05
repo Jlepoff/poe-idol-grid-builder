@@ -55,11 +55,16 @@ function IdolItem({ idol, onRemoveIdol }) {
   // Check for valid trade data
   const canTrade = hasValidTradeData(idol);
 
+  // Enhanced placement styling - just use a prominent white border
+  const placedStyles = idol.isPlaced 
+    ? "border-2 border-white" 
+    : "border border-opacity-75";
+
   return (
     <div
       ref={drag}
       className={`${bgColor} p-4 rounded-lg shadow-sm mb-3 cursor-move ${opacity} ${
-        idol.isPlaced ? "border border-white" : "border"
+        placedStyles
       } transition-all hover:shadow-md`}
       onContextMenu={handleRightClick}
       title="Drag to place on grid or right-click to remove"
