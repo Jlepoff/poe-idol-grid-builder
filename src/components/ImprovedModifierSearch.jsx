@@ -100,7 +100,7 @@ function ImprovedModifierSearch({
     return Array.from(uniqueNames).sort();
   }, [modifierNames.prefixes, modifierNames.suffixes, filterType]);
 
-      // Filter modifiers based on search criteria
+  // Filter modifiers based on search criteria
   const filteredModifiers = useMemo(() => {
     if (!modData.prefixes || !modData.suffixes)
       return { prefixes: [], suffixes: [] };
@@ -457,20 +457,20 @@ function ImprovedModifierSearch({
   }, [filterType, modifierNames, combinedUniqueNames]);
 
   return (
-    <div className="bg-gray-800 rounded-lg">
+    <div className="bg-slate-800 rounded-lg ring-1 ring-slate-700">
       {/* View mode toggle */}
-      <div className="flex space-x-4 mb-4">
+      <div className="flex space-x-2 mb-4 p-3">
         <button
-          className={`px-3 py-1.5 rounded font-medium ${
-            !viewByName ? "bg-blue-600" : "bg-gray-700"
+          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+            !viewByName ? "bg-indigo-600 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
           }`}
           onClick={() => handleViewModeChange(false)}
         >
           Search by Text
         </button>
         <button
-          className={`px-3 py-1.5 rounded font-medium ${
-            viewByName ? "bg-blue-600" : "bg-gray-700"
+          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+            viewByName ? "bg-indigo-600 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
           }`}
           onClick={() => handleViewModeChange(true)}
         >
@@ -480,10 +480,10 @@ function ImprovedModifierSearch({
 
       {/* Browse by name interface */}
       {viewByName ? (
-        <div className="mb-4">
-          <div className="mb-2 flex space-x-4">
+        <div className="px-3 pb-3">
+          <div className="mb-3 flex space-x-2">
             <select
-              className="bg-gray-700 p-2 rounded border border-gray-600 flex-grow"
+              className="bg-slate-700 p-2.5 rounded-md border-0 text-sm flex-grow ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
               value={filterType}
               onChange={handleFilterTypeChange}
             >
@@ -494,10 +494,10 @@ function ImprovedModifierSearch({
           </div>
 
           {/* Name search filter */}
-          <div className="mb-2">
+          <div className="mb-3">
             <input
               type="text"
-              className="w-full bg-gray-700 p-2 rounded border border-gray-600"
+              className="w-full bg-slate-700 p-2.5 rounded-md border-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
               value={nameSearchTerm}
               onChange={(e) => setNameSearchTerm(e.target.value)}
               placeholder="Filter modifier names..."
@@ -505,7 +505,7 @@ function ImprovedModifierSearch({
           </div>
 
           {/* Deduplicated name tag cloud */}
-          <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
+          <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto rounded-md px-1 py-2">
             {nameTagsToDisplay
               .filter(
                 (name) =>
@@ -515,8 +515,10 @@ function ImprovedModifierSearch({
               .map((name) => (
                 <button
                   key={`name-tag-${name}`}
-                  className={`px-2 py-1 text-sm rounded ${
-                    nameFilter === name ? "bg-blue-600" : "bg-gray-700"
+                  className={`px-2 py-1 text-sm rounded-md transition-colors ${
+                    nameFilter === name 
+                      ? "bg-indigo-600 text-white" 
+                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
                   }`}
                   onClick={() => handleNameFilterChange(name)}
                 >
@@ -527,18 +529,18 @@ function ImprovedModifierSearch({
         </div>
       ) : (
         /* Search by text interface */
-        <div className="mb-4">
+        <div className="px-3 pb-3">
           <div className="flex">
             <input
               type="text"
-              className="flex-grow bg-gray-700 p-2 rounded-l border border-gray-600"
+              className="flex-grow bg-slate-700 p-2.5 rounded-l-md border-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
               value={searchTerm}
               onChange={handleSearchTermChange}
               placeholder="Search for modifiers..."
             />
 
             <select
-              className="bg-gray-700 p-2 rounded-r border border-l-0 border-gray-600"
+              className="bg-slate-700 p-2.5 rounded-r-md border-0 border-l-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
               value={filterType}
               onChange={handleFilterTypeChange}
             >
@@ -551,25 +553,25 @@ function ImprovedModifierSearch({
       )}
 
       {/* Results display */}
-      <div className="results space-y-4">
+      <div className="results space-y-3 px-3 pb-3">
         {/* Prefix results */}
         {filteredModifiers.prefixes.length > 0 && (
           <div>
-            <h3 className="font-semibold text-yellow-400 mb-2">
+            <h3 className="font-medium text-blue-400 mb-2 text-sm px-1">
               Prefixes ({filteredModifiers.prefixes.length})
             </h3>
-            <div className="max-h-40 overflow-y-auto bg-gray-700 rounded">
+            <div className="max-h-40 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600">
               {filteredModifiers.prefixes.map((prefix, index) => (
                 <div
                   key={`prefix-${prefix.Code}-${index}`}
-                  className="p-2 hover:bg-gray-600 border-b border-gray-600 text-sm cursor-pointer"
+                  className="p-2.5 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
                   onClick={() => handleAddModifier(prefix, "prefix")}
                 >
-                  <div className="font-medium">{prefix.Name}</div>
-                  <div className="text-gray-300 text-xs">{prefix.Mod}</div>
+                  <div className="font-medium text-white">{prefix.Name}</div>
+                  <div className="text-slate-300 text-xs mt-1">{prefix.Mod}</div>
                   {/* Show supported types in autogen mode */}
                   {searchContext === "autogen" && prefix.supportedTypes && (
-                    <div className="text-gray-400 text-xs">
+                    <div className="text-slate-400 text-xs mt-1">
                       Available on: {prefix.supportedTypes.join(", ")}
                     </div>
                   )}
@@ -582,21 +584,21 @@ function ImprovedModifierSearch({
         {/* Suffix results */}
         {filteredModifiers.suffixes.length > 0 && (
           <div>
-            <h3 className="font-semibold text-yellow-400 mb-2">
+            <h3 className="font-medium text-green-400 mb-2 text-sm px-1">
               Suffixes ({filteredModifiers.suffixes.length})
             </h3>
-            <div className="max-h-40 overflow-y-auto bg-gray-700 rounded">
+            <div className="max-h-40 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600">
               {filteredModifiers.suffixes.map((suffix, index) => (
                 <div
                   key={`suffix-${suffix.Code}-${index}`}
-                  className="p-2 hover:bg-gray-600 border-b border-gray-600 text-sm cursor-pointer"
+                  className="p-2.5 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
                   onClick={() => handleAddModifier(suffix, "suffix")}
                 >
-                  <div className="font-medium">{suffix.Name}</div>
-                  <div className="text-gray-300 text-xs">{suffix.Mod}</div>
+                  <div className="font-medium text-white">{suffix.Name}</div>
+                  <div className="text-slate-300 text-xs mt-1">{suffix.Mod}</div>
                   {/* Show supported types in autogen mode */}
                   {searchContext === "autogen" && suffix.supportedTypes && (
-                    <div className="text-gray-400 text-xs">
+                    <div className="text-slate-400 text-xs mt-1">
                       Available on: {suffix.supportedTypes.join(", ")}
                     </div>
                   )}
@@ -610,14 +612,14 @@ function ImprovedModifierSearch({
         {(searchTerm || nameFilter) &&
           filteredModifiers.prefixes.length === 0 &&
           filteredModifiers.suffixes.length === 0 && (
-            <p className="text-gray-400">
+            <p className="text-slate-400 py-2 text-sm text-center">
               No modifiers found matching "{searchTerm || nameFilter}"
             </p>
           )}
 
         {/* Help text when no search */}
         {!searchTerm && !nameFilter && (
-          <p className="text-gray-400">
+          <p className="text-slate-400 py-2 text-sm text-center">
             Enter search terms or select a modifier name to see results
           </p>
         )}

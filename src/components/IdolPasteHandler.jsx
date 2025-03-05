@@ -504,43 +504,43 @@ function IdolPasteHandler({ onAddIdol, modData }) {
   if (!showPrompt) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-lg p-6 max-w-lg w-full">
-        <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-bold">Idol Detected</h2>
+    <div className="fixed inset-0 bg-slate-950 bg-opacity-80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-slate-900 rounded-xl p-6 max-w-lg w-full shadow-lg border border-slate-800">
+        <div className="flex justify-between items-start mb-5">
+          <h2 className="text-xl font-bold text-white">Idol Detected</h2>
           <button
             onClick={() => setShowPrompt(false)}
-            className="text-gray-400 hover:text-white"
+            className="text-slate-400 hover:text-white transition-colors"
           >
             ✕
           </button>
         </div>
 
         {parseError ? (
-          <div className="bg-red-900 p-3 rounded mb-4">
-            <p>Error parsing idol: {parseError}</p>
+          <div className="bg-red-900 bg-opacity-50 p-4 rounded-lg mb-5 border border-red-800">
+            <p className="text-red-200">Error parsing idol: {parseError}</p>
           </div>
         ) : parsedIdol ? (
-          <div className="mb-4">
-            <p className="mb-2">Successfully parsed idol:</p>
-            <div className="bg-gray-700 p-3 rounded">
-              <div className="font-bold text-yellow-400">{parsedIdol.name}</div>
-              <div className="text-yellow-300">{parsedIdol.type} Idol</div>
+          <div className="mb-5">
+            <p className="mb-3 text-slate-300">Successfully parsed idol:</p>
+            <div className="bg-slate-800 p-4 rounded-lg">
+              <div className="font-bold text-indigo-300">{parsedIdol.name}</div>
+              <div className="text-slate-300">{parsedIdol.type} Idol</div>
 
-              <div className="mt-2">
+              <div className="mt-3 space-y-3">
                 {parsedIdol.isUnique ? (
                   <>
                     <div className="text-purple-400 font-semibold">
                       Unique Modifiers:
                     </div>
                     {parsedIdol.uniqueModifiers?.length > 0 ? (
-                      <ul className="list-disc list-inside text-sm">
+                      <ul className="list-disc list-inside text-sm text-slate-300 space-y-1">
                         {parsedIdol.uniqueModifiers.map((mod, idx) => (
                           <li key={`unique-mod-${idx}`}>{mod.Mod}</li>
                         ))}
                       </ul>
                     ) : (
-                      <div className="text-gray-400 text-sm">
+                      <div className="text-slate-400 text-sm">
                         No modifiers found
                       </div>
                     )}
@@ -551,28 +551,28 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                       Prefixes:
                     </div>
                     {parsedIdol.prefixes?.length > 0 ? (
-                      <ul className="list-disc list-inside text-sm">
+                      <ul className="list-disc list-inside text-sm text-slate-300 space-y-1">
                         {parsedIdol.prefixes.map((prefix, idx) => (
                           <li key={`prefix-${idx}`}>{prefix.Mod}</li>
                         ))}
                       </ul>
                     ) : (
-                      <div className="text-gray-400 text-sm">
+                      <div className="text-slate-400 text-sm">
                         No prefixes
                       </div>
                     )}
 
-                    <div className="text-green-400 font-semibold mt-1">
+                    <div className="text-green-400 font-semibold">
                       Suffixes:
                     </div>
                     {parsedIdol.suffixes?.length > 0 ? (
-                      <ul className="list-disc list-inside text-sm">
+                      <ul className="list-disc list-inside text-sm text-slate-300 space-y-1">
                         {parsedIdol.suffixes.map((suffix, idx) => (
                           <li key={`suffix-${idx}`}>{suffix.Mod}</li>
                         ))}
                       </ul>
                     ) : (
-                      <div className="text-gray-400 text-sm">
+                      <div className="text-slate-400 text-sm">
                         No suffixes
                       </div>
                     )}
@@ -582,15 +582,15 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             </div>
           </div>
         ) : (
-          <div className="mb-4">
-            <p>Parsing idol text...</p>
+          <div className="mb-5">
+            <p className="text-slate-300">Parsing idol text...</p>
           </div>
         )}
 
         <div className="flex space-x-4 justify-end">
           <button
             onClick={() => setShowPrompt(false)}
-            className="bg-gray-600 hover:bg-gray-500 py-2 px-4 rounded"
+            className="bg-slate-800 hover:bg-slate-700 py-2.5 px-4 rounded-lg text-sm transition-colors"
           >
             Cancel
           </button>
@@ -598,17 +598,17 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             onClick={handleAddParsedIdol}
             className={`${
               parsedIdol
-                ? "bg-green-600 hover:bg-green-500"
-                : "bg-gray-600 cursor-not-allowed"
-            } py-2 px-4 rounded`}
+                ? "bg-indigo-600 hover:bg-indigo-500"
+                : "bg-slate-700 cursor-not-allowed"
+            } py-2.5 px-4 rounded-lg text-sm font-medium shadow-sm transition-colors`}
             disabled={!parsedIdol}
           >
             Add to Inventory
           </button>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-gray-700">
-          <p className="text-sm text-gray-400">
+        <div className="mt-6 pt-4 border-t border-slate-800">
+          <p className="text-sm text-slate-400">
             <span className="font-semibold">Tip:</span> Copy any idol text from
             Path of Exile (Ctrl+V) to add it to your inventory.
           </p>

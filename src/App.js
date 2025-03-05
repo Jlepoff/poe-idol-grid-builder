@@ -379,11 +379,8 @@ function App() {
 
     const handleGenerateIdols = (desiredModifiers) => {
         if (!desiredModifiers || desiredModifiers.length === 0) {
-            // console.log("No modifiers provided");
             return;
         }
-
-        // console.log(`Starting idol generation for ${desiredModifiers.length} modifiers`);
 
         // Call the generator function - it now just creates idols without placement
         const result = generateAndPlaceIdols(
@@ -394,7 +391,6 @@ function App() {
         );
 
         if (!result || !result.idols || result.idols.length === 0) {
-            // console.error("No idols were generated");
             // Show error message
             setGenerationResult({
                 total: 0,
@@ -406,8 +402,6 @@ function App() {
             });
             return;
         }
-
-        // console.log(`Generated ${result.idols.length} idols, now adding to inventory`);
 
         // Add generated idols to inventory
         const newInventory = [...inventory];
@@ -422,12 +416,8 @@ function App() {
         setInventory(newInventory);
         saveInventory(newInventory);
 
-        // console.log(`Idols added to inventory, now optimizing placement`);
-
         // Now use the existing optimization function to place the idols
         const optimizationResult = optimizeGrid(newInventory, idolTypes, gridState);
-
-        // console.log(`Optimization complete: placed ${optimizationResult.placedCount} idols`);
 
         // Update grid with optimized layout
         setGridState(optimizationResult.grid);
@@ -472,8 +462,14 @@ function App() {
     // Loading state
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-screen">
-                Loading idol data...
+            <div className="flex items-center justify-center h-screen bg-slate-950 text-white">
+                <div className="text-center">
+                    <svg className="animate-spin h-12 w-12 mx-auto mb-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p className="text-xl">Loading idol data...</p>
+                </div>
             </div>
         );
     }
@@ -511,33 +507,33 @@ function App() {
 
     // Mobile tab navigation
     const renderMobileTabNav = () => (
-        <div className="flex flex-wrap md:hidden border-b border-gray-700 mb-4">
+        <div className="flex flex-wrap md:hidden border-b border-slate-700 mb-4">
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === 'builder' ? 'border-b-2 border-yellow-400 text-yellow-400' : 'text-gray-400'}`}
+                className={`flex-1 py-2 px-3 ${activeTab === 'builder' ? 'border-b-2 border-amber-400 text-amber-400' : 'text-slate-400'}`}
                 onClick={() => setActiveTab('builder')}
             >
                 Builder
             </button>
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === 'inventory' ? 'border-b-2 border-yellow-400 text-yellow-400' : 'text-gray-400'}`}
+                className={`flex-1 py-2 px-3 ${activeTab === 'inventory' ? 'border-b-2 border-amber-400 text-amber-400' : 'text-slate-400'}`}
                 onClick={() => setActiveTab('inventory')}
             >
                 Inventory
             </button>
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === 'modifiers' ? 'border-b-2 border-yellow-400 text-yellow-400' : 'text-gray-400'}`}
+                className={`flex-1 py-2 px-3 ${activeTab === 'modifiers' ? 'border-b-2 border-amber-400 text-amber-400' : 'text-slate-400'}`}
                 onClick={() => setActiveTab('modifiers')}
             >
                 Mods
             </button>
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === 'autogen' ? 'border-b-2 border-yellow-400 text-yellow-400' : 'text-gray-400'}`}
+                className={`flex-1 py-2 px-3 ${activeTab === 'autogen' ? 'border-b-2 border-amber-400 text-amber-400' : 'text-slate-400'}`}
                 onClick={() => setActiveTab('autogen')}
             >
                 Auto
             </button>
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === 'strategies' ? 'border-b-2 border-yellow-400 text-yellow-400' : 'text-gray-400'}`}
+                className={`flex-1 py-2 px-3 ${activeTab === 'strategies' ? 'border-b-2 border-amber-400 text-amber-400' : 'text-slate-400'}`}
                 onClick={() => setActiveTab('strategies')}
             >
                 Strategies
@@ -546,21 +542,21 @@ function App() {
     );
 
     const renderDesktopTabs = () => (
-        <div className="hidden md:flex bg-gray-800 rounded-lg overflow-hidden mb-4">
+        <div className="hidden md:flex bg-slate-800 rounded-lg overflow-hidden mb-4">
             <button
-                className={`flex-1 py-2 px-4 ${activeTab === 'builder' ? 'bg-gray-700 font-medium' : 'hover:bg-gray-700'}`}
+                className={`flex-1 py-2 px-4 ${activeTab === 'builder' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
                 onClick={() => setActiveTab('builder')}
             >
                 Manual Builder
             </button>
             <button
-                className={`flex-1 py-2 px-4 ${activeTab === 'autogen' ? 'bg-gray-700 font-medium' : 'hover:bg-gray-700'}`}
+                className={`flex-1 py-2 px-4 ${activeTab === 'autogen' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
                 onClick={() => setActiveTab('autogen')}
             >
                 Auto-Generate
             </button>
             <button
-                className={`flex-1 py-2 px-4 ${activeTab === 'strategies' ? 'bg-gray-700 font-medium' : 'hover:bg-gray-700'}`}
+                className={`flex-1 py-2 px-4 ${activeTab === 'strategies' ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-slate-700 text-slate-300'} transition-colors`}
                 onClick={() => setActiveTab('strategies')}
             >
                 Strategies
@@ -575,28 +571,30 @@ function App() {
         return (
             <div
                 className={`mb-4 p-3 rounded-lg ${generationResult.error
-                    ? "bg-red-800"
+                    ? "bg-red-900/50 border border-red-800"
                     : generationResult.notPlaced &&
                         generationResult.notPlaced.length > 0
-                        ? "bg-yellow-800"
-                        : "bg-green-800"
+                        ? "bg-amber-900/30 border border-amber-800"
+                        : "bg-green-900/30 border border-green-800"
                     }`}
             >
                 <div className="flex justify-between">
-                    <h3 className="font-medium">Generation Results</h3>
+                    <h3 className="font-medium text-white">Generation Results</h3>
                     <button
                         onClick={() => setGenerationResult(null)}
-                        className="text-gray-300 hover:text-white"
+                        className="text-slate-300 hover:text-white transition-colors"
                     >
                         ✕
                     </button>
                 </div>
 
                 {generationResult.error ? (
-                    <p className="text-sm text-red-200">{generationResult.error}</p>
+                    <p className="text-sm text-red-200 mt-1">{generationResult.error}</p>
+                ) : generationResult.message ? (
+                    <p className="text-sm text-green-200 mt-1">{generationResult.message}</p>
                 ) : (
                     <>
-                        <p className="text-sm">
+                        <p className="text-sm text-slate-300 mt-1">
                             Created {generationResult.total} idols with{" "}
                             {generationResult.modifiersRequested} desired modifiers.{" "}
                             {generationResult.placed} idols were automatically placed on the
@@ -606,13 +604,13 @@ function App() {
                         {/* Show idols that couldn't be placed */}
                         {generationResult.notPlaced &&
                             generationResult.notPlaced.length > 0 && (
-                                <div className="mt-2">
-                                    <p className="text-sm text-yellow-300">
+                                <div className="mt-2 bg-slate-800/50 p-2 rounded-md">
+                                    <p className="text-sm text-amber-300">
                                         {generationResult.notPlaced.length}{" "}
                                         {generationResult.notPlaced.length === 1 ? "idol" : "idols"}{" "}
                                         couldn't be placed:
                                     </p>
-                                    <ul className="mt-1 ml-4 list-disc text-xs">
+                                    <ul className="mt-1 ml-4 list-disc text-xs text-slate-300">
                                         {generationResult.notPlaced.map((idol, index) => (
                                             <li key={index}>
                                                 {idol.name} - No suitable space on grid
@@ -631,17 +629,17 @@ function App() {
         if (!firstVisit) return null;
 
         return (
-            <div className="mb-4 p-3 rounded-lg bg-blue-800">
+            <div className="mb-4 p-3 rounded-lg bg-indigo-900/30 border border-indigo-800">
                 <div className="flex justify-between">
-                    <h3 className="font-medium"> Tip: Paste Idols from Path of Exile </h3>
+                    <h3 className="font-medium text-white">Tip: Paste Idols from Path of Exile</h3>
                     <button
                         onClick={() => setFirstVisit(false)}
-                        className="text-gray-300 hover:text-white"
+                        className="text-slate-300 hover:text-white transition-colors"
                     >
                         ✕
                     </button>
                 </div>
-                <p className="text-sm">
+                <p className="text-sm text-slate-300 mt-1">
                     Copy an idol from Path of Exile and paste it directly (Ctrl + V) to
                     add it to your inventory.
                 </p>
@@ -652,7 +650,7 @@ function App() {
     // Help button in corner
     const renderHelpButton = () => (
         <button
-            className="fixed bottom-4 right-4 w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-xl shadow-lg z-30"
+            className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 flex items-center justify-center text-xl text-white shadow-lg z-30 transition-colors"
             onClick={() => setShowHelp(true)}
             title="Show keyboard shortcuts (Press ?)"
         >
@@ -662,9 +660,9 @@ function App() {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className="min-h-screen bg-gray-900 text-white p-4">
+            <div className="min-h-screen bg-slate-950 text-white p-4">
                 <header className="mb-6">
-                    <h1 className="text-3xl font-bold text-center text-yellow-400">
+                    <h1 className="text-3xl font-bold text-center text-amber-400">
                         Path of Exile Idol Grid Builder
                     </h1>
                     <div className="flex justify-center mt-3 space-x-4">
@@ -673,9 +671,10 @@ function App() {
                         <ClearButton onClear={handleClearAll} />
                     </div>
                 </header>
-                {renderMobileTabNav()} {generationResult && renderGenerationResult()}
+                {renderMobileTabNav()}
+                {generationResult && renderGenerationResult()}
                 {renderFirstVisitTip()}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                     {/* Left column - Builder or Auto-Generate */}
                     <div className={`md:col-span-4 lg:col-span-3 space-y-4 ${activeTab !== 'builder' && activeTab !== 'autogen' && activeTab !== 'strategies' ? 'hidden md:block' : ''
                         }`}>
@@ -699,11 +698,12 @@ function App() {
                     </div>
                     {/* Middle column - Grid */}
                     <div className="md:col-span-5 lg:col-span-6 flex flex-col items-center">
-                        <div className="bg-gray-800 p-4 rounded-lg shadow-lg w-full max-w-2xl">
+                        <div className="bg-slate-900 p-5 rounded-xl shadow-sm w-full">
                             <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-xl font-bold"> Idol Grid </h2>
+                                <h2 className="text-xl font-bold text-white">Idol Grid</h2>
                             </div>
-                            <div className="flex justify-center">
+                            {/* Added proper centering wrapper */}
+                            <div className="flex justify-center items-center">
                                 <Grid
                                     gridState={gridState}
                                     onPlaceIdol={handlePlaceIdol}
@@ -713,7 +713,7 @@ function App() {
                             </div>
                         </div>
                         {/* Active Modifiers (desktop) */}
-                        <div className="hidden md:block mt-4 w-full max-w-2xl">
+                        <div className="hidden md:block mt-4 w-full">
                             <ActiveModifiers gridState={gridState} />
                         </div>
                     </div>
@@ -722,8 +722,8 @@ function App() {
                         className={`md:col-span-3 space-y-4 ${activeTab !== "inventory" && "hidden md:block"
                             }`}
                     >
-                        <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
-                            <h2 className="text-xl font-bold mb-4"> Inventory </h2>
+                        <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
+                            <h2 className="text-xl font-bold mb-4 text-white">Inventory</h2>
                             <IdolInventory
                                 inventory={inventory}
                                 onRemoveIdol={handleRemoveIdol}
@@ -738,7 +738,8 @@ function App() {
                         <ActiveModifiers gridState={gridState} />
                     </div>
                 </div>
-                {/* Global components */} {renderHelpButton()}
+                {/* Global components */}
+                {renderHelpButton()}
                 {showHelp && <KeyboardShortcuts onClose={() => setShowHelp(false)} />}
                 <IdolPasteHandler onAddIdol={handleAddIdol} modData={modData} />
             </div>

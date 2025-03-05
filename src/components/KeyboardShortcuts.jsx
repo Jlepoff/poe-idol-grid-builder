@@ -19,38 +19,38 @@ function KeyboardShortcuts({ onClose }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full">
-        <div className="flex justify-between items-start mb-4">
-          <h2 className="text-xl font-bold">Keyboard Shortcuts</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
+    <div className="fixed inset-0 bg-slate-950 bg-opacity-80 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+      <div className="bg-slate-900 rounded-xl p-6 max-w-md w-full shadow-lg border border-slate-800">
+        <div className="flex justify-between items-start mb-5">
+          <h2 className="text-xl font-bold text-white">Keyboard Shortcuts</h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
             ✕
           </button>
         </div>
 
-        <div className="space-y-3">
-          <div className="flex justify-between">
-            <span className="font-medium">Right-click</span>
-            <span>Remove idol from grid or inventory</span>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center p-3 rounded-lg bg-slate-800 hover:bg-slate-750">
+            <span className="font-medium text-indigo-300">Right-click</span>
+            <span className="text-slate-300">Remove idol from grid or inventory</span>
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium">Ctrl + V</span>
-            <span>Paste idol from Path of Exile</span>
+          <div className="flex justify-between items-center p-3 rounded-lg bg-slate-800 hover:bg-slate-750">
+            <span className="font-medium text-indigo-300">Ctrl + V</span>
+            <span className="text-slate-300">Paste idol from Path of Exile</span>
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium">Press ?</span>
-            <span>Show/hide this help dialog</span>
+          <div className="flex justify-between items-center p-3 rounded-lg bg-slate-800 hover:bg-slate-750">
+            <span className="font-medium text-indigo-300">Press ?</span>
+            <span className="text-slate-300">Show/hide this help dialog</span>
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium">Press Esc</span>
-            <span>Close dialog windows</span>
+          <div className="flex justify-between items-center p-3 rounded-lg bg-slate-800 hover:bg-slate-750">
+            <span className="font-medium text-indigo-300">Press Esc</span>
+            <span className="text-slate-300">Close dialog windows</span>
           </div>
         </div>
 
-        <div className="mt-5 text-center">
+        <div className="mt-6 text-center">
           <button
             onClick={onClose}
-            className="bg-blue-600 hover:bg-blue-500 py-2 px-4 rounded"
+            className="bg-indigo-600 hover:bg-indigo-500 py-2.5 px-5 rounded-lg shadow-sm transition-colors font-medium"
           >
             Close
           </button>

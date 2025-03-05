@@ -44,7 +44,7 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
   };
 
   return (
-    <div className="grid-container border-2 border-yellow-600 rounded-lg p-1 bg-gray-700 inline-block">
+    <div className="grid-container border-2 border-indigo-600 rounded-xl p-2 bg-slate-950 inline-block shadow-sm">
       {renderGrid()}
     </div>
   );

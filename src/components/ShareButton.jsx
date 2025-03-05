@@ -1,6 +1,6 @@
 // components/ShareButton.jsx
 import React, { useState } from "react";
-import { generateShareableURL, copyToClipboard } from "../utils/storageUtils";
+// import { generateShareableURL, copyToClipboard } from "../utils/storageUtils";
 
 function ShareButton({ gridState, inventory }) {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -9,8 +9,8 @@ function ShareButton({ gridState, inventory }) {
   const handleShare = async () => {
     setIsCopying(true);
 
-    const shareableURL = generateShareableURL(gridState, inventory);
-    const copied = await copyToClipboard(shareableURL);
+    // const shareableURL = generateShareableURL(gridState, inventory);
+    // const copied = await copyToClipboard(shareableURL);
 
     setShowTooltip(true);
     setIsCopying(false);
@@ -21,7 +21,7 @@ function ShareButton({ gridState, inventory }) {
   return (
     <div className="relative">
       <button
-        className="bg-indigo-600 hover:bg-indigo-500 text-white py-1.5 px-3 rounded-lg text-sm font-medium flex items-center gap-2"
+        className="bg-slate-800 hover:bg-slate-700 text-white py-2 px-4 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
         onClick={handleShare}
         disabled={isCopying}
         title="Share your idol layout with a link"
@@ -44,7 +44,7 @@ function ShareButton({ gridState, inventory }) {
       </button>
 
       {showTooltip && (
-        <div className="absolute left-0 top-full mt-2 p-2 bg-gray-800 text-white text-xs rounded shadow-lg z-10 whitespace-nowrap">
+        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 p-2 bg-slate-800 text-white text-xs rounded-md shadow-lg z-10 whitespace-nowrap border border-slate-700">
           Link copied to clipboard
         </div>
       )}

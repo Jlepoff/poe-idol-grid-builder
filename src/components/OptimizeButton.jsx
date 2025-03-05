@@ -41,10 +41,10 @@ function OptimizeButton({ onOptimize }) {
   return (
     <div className="relative">
       <button
-        className={`px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 ${
+        className={`px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-colors ${
           isOptimizing
-            ? "bg-gray-600 cursor-not-allowed"
-            : "bg-blue-600 hover:bg-blue-500"
+            ? "bg-slate-700 text-slate-300 cursor-not-allowed"
+            : "bg-indigo-600 hover:bg-indigo-500 text-white"
         }`}
         onClick={handleOptimize}
         disabled={isOptimizing}
@@ -66,28 +66,28 @@ function OptimizeButton({ onOptimize }) {
       </button>
 
       {showResults && (
-        <div className="absolute right-0 mt-2 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-10 w-64">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="font-medium">Results</h3>
+        <div className="absolute right-0 mt-2 p-4 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-10 w-72">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-medium text-white">Results</h3>
             <button
               onClick={() => setShowResults(false)}
-              className="text-gray-400 hover:text-white"
+              className="text-slate-400 hover:text-slate-200 transition-colors"
             >
               ✕
             </button>
           </div>
 
-          <div className="text-sm space-y-2">
-            <div className="text-green-400">
+          <div className="text-sm space-y-3">
+            <div className="text-green-400 font-medium">
               {results.placedCount} idols placed
             </div>
 
             {results.notPlacedCount > 0 && (
-              <div>
-                <div className="text-yellow-400">
+              <div className="bg-slate-850 p-3 rounded-lg border border-slate-700">
+                <div className="text-yellow-400 font-medium mb-2">
                   {results.notPlacedCount} couldn't be placed:
                 </div>
-                <ul className="mt-1 ml-4 list-disc text-xs text-gray-300">
+                <ul className="space-y-1 ml-4 list-disc text-xs text-slate-300">
                   {results.notPlacedIdols.map((idol, index) => (
                     <li key={index}>
                       {idol.name} - {getReasonText(idol.reason)}

@@ -111,22 +111,22 @@ function ImprovedIdolBuilder({ modData, idolTypes, onAddIdol }) {
   };
 
   return (
-    <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
-      <h2 className="text-xl font-bold mb-4">Idol Builder</h2>
+    <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
+      <h2 className="text-xl font-bold mb-4 text-white">Idol Builder</h2>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Idol Type Selection */}
         <div>
-          <label className="block mb-1">Idol Type</label>
+          <label className="block mb-2 text-sm text-slate-300">Idol Type</label>
           <select
-            className="w-full bg-gray-700 p-2 rounded border border-gray-600"
+            className="w-full bg-slate-800 p-3 rounded-md border-0 text-sm ring-1 ring-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none"
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
           >
             <option value="">Select Idol Type</option>
             {idolTypes.map((type) => (
               <option key={type.name} value={type.name}>
-                {type.name} ({type.width}x{type.height})
+                {type.name} ({type.width}×{type.height})
               </option>
             ))}
           </select>
@@ -134,10 +134,10 @@ function ImprovedIdolBuilder({ modData, idolTypes, onAddIdol }) {
 
         {/* Idol Name */}
         <div>
-          <label className="block mb-1">Idol Name (Optional)</label>
+          <label className="block mb-2 text-sm text-slate-300">Idol Name (Optional)</label>
           <input
             type="text"
-            className="w-full bg-gray-700 p-2 rounded border border-gray-600"
+            className="w-full bg-slate-800 p-3 rounded-md border-0 text-sm ring-1 ring-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none"
             value={idolName}
             onChange={(e) => setIdolName(e.target.value)}
             placeholder="Custom Idol Name"
@@ -147,26 +147,26 @@ function ImprovedIdolBuilder({ modData, idolTypes, onAddIdol }) {
         {selectedType && (
           <>
             {/* Selected Prefixes */}
-            <div className="border-t border-gray-700 pt-3">
-              <h3 className="font-semibold mb-2">
+            <div className="border-t border-slate-800 pt-4">
+              <h3 className="font-medium mb-2 text-sm text-slate-300">
                 Selected Prefixes ({selectedPrefixes.length}/2)
               </h3>
               {selectedPrefixes.length > 0 ? (
-                <ul className="mb-3 space-y-1">
+                <ul className="mb-4 space-y-2">
                   {selectedPrefixes.map((prefix, index) => (
                     <li
                       key={index}
-                      className="bg-gray-700 p-2 rounded flex justify-between"
+                      className="bg-slate-800 p-3 rounded-md flex justify-between ring-1 ring-slate-700"
                     >
                       <div>
-                        <div className="text-sm font-medium">{prefix.Name}</div>
-                        <div className="text-xs text-gray-300">
+                        <div className="text-sm font-medium text-blue-400">{prefix.Name}</div>
+                        <div className="text-xs text-slate-400 mt-1">
                           {prefix.Mod}
                         </div>
                       </div>
                       <button
                         onClick={() => handleRemovePrefix(index)}
-                        className="text-red-400 hover:text-red-300 ml-2"
+                        className="text-slate-400 hover:text-slate-300 ml-2 self-start"
                         title="Remove prefix"
                       >
                         ✕
@@ -175,31 +175,33 @@ function ImprovedIdolBuilder({ modData, idolTypes, onAddIdol }) {
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-400 mb-3">No prefixes selected</p>
+                <div className="p-4 bg-slate-800 rounded-md text-sm text-slate-400 text-center mb-4 ring-1 ring-slate-700">
+                  No prefixes selected
+                </div>
               )}
             </div>
 
             {/* Selected Suffixes */}
-            <div className="border-t border-gray-700 pt-3">
-              <h3 className="font-semibold mb-2">
+            <div className="border-t border-slate-800 pt-4">
+              <h3 className="font-medium mb-2 text-sm text-slate-300">
                 Selected Suffixes ({selectedSuffixes.length}/2)
               </h3>
               {selectedSuffixes.length > 0 ? (
-                <ul className="mb-3 space-y-1">
+                <ul className="mb-4 space-y-2">
                   {selectedSuffixes.map((suffix, index) => (
                     <li
                       key={index}
-                      className="bg-gray-700 p-2 rounded flex justify-between"
+                      className="bg-slate-800 p-3 rounded-md flex justify-between ring-1 ring-slate-700"
                     >
                       <div>
-                        <div className="text-sm font-medium">{suffix.Name}</div>
-                        <div className="text-xs text-gray-300">
+                        <div className="text-sm font-medium text-green-400">{suffix.Name}</div>
+                        <div className="text-xs text-slate-400 mt-1">
                           {suffix.Mod}
                         </div>
                       </div>
                       <button
                         onClick={() => handleRemoveSuffix(index)}
-                        className="text-red-400 hover:text-red-300 ml-2"
+                        className="text-slate-400 hover:text-slate-300 ml-2 self-start"
                         title="Remove suffix"
                       >
                         ✕
@@ -208,13 +210,15 @@ function ImprovedIdolBuilder({ modData, idolTypes, onAddIdol }) {
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-400 mb-3">No suffixes selected</p>
+                <div className="p-4 bg-slate-800 rounded-md text-sm text-slate-400 text-center mb-4 ring-1 ring-slate-700">
+                  No suffixes selected
+                </div>
               )}
             </div>
 
             {/* Modifier Search */}
-            <div className="border-t border-gray-700 pt-3">
-              <h3 className="font-semibold mb-2">Search & Add Modifiers</h3>
+            <div className="border-t border-slate-800 pt-4">
+              <h3 className="font-medium mb-2 text-sm text-slate-300">Search & Add Modifiers</h3>
               <ImprovedModifierSearch
                 modData={selectedType ? getTypeSpecificMods() : modData}
                 onAddModifier={handleAddModifier}
@@ -227,7 +231,7 @@ function ImprovedIdolBuilder({ modData, idolTypes, onAddIdol }) {
 
             {/* Create Button */}
             <button
-              className="w-full mt-4 bg-yellow-600 hover:bg-yellow-500 py-2 px-4 rounded font-bold"
+              className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-medium transition-colors"
               onClick={handleCreateIdol}
               disabled={!selectedType}
             >

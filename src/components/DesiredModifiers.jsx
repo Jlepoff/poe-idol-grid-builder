@@ -77,7 +77,6 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
       };
     });
     
-    // console.log('Sending desired modifiers:', modifiersToGenerate);
     onGenerateIdols(modifiersToGenerate);
   };
 
@@ -93,11 +92,11 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
   );
 
   return (
-    <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
-      <h2 className="text-xl font-bold mb-4">Auto-Generate Idols</h2>
+    <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
+      <h2 className="text-xl font-bold mb-4 text-white">Auto-Generate Idols</h2>
 
-      <div className="space-y-4">
-        <p className="text-gray-300 text-sm">
+      <div className="space-y-5">
+        <p className="text-slate-300 text-sm">
           Add modifiers you want on your idols, then generate and place them
           automatically. Click a modifier multiple times to increase its
           quantity.
@@ -105,15 +104,15 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
 
         {/* Display selected modifiers */}
         {desiredModifiers.length > 0 ? (
-          <div className="border border-gray-700 rounded-lg p-3 mb-3">
-            <h3 className="font-semibold mb-2">
+          <div className="border border-slate-700 rounded-lg p-4 mb-4">
+            <h3 className="font-semibold mb-3 text-slate-200">
               Desired Modifiers ({totalModifierCount})
             </h3>
-            <ul className="max-h-60 overflow-y-auto space-y-2">
+            <ul className="max-h-60 overflow-y-auto space-y-2 pr-1">
               {desiredModifiers.map((mod, index) => (
                 <li
                   key={`${mod.Code}-${index}`}
-                  className="bg-gray-700 p-2 rounded flex justify-between items-start"
+                  className="bg-slate-800 p-3 rounded-md flex justify-between items-start"
                 >
                   <div>
                     <div className="text-sm">
@@ -129,15 +128,15 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
                       {mod.Name}
                       {mod.count > 1 && (
                         <span className="ml-2 text-yellow-400">
-                          ({mod.count}x)
+                          ({mod.count}×)
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-gray-300">{mod.Mod}</div>
+                    <div className="text-xs text-slate-400 mt-1">{mod.Mod}</div>
                   </div>
                   <button
                     onClick={() => handleRemoveModifier(index)}
-                    className="text-red-400 hover:text-red-300 ml-2"
+                    className="text-slate-400 hover:text-red-400 ml-2 transition-colors"
                   >
                     ✕
                   </button>
@@ -146,7 +145,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
             </ul>
           </div>
         ) : (
-          <div className="text-gray-400 text-center p-4 border border-dashed border-gray-700 rounded-lg">
+          <div className="text-slate-400 text-center p-5 border border-dashed border-slate-700 rounded-lg">
             No modifiers selected. Add modifiers to generate idols.
           </div>
         )}
@@ -154,11 +153,11 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
         {/* Search controls */}
         <div className="mb-3">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="font-semibold">Search Modifiers</h3>
+            <h3 className="font-semibold text-slate-200">Search Modifiers</h3>
             {showSearch && (
               <button
                 onClick={() => setShowSearch(false)}
-                className="text-gray-400 hover:text-gray-300"
+                className="text-slate-400 hover:text-slate-300"
               >
                 {desiredModifiers.length > 0 ? "Hide Search" : "✕ Close"}
               </button>
@@ -175,7 +174,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
             />
           ) : (
             <button
-              className="w-full bg-indigo-600 hover:bg-indigo-500 py-2 px-4 rounded font-medium"
+              className="w-full bg-slate-800 hover:bg-slate-700 py-2.5 px-4 rounded-md font-medium text-slate-200 transition-colors ring-1 ring-slate-700"
               onClick={() => setShowSearch(true)}
             >
               + Add Modifier
@@ -185,10 +184,10 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
 
         {/* Generate button */}
         <button
-          className={`w-full py-2 px-4 rounded font-bold ${
+          className={`w-full py-2.5 px-4 rounded-md font-bold shadow-sm transition-colors ${
             desiredModifiers.length === 0
-              ? "bg-gray-600 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-500"
+              ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-500 text-white"
           }`}
           onClick={handleGenerateIdols}
           disabled={desiredModifiers.length === 0}
@@ -197,7 +196,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
         </button>
 
         {desiredModifiers.length > 0 && (
-          <div className="mt-2 text-xs text-gray-400 text-center">
+          <div className="mt-2 text-xs text-slate-400 text-center">
             This will create idols with these modifiers and place them on the
             grid
           </div>

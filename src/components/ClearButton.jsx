@@ -21,7 +21,7 @@ function ClearButton({ onClear }) {
   return (
     <div className="relative">
       <button
-        className="bg-red-600 hover:bg-red-500 text-white py-1.5 px-3 rounded-lg text-sm font-medium flex items-center gap-2"
+        className="bg-red-600 hover:bg-red-500 text-white py-2 px-3 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-colors"
         onClick={handleClearClick}
         title="Clear all idols and grid layout"
       >
@@ -43,19 +43,19 @@ function ClearButton({ onClear }) {
       </button>
 
       {showConfirm && (
-        <div className="absolute right-0 mt-2 p-3 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-10 w-64">
-          <p className="text-sm mb-3">
+        <div className="absolute right-0 mt-2 p-4 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-10 w-72">
+          <p className="text-sm mb-4 text-slate-300">
             Are you sure you want to clear all idols and grid layout?
           </p>
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-3">
             <button
-              className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded"
+              className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-md text-sm transition-colors"
               onClick={() => setShowConfirm(false)}
             >
               Cancel
             </button>
             <button
-              className="px-3 py-1 bg-red-600 hover:bg-red-500 rounded"
+              className="px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded-md text-sm font-medium transition-colors"
               onClick={confirmClear}
             >
               Clear
