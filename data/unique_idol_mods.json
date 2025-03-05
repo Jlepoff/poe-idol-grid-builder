@@ -1,0 +1,398 @@
+[
+  {
+    "Item": "Arbitrary Tenets",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Favours at Ritual Altars in your Maps randomly cost between 90% less and 80% more"
+    ],
+    "Rarity": "Unique",
+    "id": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  {
+    "Item": "Black Thumb",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain the Sacred Grove",
+      "Scarabs found in your Maps cannot be Harvest Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "6baed492-9f6e-4a85-b2a3-5e9f6c8d3b1a"
+  },
+  {
+    "Item": "Bold Undertakings",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Fortune Favours the Brave applies an additional random Option",
+      "100% more cost of the Fortune Favours the Brave Map Crafting Option"
+    ],
+    "Rarity": "Unique",
+    "id": "8f1c8e5a-3b7d-4e9f-a6c2-7d8e9f2b3c4d"
+  },
+  {
+    "Item": "Cassia's Pride",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Blight Monsters in your Maps take (75-65)% less Damage from Players and their Minions",
+      "Blight Towers and their Minions in your Maps deal (300-400)% more Damage"
+    ],
+    "Rarity": "Unique",
+    "id": "b5e7f2c9-4d8a-4b1e-9c3f-6a7b8d9e0f1c"
+  },
+  {
+    "Item": "Crop Rotation",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Harvest Crops in your Maps contain only Tier 1 Plants",
+      "Harvesting Crops in your Maps has a chance to upgrade the Tier of Plants of different colours"
+    ],
+    "Rarity": "Unique",
+    "id": "c7d9e0f1-5e9b-4c2a-a8d3-9f6b7c8e1d2f"
+  },
+  {
+    "Item": "Crystallised Power",
+    "Type": "Minor Idol",
+    "Mods": [
+      "A Map Boss is granted a random Essence Modifier from any Imprisoned Monsters slain in your Maps"
+    ],
+    "Rarity": "Unique",
+    "id": "d8e0f1c2-6f9c-4d3b-b9e4-a7c8d9f0e2b3"
+  },
+  {
+    "Item": "Dance of Destruction",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Monsters in your Maps deal (20-25)% more Damage",
+      "Monsters in your Maps have (30-25)% less Life"
+    ],
+    "Rarity": "Unique",
+    "id": "e9f1c2d3-7a0d-4e4c-c0f5-b8d9e0f1c3a4"
+  },
+  {
+    "Item": "Destructive Play",
+    "Type": "Minor Idol",
+    "Mods": [
+      "The Maven casts Up the Stakes, summoning 1 to 3 additional Atlas Bosses when Witnessing Map Bosses",
+      "The number of additional Bosses summoned is higher if there are fewer monsters remaining in the Map",
+      "Modifiers to the Final Map Boss in each Map also apply to these summoned Bosses"
+    ],
+    "Rarity": "Unique",
+    "id": "f0a2d3e4-8b1e-4f5d-d1a6-c9e0f1c2d4b5"
+  },
+  {
+    "Item": "Dimensional Barrier",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain Breaches",
+      "Scarabs found in your Maps cannot be Breach Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "a1b3e4f5-9c2f-4a6e-e2b7-d0f1c2d3e5c6"
+  },
+  {
+    "Item": "Eldritch Gaze",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Eldritch Altars Influenced by The Eater of Worlds have an additional Downside",
+      "Eldritch Altars Influenced by The Eater of Worlds have (50-60)% increased Effect of Upsides"
+    ],
+    "Rarity": "Unique",
+    "id": "b2c4f5a6-0d3a-4b7f-f3c8-e1a2d3e4f6d7"
+  },
+  {
+    "Item": "Endless Tide",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Beyond Portals in your Maps cannot spawn Unique Bosses",
+      "Beyond Portals in your Maps have (50-40)% less Merging Radius"
+    ],
+    "Rarity": "Unique",
+    "id": "c3d5a6b7-1e4b-4c8a-a4d9-f2b3e4f5a7e8"
+  },
+  {
+    "Item": "Extreme Archaeology",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Number of Explosives is one",
+      "(200-250)% increased Explosive Radius in your Maps",
+      "Expedition Monsters in your Maps spawn with an additional (10-15)% of Life missing",
+      "(100-150)% increased Explosive Placement Range in your Maps"
+    ],
+    "Rarity": "Unique",
+    "id": "d4e6b7c8-2f5c-4d9b-b5e0-a3c4f5a6b8f9"
+  },
+  {
+    "Item": "Fungal Remission",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain Blight Encounters",
+      "Scarabs found in your Maps cannot be Blight Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "e5f7c8d9-3a6d-4e0c-c6f1-b4d5a6b7c9a0"
+  },
+  {
+    "Item": "Gruelling Gauntlet",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Ultimatum Encounters in your Maps last up to 13 Rounds",
+      "Players cannot choose which Ultimatum Modifier is applied each Round",
+      "Cannot have a Boss in the final Round"
+    ],
+    "Rarity": "Unique",
+    "id": "f6a8d9e0-4b7e-4f1d-d7a2-c5e6b7c8d0b1"
+  },
+  {
+    "Item": "Immutable Dogma",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Cannot Reroll Favours at Ritual Altars in your Maps",
+      "Monsters Sacrificed at Ritual Altars in your Maps grant (100-150)% more Tribute"
+    ],
+    "Rarity": "Unique",
+    "id": "a7b9e0f1-5c8f-4a2e-e8b3-d6f7c8d9e1c2"
+  },
+  {
+    "Item": "Loved by the Sun",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain Abysses",
+      "Scarabs found in your Maps cannot be Abyss Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "b8c0f1a2-6d9a-4b3f-f9c4-e7a8d9e0f2d3"
+  },
+  {
+    "Item": "Lucid Dreams",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Vaal Side Areas in your Maps are no longer Corrupted"
+    ],
+    "Rarity": "Unique",
+    "id": "c9d1a2b3-7e0b-4c4a-a9d5-f8b9e0f1a3e4"
+  },
+  {
+    "Item": "Meticulous Appraiser",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Modifiers to Quantity of Items found in your Maps instead apply to Rarity of Items found in your Maps at 300% of their value"
+    ],
+    "Rarity": "Unique",
+    "id": "d0e2b3c4-8f1c-4d5b-b0e6-a9c0f1a2b4f5"
+  },
+  {
+    "Item": "Ominous Silence",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain Mirrors of Delirium",
+      "Scarabs found in your Maps cannot be Delirium Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "e1f3c4d5-9a2d-4e6c-c1f7-b0d1a2b3c5a6"
+  },
+  {
+    "Item": "Perceived Greatness",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Delirium Reward Types in your Maps gain +1 to count on Map Completion",
+      "Delirious Monsters Killed in your Maps provide -(30-20)% increased Reward Progress"
+    ],
+    "Rarity": "Unique",
+    "id": "f2a4d5e6-0b3e-4f7d-d2a8-c1e2b3c4d6b7"
+  },
+  {
+    "Item": "Ruinous Wager",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Ultimatum Monsters in your Maps apply Ruin with their special abilities",
+      "Fail on reaching 7 Ruin",
+      "Ultimatum Monsters and Modifiers in your Maps deal (50-60)% less Damage"
+    ],
+    "Rarity": "Unique",
+    "id": "a3b5e6f7-1c4f-4a8e-e3b9-d2f3c4d5e7c8"
+  },
+  {
+    "Item": "Sealed Domain",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain Legion Encounters",
+      "Scarabs found in your Maps cannot be Legion Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "b4c6f7a8-2d5a-4b9f-f4c0-e3a4d5e6f8d9"
+  },
+  {
+    "Item": "Secular Focus",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain Ritual Altars",
+      "Scarabs found in your Maps cannot be Ritual Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "c5d7a8b9-3e6b-4c0a-a5d1-f4b5e6f7a9e0"
+  },
+  {
+    "Item": "Servant of Order",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain Ultimatum Encounters",
+      "Scarabs found in your Maps cannot be Ultimatum Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "d6e8b9c0-4f7c-4d1b-b6e2-a5c6f7a8b0f1"
+  },
+  {
+    "Item": "Shadow Shaping",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Maps found cannot be your Favoured Maps",
+      "Maps found in your Maps have +1% chance to have a special Implicit Modifier for each different Map you have Favoured"
+    ],
+    "Rarity": "Unique",
+    "id": "e7f9c0d1-5a8d-4e2c-c7f3-b6d7a8b9c1a2"
+  },
+  {
+    "Item": "Singular Focus",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Maps found have (200-220)% more chance to be Favoured Maps",
+      "Non-Favoured Maps found in your Maps drop as Basic Currency Items instead"
+    ],
+    "Rarity": "Unique",
+    "id": "f8a0d1e2-6b9e-4f3d-d8a4-c7e8b9c0d2b3"
+  },
+  {
+    "Item": "Smash and Grab",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Each Legion in your Maps contains an additional War Hoard",
+      "Legion Chests in your Maps contain an additional Random Reward",
+      "Legion Encounters in your Maps have -(80-60)% increased Duration"
+    ],
+    "Rarity": "Unique",
+    "id": "a9b1e2f3-7c0f-4a4e-e9b5-d8f9c0d1e3c4"
+  },
+  {
+    "Item": "Speaker of the Dead",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Tormented Spirits in your Maps can Possess Players for 20 seconds",
+      "Tormented Spirits in your Maps cannot Possess Monsters"
+    ],
+    "Rarity": "Unique",
+    "id": "b0c2f3a4-8d1a-4b5f-f0c6-e9a0d1e2f4d5"
+  },
+  {
+    "Item": "Straight and Narrow",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Rogue's Markers, Contracts and Blueprints cannot be found in Your Maps",
+      "Your Maps have no chance to contain Smuggler's Caches",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "c1d3a4b5-9e2b-4c6a-a1d7-f0b1e2f3a5e6"
+  },
+  {
+    "Item": "Thorough Exploration",
+    "Type": "Minor Idol",
+    "Mods": [
+      "If there are fewer than 50 monsters remaining in your Maps, Final Map Bosses are Empowered by Wildwood Wisps"
+    ],
+    "Rarity": "Unique",
+    "id": "d2e4b5c6-0f3c-4d7b-b2e8-a1c2f3a4b6f7"
+  },
+  {
+    "Item": "Timeless Conflict",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Legion Encounters in your Maps have no Timer",
+      "Breaking out Monsters and Chests that are in stasis progressively causes a Schism",
+      "Legion Encounters in your Maps begin once the Schism has occurred"
+    ],
+    "Rarity": "Unique",
+    "id": "e3f5c6d7-1a4d-4e8c-c3f9-b2d3a4b5c7a8"
+  },
+  {
+    "Item": "Trade Embargo",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Maps have no chance to contain Expedition Encounters",
+      "Scarabs found in your Maps cannot be Expedition Scarabs",
+      "Your Maps have +5% chance to contain other Extra Content that can be turned off through Atlas Passives"
+    ],
+    "Rarity": "Unique",
+    "id": "f4a6d7e8-2b5e-4f9d-d4a0-c3e4b5c6d8b9"
+  },
+  {
+    "Item": "Twist of Fate",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Your Corrupted Rare Maps and any Map Crafting options applying to them are modified unpredictably when opened",
+      "Maps modified in this way have 1-3 additional random Map Modifiers"
+    ],
+    "Rarity": "Unique",
+    "id": "a5b7e8f9-3c6f-4a0e-e5b1-d4f5c6d7e9c0"
+  },
+  {
+    "Item": "Twisted Wish",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Ultimatum Modifiers in your Maps start a Tier higher if possible",
+      "Ultimatum Encounters in your Maps get 3% reduced Radius each Round",
+      "[3 random reduced reward weight modifiers - check wiki for specifics]"
+    ],
+    "Rarity": "Unique",
+    "id": "b6c8f9a0-4d7a-4b1f-f6c2-e5a6d7e8f0d1"
+  },
+  {
+    "Item": "Unending Nightmare",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Delirium Fog in your Maps never dissipates",
+      "Delirium in your Maps has doubled difficulty scaling with distance from the mirror",
+      "Simulacrum Splinters cannot be found in your Maps",
+      "Delirium Orbs cannot be found in your Maps"
+    ],
+    "Rarity": "Unique",
+    "id": "c7d9a0b1-5e8b-4c2a-a7d3-f6b7e8f9a1e2"
+  },
+  {
+    "Item": "Well Supplied",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Syndicate Members Obtain an additional Equipment Item when appearing in your Maps",
+      "(30-50)% increased Intelligence gained from Immortal Syndicate targets encountered in your Maps",
+      "Immortal Syndicate Leaders in your Maps drop an additional Veiled Item"
+    ],
+    "Rarity": "Unique",
+    "id": "d8e0b1c2-6f9c-4d3b-b8e4-a7c8f9a0b2f3"
+  },
+  {
+    "Item": "Wellspring of Creation",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Monsters in your Maps deal (25-30)% less Damage",
+      "Monsters in your Maps have (40-50)% more Life"
+    ],
+    "Rarity": "Unique",
+    "id": "e9f1c2d3-7a0d-4e4c-c9f5-b8d9a0b1c3a4"
+  },
+  {
+    "Item": "Wrath of the Cosmos",
+    "Type": "Minor Idol",
+    "Mods": [
+      "Eldritch Altars Influenced by The Searing Exarch have (50-60)% chance to have an additional Upside",
+      "Eldritch Altars Influenced by The Searing Exarch which have an additional Upside have (80-100)% increased Effect of Downsides"
+    ],
+    "Rarity": "Unique",
+    "id": "f0a2d3e4-8b1e-4f5d-d0a6-c9e0b1c2d4b5"
+  }
+]
