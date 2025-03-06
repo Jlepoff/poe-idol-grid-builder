@@ -525,51 +525,55 @@ function App() {
         );
     }
 
+    const filteredInventory = inventory.filter((idol) => {
+        if (!inventorySearchTerm) return true;
 
-    const filteredInventory = inventory.filter(
-        (idol) => {
-            if (!inventorySearchTerm) return true;
+        const searchTerm = inventorySearchTerm.toLowerCase();
 
-            const searchTerm = inventorySearchTerm.toLowerCase();
-
-            // Search by name or type
-            if (idol.name.toLowerCase().includes(searchTerm) ||
-                idol.type.toLowerCase().includes(searchTerm)) {
-                return true;
-            }
-
-            // Search through prefixes
-            if (idol.prefixes && idol.prefixes.length > 0) {
-                for (const prefix of idol.prefixes) {
-                    if (prefix.Name.toLowerCase().includes(searchTerm) ||
-                        prefix.Mod.toLowerCase().includes(searchTerm)) {
-                        return true;
-                    }
-                }
-            }
-
-            // Search through suffixes
-            if (idol.suffixes && idol.suffixes.length > 0) {
-                for (const suffix of idol.suffixes) {
-                    if (suffix.Name.toLowerCase().includes(searchTerm) ||
-                        suffix.Mod.toLowerCase().includes(searchTerm)) {
-                        return true;
-                    }
-                }
-            }
-
-            // Search through unique modifiers
-            if (idol.isUnique && idol.uniqueModifiers && idol.uniqueModifiers.length > 0) {
-                for (const mod of idol.uniqueModifiers) {
-                    if (mod.Mod.toLowerCase().includes(searchTerm)) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
+        // Search by name, type, or unique status
+        if (
+            idol.name.toLowerCase().includes(searchTerm) ||
+            idol.type.toLowerCase().includes(searchTerm) ||
+            (idol.isUnique && "unique".includes(searchTerm))
+        ) {
+            return true;
         }
-    );
+
+        // Search through prefixes
+        if (idol.prefixes && idol.prefixes.length > 0) {
+            for (const prefix of idol.prefixes) {
+                if (
+                    prefix.Name.toLowerCase().includes(searchTerm) ||
+                    prefix.Mod.toLowerCase().includes(searchTerm)
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        // Search through suffixes
+        if (idol.suffixes && idol.suffixes.length > 0) {
+            for (const suffix of idol.suffixes) {
+                if (
+                    suffix.Name.toLowerCase().includes(searchTerm) ||
+                    suffix.Mod.toLowerCase().includes(searchTerm)
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        // Search through unique modifiers
+        if (idol.isUnique && idol.uniqueModifiers && idol.uniqueModifiers.length > 0) {
+            for (const mod of idol.uniqueModifiers) {
+                if (mod.Mod.toLowerCase().includes(searchTerm)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    });
 
     // Mobile tab navigation
     const renderMobileTabNav = () => (
@@ -843,8 +847,7 @@ function App() {
 
                     {/* Right Column - Inventory */}
                     <div
-                        className={`md:col-span-3 lg:col-span-4 space-y-6 ${activeTab !== "inventory" && "hidden md:block"
-                            }`}
+                        className={`md:col-span-3 lg:col-span-4 space-y-6 ${activeTab !== "inventory" && "hidden md:block"}`}
                     >
                         <div className="bg-slate-900 p-6 rounded-xl shadow-sm">
                             <div className="mb-6">
@@ -902,13 +905,23 @@ function App() {
                                     Copy an idol from Path of Exile and press Ctrl+V to add it
                                 </div>
                             </div>
-                            <IdolInventory
-                                inventory={filteredInventory}
-                                onRemoveIdol={handleRemoveIdol}
-                            />
+                            {filteredInventory.length === 0 && inventory.length > 0 ? (
+                                <div className="bg-slate-800/50 rounded-xl p-6 text-center border border-slate-700/50">
+                                    <div className="flex justify-center mb-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <p className="text-slate-300 text-base mb-5">No matching idols found.</p>
+                                </div>
+                            ) : (
+                                <IdolInventory
+                                    inventory={filteredInventory}
+                                    onRemoveIdol={handleRemoveIdol}
+                                />
+                            )}
                         </div>
                     </div>
-
                     {/* Modifiers Tab Content (Mobile) */}
                     <div
                         className={`col-span-12 ${activeTab === "modifiers" ? "md:hidden" : "hidden"

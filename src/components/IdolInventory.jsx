@@ -192,8 +192,6 @@ function IdolInventory({ inventory, onRemoveIdol }) {
 
   return (
     <div className="space-y-4">
-      {/* Remove the secondary header completely and just add a view toggle button 
-          in the top-right corner of the inventory section */}
       <div className="flex justify-end items-center">
         <button
           onClick={toggleView}
@@ -213,26 +211,27 @@ function IdolInventory({ inventory, onRemoveIdol }) {
       </div>
 
       <div className="max-h-96 overflow-y-auto pr-1">
-      {inventory.length > 0 ? (
-  <div>
-    {inventory.map((idol) => (
-      <IdolItem 
-        key={idol.id} 
-        idol={idol} 
-        onRemoveIdol={onRemoveIdol}
-      />
-    ))}
-  </div>
-) : (
-  <div className="bg-slate-800/50 rounded-xl p-6 text-center border border-slate-700/50">
-    <div className="flex justify-center mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-      </svg>
-    </div>
-    <p className="text-slate-300 text-base mb-5">No idols in inventory.</p>
-  </div>
-)}
+        {inventory.length > 0 ? (
+          <div>
+            {inventory.map((idol) => (
+              <IdolItem 
+                key={idol.id} 
+                idol={idol} 
+                onRemoveIdol={onRemoveIdol}
+                compactView={compactView}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="bg-slate-800/50 rounded-xl p-6 text-center border border-slate-700/50">
+            <div className="flex justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <p className="text-slate-300 text-base mb-5">No idols in inventory.</p>
+          </div>
+        )}
       </div>
     </div>
   );
