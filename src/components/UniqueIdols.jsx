@@ -172,7 +172,7 @@ function UniqueIdols({ onAddIdol, inventory }) {
             {filteredIdols.map((idol) => (
               <div
                 key={idol.id}
-                className="bg-gradient-to-r from-pink-700/30 to-pink-800/50 border border-pink-600 p-6 rounded-lg shadow-md transition-all hover:shadow-lg"
+                className="bg-gradient-to-r from-pink-700/30 to-pink-800/40 border border-pink-600 p-6 rounded-lg shadow-md transition-all hover:shadow-lg"
               >
                 <div className="flex justify-between items-start">
                   <div>

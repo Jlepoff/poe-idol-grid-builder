@@ -149,40 +149,42 @@ function GridCell({
   let cellClass = `w-14 h-14 flex items-center justify-center `;
 
   if (isBlocked) {
-    cellClass += "bg-slate-950 border-slate-900";
+    cellClass += " bg-slate-950 border-slate-900 opacity-60";
+
+
   } else if (cell) {
     // Flat colors matching the screenshots
     const colors = {
       Minor: {
-        primary: "bg-blue-700",
-        secondary: "bg-blue-700",
+        primary: "bg-blue-900/40",
+        secondary: "bg-blue-900/40",
       },
       Kamasan: {
-        primary: "bg-green-700",
-        secondary: "bg-green-700",
+        primary: "bg-green-900/40",
+        secondary: "bg-green-900/40",
       },
       Totemic: {
-        primary: "bg-amber-700",
-        secondary: "bg-amber-700",
+        primary: "bg-yellow-900/40",
+        secondary: "bg-yellow-900/40",
       },
       Noble: {
-        primary: "bg-purple-700",
-        secondary: "bg-purple-700",
+        primary: "bg-purple-900/40",
+        secondary: "bg-purple-900/40",
       },
       Conqueror: {
-        primary: "bg-red-700",
-        secondary: "bg-red-700",
+        primary: "bg-red-900/40",
+        secondary: "bg-red-900/40",
       },
       Burial: {
-        primary: "bg-orange-600",
-        secondary: "bg-orange-600",
+        primary: "bg-orange-700/40",
+        secondary: "bg-orange-700/40",
       },
     };
     
     if (cell.isUnique) {
       colors[cell.type] = {
-        primary: "bg-pink-500",
-        secondary: "bg-pink-500",
+        primary: "bg-pink-600/40",
+        secondary: "bg-pink-600/40",
       };
     }
 
