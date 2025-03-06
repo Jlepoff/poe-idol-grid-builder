@@ -146,113 +146,114 @@ function GridCell({
     }
   };
 
-  const determineBorderStyle = () => {
-    if (!cell || !cell.position) return "";
-    
-    const idolType = idolTypes.find((type) => type.name === cell.type);
-    if (!idolType) return "";
-    
-    const { width, height } = idolType;
-    const { row: posRow, col: posCol } = cell.position;
-    
-    let borderClasses = "";
-    
-    if (row === posRow) {
-      borderClasses += " border-t border-t-white/80";
-    } else {
-      borderClasses += " border-t-0";
-    }
-    
-    if (col === posCol) {
-      borderClasses += " border-l border-l-white/80";
-    } else {
-      borderClasses += " border-l-0";
-    }
-    
-    if (col === posCol + width - 1) {
-      borderClasses += " border-r border-r-white/80";
-    } else {
-      borderClasses += " border-r-0";
-    }
-    
-    if (row === posRow + height - 1) {
-      borderClasses += " border-b border-b-white/80";
-    } else {
-      borderClasses += " border-b-0";
-    }
-    
-    return borderClasses;
-  };
-
-  let cellClass = `w-14 h-14 flex items-center justify-center transition-all duration-200 `;
+  let cellClass = `w-14 h-14 flex items-center justify-center `;
 
   if (isBlocked) {
     cellClass += "bg-slate-950 border-slate-900";
   } else if (cell) {
+    // Flat colors matching the screenshots
     const colors = {
       Minor: {
-        primary: "bg-gradient-to-br from-blue-800 to-blue-900 bg-opacity-70",
-        secondary: "bg-gradient-to-br from-blue-800 to-blue-900 bg-opacity-50",
+        primary: "bg-blue-700",
+        secondary: "bg-blue-700",
       },
       Kamasan: {
-        primary: "bg-gradient-to-br from-green-800 to-green-900 bg-opacity-70",
-        secondary: "bg-gradient-to-br from-green-800 to-green-900 bg-opacity-50",
+        primary: "bg-green-700",
+        secondary: "bg-green-700",
       },
       Totemic: {
-        primary: "bg-gradient-to-br from-yellow-800 to-yellow-900 bg-opacity-70",
-        secondary: "bg-gradient-to-br from-yellow-800 to-yellow-900 bg-opacity-50",
+        primary: "bg-amber-700",
+        secondary: "bg-amber-700",
       },
       Noble: {
-        primary: "bg-gradient-to-br from-purple-800 to-purple-900 bg-opacity-70",
-        secondary: "bg-gradient-to-br from-purple-800 to-purple-900 bg-opacity-50",
+        primary: "bg-purple-700",
+        secondary: "bg-purple-700",
       },
       Conqueror: {
-        primary: "bg-gradient-to-br from-red-800 to-red-900 bg-opacity-70",
-        secondary: "bg-gradient-to-br from-red-800 to-red-900 bg-opacity-50",
+        primary: "bg-red-700",
+        secondary: "bg-red-700",
       },
       Burial: {
-        primary: "bg-gradient-to-br from-orange-600 to-orange-700 bg-opacity-70",
-        secondary: "bg-gradient-to-br from-orange-600 to-orange-700 bg-opacity-50",
+        primary: "bg-orange-600",
+        secondary: "bg-orange-600",
       },
     };
     
     if (cell.isUnique) {
       colors[cell.type] = {
-        primary: "bg-gradient-to-br from-pink-600 to-pink-700 bg-opacity-70",
-        secondary: "bg-gradient-to-br from-pink-600 to-pink-700 bg-opacity-50",
+        primary: "bg-pink-500",
+        secondary: "bg-pink-500",
       };
     }
 
     const defaultColor = {
       primary: "bg-slate-700",
-      secondary: "bg-slate-600",
+      secondary: "bg-slate-700",
     };
     
     const idolColors = colors[cell.type] || defaultColor;
-    const borderStyle = determineBorderStyle();
 
+    // Apply colors based on whether it's primary or secondary cell
     if (isPrimary) {
       if (isDragging) {
-        cellClass += `opacity-50 ${borderStyle} ${idolColors.primary}`;
+        cellClass += `opacity-50 ${idolColors.primary}`;
       } else {
-        cellClass += isOver ? `bg-red-700 border-red-600` : `${borderStyle} ${idolColors.primary}`;
+        cellClass += isOver ? `bg-red-700` : `${idolColors.primary}`;
       }
     } else {
-      cellClass += `${borderStyle} ${idolColors.secondary}`;
+      cellClass += `${idolColors.secondary}`;
+    }
+    
+    // Get idol position information
+    const { width, height } = idolTypes.find(type => type.name === cell.type) || { width: 1, height: 1 };
+    const { row: posRow, col: posCol } = cell.position || { row, col };
+    
+    // Add white border to the outer edges of the idol
+    const isTopEdge = row === posRow;
+    const isLeftEdge = col === posCol;
+    const isRightEdge = col === posCol + width - 1;
+    const isBottomEdge = row === posRow + height - 1;
+    
+    // Add white borders to the outer edges
+    if (isTopEdge) {
+      cellClass += " border-t border-t-white/40";
+    }
+    
+    if (isLeftEdge) {
+      cellClass += " border-l border-l-white/40";
+    }
+    
+    if (isRightEdge) {
+      cellClass += " border-r border-r-white/40";
+    }
+    
+    if (isBottomEdge) {
+      cellClass += " border-b border-b-white/40";
+    }
+    
+    // Add subtle interior grid lines
+    if (!isRightEdge && col < posCol + width - 1) {
+      // Right border for cells that aren't on the right edge
+      cellClass += " border-r border-r-black/35";
+    }
+    
+    if (!isBottomEdge && row < posRow + height - 1) {
+      // Bottom border for cells that aren't on the bottom edge
+      cellClass += " border-b border-b-black/35";
     }
   } else {
     if (previewStatus === "valid") {
-      cellClass += "bg-green-600 border border-green-500";
+      cellClass += "bg-green-600/70 border border-green-500";
     } else if (previewStatus === "invalid") {
-      cellClass += "bg-red-600 border border-red-500";
+      cellClass += "bg-red-600/70 border border-red-500";
     } else if (isOver) {
       cellClass += canDrop
-        ? "bg-green-700 border border-green-600"
-        : "bg-red-700 border border-red-600";
+        ? "bg-green-600/70 border border-green-500"
+        : "bg-red-600/70 border border-red-500";
     } else if (isValidPlacement) {
-      cellClass += "bg-green-900/40 border border-green-700/70";
+      cellClass += "bg-green-700/30 border border-green-600/50";
     } else {
-      cellClass += "bg-slate-800 border border-slate-700 hover:bg-slate-700";
+      cellClass += "bg-slate-800 border border-slate-700 hover:bg-slate-750";
     }
   }
 
@@ -269,9 +270,8 @@ function GridCell({
       ref={combinedRef}
       className={cellClass}
       onContextMenu={handleRightClick}
-      title={
-        cell && isPrimary ? `${cell.name} (Right-click to remove)` : ""
-      }
+      title={cell && isPrimary ? `${cell.name} (Right-click to remove)` : ""}
+      style={{ transition: "none" }}
     >
       {isPrimary && cell && (
         <div className="text-base font-bold text-white">
