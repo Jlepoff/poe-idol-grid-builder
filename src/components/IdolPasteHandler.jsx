@@ -556,12 +556,6 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             Add to Inventory
           </button>
         </div>
-
-        <div className="mt-6 pt-4 border-t border-slate-800">
-          <p className="text-sm text-slate-400">
-            <span className="font-semibold">Tip:</span> Copy any idol text from Path of Exile (Ctrl+V) to add it to your inventory.
-          </p>
-        </div>
       </div>
     </div>
   );
