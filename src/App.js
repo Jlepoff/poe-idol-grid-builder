@@ -758,14 +758,14 @@ function App() {
                 {renderFirstVisitTip()}
 
                 {/* Main Content Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 flex-grow">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 flex-grow">
                     {/* Left Column - Builder or Auto-Generate */}
                     <div className="md:col-span-3 lg:col-span-4">
                         {/* Desktop Tabs */}
-                        <div className="hidden md:block mb-4">
+                        <div className="hidden md:block mb-6">
                             <div className="bg-slate-800 rounded-lg overflow-hidden flex w-full">
                                 <button
-                                    className={`py-2 px-6 flex-1 ${activeTab === "builder"
+                                    className={`py-2.5 px-6 flex-1 ${activeTab === "builder"
                                         ? "bg-indigo-600 text-white font-medium"
                                         : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
@@ -774,7 +774,7 @@ function App() {
                                     Manual Builder
                                 </button>
                                 <button
-                                    className={`py-2 px-6 flex-1 ${activeTab === "autogen"
+                                    className={`py-2.5 px-6 flex-1 ${activeTab === "autogen"
                                         ? "bg-indigo-600 text-white font-medium"
                                         : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
@@ -783,7 +783,7 @@ function App() {
                                     Auto-Generate
                                 </button>
                                 <button
-                                    className={`py-2 px-6 flex-1 ${activeTab === "unique"
+                                    className={`py-2.5 px-6 flex-1 ${activeTab === "unique"
                                         ? "bg-indigo-600 text-white font-medium"
                                         : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
@@ -796,7 +796,7 @@ function App() {
 
                         {/* Left Column Content */}
                         <div
-                            className={`space-y-4 ${activeTab !== "builder" &&
+                            className={`space-y-6 ${activeTab !== "builder" &&
                                 activeTab !== "autogen" &&
                                 activeTab !== "unique"
                                 ? "hidden md:block"
@@ -822,8 +822,8 @@ function App() {
 
                     {/* Middle Column - Grid */}
                     <div className="md:col-span-6 lg:col-span-4 flex flex-col items-center">
-                        <div className="bg-slate-900 p-5 rounded-xl shadow-sm w-full">
-                            <div className="flex justify-between items-center mb-4">
+                        <div className="bg-slate-900 p-6 rounded-xl shadow-sm w-full">
+                            <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-xl font-bold text-white">Idol Grid</h2>
                             </div>
                             <div className="flex justify-center items-center max-w-full overflow-x-auto">
@@ -836,17 +836,18 @@ function App() {
                             </div>
                         </div>
                         {/* Active Modifiers (Desktop) */}
-                        <div className="hidden md:block mt-4 w-full">
+                        <div className="hidden md:block mt-6 w-full">
                             <ActiveModifiers gridState={gridState} />
                         </div>
                     </div>
+
                     {/* Right Column - Inventory */}
                     <div
-                        className={`md:col-span-3 lg:col-span-4 space-y-4 ${activeTab !== "inventory" && "hidden md:block"
+                        className={`md:col-span-3 lg:col-span-4 space-y-6 ${activeTab !== "inventory" && "hidden md:block"
                             }`}
                     >
-                        <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-                            <div className="mb-4">
+                        <div className="bg-slate-900 p-6 rounded-xl shadow-sm">
+                            <div className="mb-6">
                                 <div className="flex justify-between items-center">
                                     <h2 className="text-xl font-bold text-white">Inventory</h2>
                                     <div className="text-sm text-slate-400">
@@ -856,11 +857,11 @@ function App() {
                                 </div>
 
                                 {/* Search Bar */}
-                                <div className="mt-3 relative">
+                                <div className="mt-4 relative">
                                     <input
                                         type="text"
                                         placeholder="Search idols..."
-                                        className="w-full bg-slate-800 py-2 px-3 pr-8 rounded-md text-sm border border-slate-700 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                                        className="w-full bg-slate-800 py-2.5 px-3 pr-8 rounded-md text-sm border border-slate-700 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                                         value={inventorySearchTerm}
                                         onChange={(e) => setInventorySearchTerm(e.target.value)}
                                     />

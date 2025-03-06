@@ -11,9 +11,14 @@ function GridCell({
   onRemoveFromGrid,
   idolTypes,
   gridState,
+  isValidPlacement,
+  currentDrag
 }) {
   // State to track preview status
   const [previewStatus, setPreviewStatus] = useState(null);
+  // State to track placement animation
+  const [isPlacing, setIsPlacing] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
 
   // Configure drop target with preview functionality
   const [{ isOver, canDrop }, drop] = useDrop({
@@ -74,6 +79,12 @@ function GridCell({
         // For new placement from inventory
         success = onPlaceIdol(item.idol, { row, col });
       }
+
+      if (success) {
+        // Trigger placement animation
+        setIsPlacing(true);
+        setTimeout(() => setIsPlacing(false), 300);
+      }
       
       // Reset preview status
       setPreviewStatus(null);
@@ -101,7 +112,7 @@ function GridCell({
       (r === 2 && (c === 1 || c === 4)) || // Row 3: specific cells
       (r === 3 && (c === 1 || c === 2 || c === 3 || c === 4)) || // Row 4
       (r === 4 && (c === 1 || c === 4)) || // Row 5
-      (r === 6 && c === 5) // Bottom-right
+      (r === 6 && c === 5) // Bottom right
     );
   };
   
@@ -164,12 +175,61 @@ function GridCell({
   const handleRightClick = (e) => {
     e.preventDefault();
     if (cell) {
-      onRemoveFromGrid({ row, col });
+      setIsRemoving(true);
+      // Small delay before actual removal to allow animation to play
+      setTimeout(() => {
+        onRemoveFromGrid({ row, col });
+        setIsRemoving(false);
+      }, 200);
     }
   };
 
+  // Determine border styling for the cell based on its position in the idol
+  const determineBorderStyle = () => {
+    if (!cell || !cell.position) return "";
+    
+    const idolType = idolTypes.find((type) => type.name === cell.type);
+    if (!idolType) return "";
+    
+    const { width, height } = idolType;
+    const { row: posRow, col: posCol } = cell.position;
+    
+    // Create border classes based on position with thinner borders
+    let borderClasses = "";
+    
+    // Top border - changed from border-t-2 to border-t
+    if (row === posRow) {
+      borderClasses += " border-t border-t-white/80";
+    } else {
+      borderClasses += " border-t-0";
+    }
+    
+    // Left border - changed from border-l-2 to border-l
+    if (col === posCol) {
+      borderClasses += " border-l border-l-white/80";
+    } else {
+      borderClasses += " border-l-0";
+    }
+    
+    // Right border - changed from border-r-2 to border-r
+    if (col === posCol + width - 1) {
+      borderClasses += " border-r border-r-white/80";
+    } else {
+      borderClasses += " border-r-0";
+    }
+    
+    // Bottom border - changed from border-b-2 to border-b
+    if (row === posRow + height - 1) {
+      borderClasses += " border-b border-b-white/80";
+    } else {
+      borderClasses += " border-b-0";
+    }
+    
+    return borderClasses;
+  };
+
   // Determine cell style classes
-  let cellClass = "w-14 h-14 border flex items-center justify-center transition-colors ";
+  let cellClass = `w-14 h-14 flex items-center justify-center transition-all duration-200 `;
 
   if (isBlocked) {
     cellClass += "bg-slate-950 border-slate-900"; // Blocked cell
@@ -177,76 +237,104 @@ function GridCell({
     // Updated color based on idol type - matching inventory colors with modified Unique and Burial
     const colors = {
       Minor: {
-        primary: "bg-blue-800 bg-opacity-70 border-blue-700",
-        secondary: "bg-blue-800 bg-opacity-50 border-blue-700",
+        primary: "bg-gradient-to-br from-blue-800 to-blue-900 bg-opacity-70",
+        secondary: "bg-gradient-to-br from-blue-800 to-blue-900 bg-opacity-50",
       },
       Kamasan: {
-        primary: "bg-green-800 bg-opacity-70 border-green-700",
-        secondary: "bg-green-800 bg-opacity-50 border-green-700",
+        primary: "bg-gradient-to-br from-green-800 to-green-900 bg-opacity-70",
+        secondary: "bg-gradient-to-br from-green-800 to-green-900 bg-opacity-50",
       },
       Totemic: {
-        primary: "bg-yellow-800 bg-opacity-70 border-yellow-700",
-        secondary: "bg-yellow-800 bg-opacity-50 border-yellow-700",
+        primary: "bg-gradient-to-br from-yellow-800 to-yellow-900 bg-opacity-70",
+        secondary: "bg-gradient-to-br from-yellow-800 to-yellow-900 bg-opacity-50",
       },
       Noble: {
-        primary: "bg-purple-800 bg-opacity-70 border-purple-700",
-        secondary: "bg-purple-800 bg-opacity-50 border-purple-700",
+        primary: "bg-gradient-to-br from-purple-800 to-purple-900 bg-opacity-70",
+        secondary: "bg-gradient-to-br from-purple-800 to-purple-900 bg-opacity-50",
       },
       Conqueror: {
-        primary: "bg-red-800 bg-opacity-70 border-red-700",
-        secondary: "bg-red-800 bg-opacity-50 border-red-700",
+        primary: "bg-gradient-to-br from-red-800 to-red-900 bg-opacity-70",
+        secondary: "bg-gradient-to-br from-red-800 to-red-900 bg-opacity-50",
       },
       Burial: {
-        primary: "bg-orange-600 bg-opacity-70 border-orange-500",
-        secondary: "bg-orange-600 bg-opacity-50 border-orange-500",
+        primary: "bg-gradient-to-br from-orange-600 to-orange-700 bg-opacity-70",
+        secondary: "bg-gradient-to-br from-orange-600 to-orange-700 bg-opacity-50",
       },
     };
     
-    // Special color for unique idols - updated to be more pinkish
+    // Special color for unique idols - updated to a consistent pink
     if (cell.isUnique) {
       colors[cell.type] = {
-        primary: "bg-pink-700 bg-opacity-70 border-pink-600",
-        secondary: "bg-pink-700 bg-opacity-50 border-pink-600",
+        primary: "bg-gradient-to-br from-pink-600 to-pink-700 bg-opacity-70",
+        secondary: "bg-gradient-to-br from-pink-600 to-pink-700 bg-opacity-50",
       };
     }
 
     const defaultColor = {
-      primary: "bg-slate-700 border-slate-600",
-      secondary: "bg-slate-600 border-slate-500",
+      primary: "bg-slate-700",
+      secondary: "bg-slate-600",
     };
     
     const idolColors = colors[cell.type] || defaultColor;
+    
+    // Get special border styling based on idol position
+    const borderStyle = determineBorderStyle();
 
     // If this is the primary cell (top-left) of the idol
     if (isPrimary) {
       // When dragging, make cell appear slightly faded
       if (isDragging) {
-        cellClass += "opacity-50 " + idolColors.primary;
+        cellClass += `opacity-50 ${borderStyle} ${idolColors.primary}`;
+      } else if (isRemoving) {
+        cellClass += `opacity-0 scale-75 ${borderStyle} ${idolColors.primary}`; // Removal animation
+      } else if (isPlacing) {
+        cellClass += `scale-110 ${borderStyle} ${idolColors.primary}`; // Placement animation
       } else {
-        cellClass += isOver ? "bg-red-700 border-red-600" : idolColors.primary;
+        cellClass += isOver ? `bg-red-700 border-red-600` : `${borderStyle} ${idolColors.primary}`;
       }
     } else {
       // Make secondary cells faded when primary is being dragged
       if (isDragging && cell.position && 
           cell.position.row === row - (row % cell.position.row) && 
           cell.position.col === col - (col % cell.position.col)) {
-        cellClass += "opacity-50 " + idolColors.secondary;
+        cellClass += `opacity-50 ${borderStyle} ${idolColors.secondary}`;
+      } else if (isRemoving && cell.position) {
+        // Find if this is part of an idol that's being removed
+        const primaryRow = cell.position.row;
+        const primaryCol = cell.position.col;
+        if (gridState[primaryRow][primaryCol] && gridState[primaryRow][primaryCol].isRemoving) {
+          cellClass += `opacity-0 scale-75 ${borderStyle} ${idolColors.secondary}`; // Removal animation
+        } else {
+          cellClass += `${borderStyle} ${idolColors.secondary}`;
+        }
+      } else if (isPlacing && cell.position) {
+        // Find if this is part of an idol that's being placed
+        const primaryRow = cell.position.row;
+        const primaryCol = cell.position.col;
+        if (gridState[primaryRow][primaryCol] && gridState[primaryRow][primaryCol].isPlacing) {
+          cellClass += `scale-110 ${borderStyle} ${idolColors.secondary}`; // Placement animation
+        } else {
+          cellClass += `${borderStyle} ${idolColors.secondary}`;
+        }
       } else {
-        cellClass += idolColors.secondary;
+        cellClass += `${borderStyle} ${idolColors.secondary}`;
       }
     }
   } else {
-    // Empty cell styling with preview highlighting - using direct Tailwind classes
+    // Empty cell styling with preview highlighting or valid placement highlighting
     if (previewStatus === "valid") {
-      cellClass += "bg-green-600 border-green-500 "; // Valid placement
+      cellClass += "bg-green-600 border border-green-500 scale-105 "; // Valid placement with scale effect
     } else if (previewStatus === "invalid") {
-      cellClass += "bg-red-600 border-red-500 "; // Invalid placement
+      cellClass += "bg-red-600 border border-red-500 "; // Invalid placement
     } else if (isOver) {
       cellClass += canDrop
-        ? "bg-green-800 border-green-700 "
-        : "bg-red-800 border-red-700 ";
+        ? "bg-green-700 border border-green-600 scale-105 "
+        : "bg-red-700 border border-red-600 ";
+    } else if (isValidPlacement) {
+      // Highlight valid placement cells when dragging
+      cellClass += "bg-green-900/40 border border-green-700/70 pulse-subtle "; 
     } else {
-      cellClass += "bg-slate-800 border-slate-700 hover:bg-slate-700 ";
+      cellClass += "bg-slate-800 border border-slate-700 hover:bg-slate-700 "; // Regular empty cell
     }
   }
 
@@ -271,7 +359,7 @@ function GridCell({
       }
     >
       {isPrimary && cell && (
-        <div className="text-sm font-bold text-white">
+        <div className={`text-base font-bold text-white ${isPlacing ? 'animate-pulse' : ''}`}>
           {cell.isUnique ? "U" : cell.type.charAt(0)}
         </div>
       )}

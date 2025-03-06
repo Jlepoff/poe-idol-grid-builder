@@ -1,3 +1,4 @@
+// components/IdolPasteHandler.jsx
 import React, { useState, useEffect, useCallback } from "react";
 
 function IdolPasteHandler({ onAddIdol, modData }) {
@@ -460,18 +461,29 @@ function IdolPasteHandler({ onAddIdol, modData }) {
 
   useEffect(() => {
     const handlePaste = (e) => {
-      if (
-        e.target.tagName === "INPUT" ||
-        e.target.tagName === "TEXTAREA" ||
-        e.target.tagName === "SELECT"
-      ) {
+      // Get the target element where the paste occurred
+      const target = e.target;
+      
+      // Handle elements that should allow default paste behavior
+      const isFormElement = target.tagName === "INPUT" || 
+                            target.tagName === "TEXTAREA" || 
+                            target.tagName === "SELECT" ||
+                            target.isContentEditable;
+
+      const hasEditableParent = target.closest('[contenteditable="true"]');
+      
+      // If this is a form element or within an editable area, let the default paste behavior happen
+      if (isFormElement || hasEditableParent) {
         return;
       }
-
+      
+      // For any click on the document, if we detect idol text, process it
       const text = e.clipboardData.getData("text");
       if (text.includes("Item Class: Idols")) {
+        // Prevent default paste behavior for idol text
         e.preventDefault();
-
+        e.stopPropagation();
+  
         const result = parseIdolText(text);
         if (result.success) {
           setParsedIdol(result.idol);
@@ -480,15 +492,19 @@ function IdolPasteHandler({ onAddIdol, modData }) {
           setParsedIdol(null);
           setParseError(result.error);
         }
-
+  
         setShowPrompt(true);
       }
     };
-
-    document.addEventListener("paste", handlePaste);
-    return () => document.removeEventListener("paste", handlePaste);
+  
+    // This is a crucial change - we're capturing the paste event in the capture phase
+    // which happens before any element's individual event handler
+    document.addEventListener("paste", handlePaste, true);
+    
+    // Clean up
+    return () => document.removeEventListener("paste", handlePaste, true);
   }, [parseIdolText]);
-
+  
   const [showPrompt, setShowPrompt] = useState(false);
   const [parseError, setParseError] = useState(null);
   const [parsedIdol, setParsedIdol] = useState(null);

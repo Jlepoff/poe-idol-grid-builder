@@ -4,7 +4,7 @@ function ActiveModifiers({ gridState }) {
   const [showExportModal, setShowExportModal] = useState(false);
   const [selectedStrategies, setSelectedStrategies] = useState([]);
   const [copySuccess, setCopySuccess] = useState(false);
-  const [includeUniques, setIncludeUniques] = useState(false); // Back to false for unchecked by default
+  const [includeUniques, setIncludeUniques] = useState(false);
 
   const activeModifiers = useMemo(() => {
     const processedCells = new Set();
@@ -194,9 +194,8 @@ function ActiveModifiers({ gridState }) {
         if (!processedCells.has(cellKey)) {
           processedCells.add(cellKey);
           
-          // Only count as minor idol if not unique or if uniques are included
           if (!cell.isUnique || includeUniques) {
-            const type = cell.type || "Minor Idol"; // Default to "Minor Idol" if type is undefined
+            const type = cell.type || "Minor Idol";
             typeCounts[type] = (typeCounts[type] || 0) + 1;
           }
         }
@@ -204,7 +203,7 @@ function ActiveModifiers({ gridState }) {
     }
     
     return typeCounts;
-  }, [gridState, includeUniques]); // Added includeUniques as dependency
+  }, [gridState, includeUniques]);
 
   useEffect(() => {
     setSelectedStrategies([]);
@@ -270,8 +269,8 @@ function ActiveModifiers({ gridState }) {
 
   if (activeModifiers.length === 0) {
     return (
-      <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-        <h2 className="text-xl font-bold mb-2 text-white">Active Modifiers</h2>
+      <div className="bg-slate-900 p-6 rounded-xl shadow-sm">
+        <h2 className="text-xl font-bold mb-4 text-white">Active Modifiers</h2>
         <p className="text-slate-400">
           No active modifiers. Place idols on the grid to see their effects.
         </p>
@@ -280,26 +279,30 @@ function ActiveModifiers({ gridState }) {
   }
 
   return (
-    <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-      <div className="flex justify-between items-center mb-3">
+    <div className="bg-slate-900 p-6 rounded-xl shadow-sm">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-white">Active Modifiers</h2>
         <button 
           onClick={() => setShowExportModal(true)} 
-          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs py-1.5 px-3 rounded-md transition-colors"
+          className="bg-amber-600 hover:bg-amber-500 text-white text-xs py-1.5 px-3 rounded-md transition-colors"
         >
           Export to Text
         </button>
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-6">
         {Object.entries(groupedModifiers).map(([name, mods]) => (
-          <div key={name} className="border-t border-slate-800 pt-3">
-            <h3 className="font-semibold text-amber-400">{name}</h3>
-            <ul className="mt-2">
+          <div key={name} className="border-t border-slate-800 pt-4">
+            <h3 className="font-semibold text-base text-amber-400 border-l-4 border-amber-400 pl-2 mb-3">
+              {name}
+            </h3>
+            <ul className="space-y-2">
               {mods.map((mod, index) => (
-                <li key={index} className="flex justify-between text-sm py-1">
-                  <span className="text-slate-200">{mod.mod}</span>
-                  <span className="text-slate-400 ml-2">
+                <li key={index} className="flex justify-between text-sm py-1 hover:bg-slate-800/30 px-2 rounded transition-colors">
+                  <span className={`text-slate-200 ${mod.type === 'prefix' ? 'text-blue-200' : mod.type === 'suffix' ? 'text-green-200' : 'text-pink-200'}`}>
+                    {mod.mod}
+                  </span>
+                  <span className="text-slate-400 ml-2 font-medium">
                     {mod.count > 1 ? `(${mod.count}×)` : ""}
                   </span>
                 </li>
@@ -312,7 +315,7 @@ function ActiveModifiers({ gridState }) {
       {showExportModal && (
         <div className="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
           <div className="bg-slate-900 rounded-xl p-6 max-w-lg w-full shadow-lg border border-slate-800">
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start mb-6">
               <h2 className="text-xl font-bold text-white">Export Modifiers</h2>
               <button 
                 onClick={() => setShowExportModal(false)} 
@@ -322,9 +325,9 @@ function ActiveModifiers({ gridState }) {
               </button>
             </div>
             
-            <div className="mb-4">
-              <label className="block mb-2 text-slate-300">Select Strategy Type(s)</label>
-              <div className="grid grid-cols-3 gap-2 mb-4">
+            <div className="mb-6">
+              <label className="block mb-3 text-base font-medium text-slate-300">Select Strategy Type(s)</label>
+              <div className="grid grid-cols-3 gap-2 mb-6">
                 {availableStrategies.length === 0 ? (
                   <div className="col-span-3 text-center text-slate-400 py-2">
                     No strategy-specific modifiers detected
@@ -345,7 +348,7 @@ function ActiveModifiers({ gridState }) {
                           selectedStrategies.includes(strategy) 
                             ? 'bg-indigo-600 text-white' 
                             : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                        }`}
+                        } transition-colors`}
                       >
                         {strategy}
                       </div>
@@ -354,7 +357,7 @@ function ActiveModifiers({ gridState }) {
                 )}
               </div>
 
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-6">
                 <input
                   type="checkbox"
                   id="includeUniques"
@@ -371,7 +374,7 @@ function ActiveModifiers({ gridState }) {
               </div>
             </div>
             
-            <div className="bg-slate-800 p-4 rounded-lg max-h-60 overflow-y-auto font-mono text-sm text-slate-300 mb-5">
+            <div className="bg-slate-800 p-4 rounded-lg max-h-60 overflow-y-auto font-mono text-sm text-slate-300 mb-6">
               <pre>{generateExportText()}</pre>
             </div>
             
@@ -381,7 +384,7 @@ function ActiveModifiers({ gridState }) {
                 className={`px-4 py-2 rounded-md ${
                   copySuccess 
                     ? 'bg-green-600 text-white' 
-                    : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+                    : 'bg-amber-600 hover:bg-amber-500 text-white'
                 } transition-colors`}
               >
                 {copySuccess ? 'Copied!' : 'Copy Text'}

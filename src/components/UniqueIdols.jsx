@@ -94,11 +94,11 @@ function UniqueIdols({ onAddIdol, inventory }) {
 
   if (loading) {
     return (
-      <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-        <h2 className="text-xl font-bold mb-4 text-white">Unique Idols</h2>
+      <div className="bg-slate-900 p-6 rounded-xl shadow-sm">
+        <h2 className="text-xl font-bold mb-6 text-white">Unique Idols</h2>
         <div className="py-12 text-center text-slate-400">
           <svg
-            className="animate-spin h-8 w-8 mx-auto mb-4 text-indigo-500"
+            className="animate-spin h-8 w-8 mx-auto mb-4 text-pink-500"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -125,8 +125,8 @@ function UniqueIdols({ onAddIdol, inventory }) {
 
   if (error) {
     return (
-      <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-        <h2 className="text-xl font-bold mb-4 text-white">Unique Idols</h2>
+      <div className="bg-slate-900 p-6 rounded-xl shadow-sm">
+        <h2 className="text-xl font-bold mb-6 text-white">Unique Idols</h2>
         <div className="py-6 text-center text-red-400 border border-red-900 rounded-lg bg-red-900 bg-opacity-20">
           {error}
         </div>
@@ -135,15 +135,15 @@ function UniqueIdols({ onAddIdol, inventory }) {
   }
 
   return (
-    <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-      <h2 className="text-xl font-bold mb-4 text-white">Unique Idols</h2>
+    <div className="bg-slate-900 p-6 rounded-xl shadow-sm">
+      <h2 className="text-xl font-bold mb-6 text-white">Unique Idols</h2>
 
       {/* Search filter */}
-      <div className="mb-4 relative">
+      <div className="mb-6 relative">
         <input
           type="text"
           placeholder="Search unique idols..."
-          className="w-full bg-slate-800 py-2 px-3 pr-8 rounded-md text-sm border border-slate-700 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+          className="w-full bg-slate-800 py-2.5 px-3 pr-8 rounded-md text-sm border border-slate-700 focus:ring-1 focus:ring-pink-500 focus:border-pink-500 outline-none"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -168,15 +168,15 @@ function UniqueIdols({ onAddIdol, inventory }) {
       {/* Idol list */}
       <div className="max-h-96 overflow-y-auto pr-1">
         {filteredIdols.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filteredIdols.map((idol) => (
               <div
                 key={idol.id}
-                className="bg-pink-700 bg-opacity-30 border border-pink-600 p-4 rounded-lg shadow-sm"
+                className="bg-gradient-to-r from-pink-700/30 to-pink-800/50 border border-pink-600 p-6 rounded-lg shadow-md transition-all hover:shadow-lg"
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-bold text-white">{idol.name}</h3>
+                    <h3 className="font-extrabold text-base text-white">{idol.name}</h3>
                     <p className="text-xs text-pink-300 mt-1">
                       {idol.fullType}
                     </p>
@@ -184,14 +184,14 @@ function UniqueIdols({ onAddIdol, inventory }) {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => handleTradeClick(idol)}
-                      className="bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white text-xs py-1 px-2 rounded transition-colors"
+                      className="bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white text-xs py-1.5 px-2.5 rounded transition-colors"
                       title="Search for this unique idol on the trade site"
                     >
                       Trade
                     </button>
                     <button
                       onClick={() => handleAddIdol(idol)}
-                      className={`text-xs py-1 px-2 rounded transition-colors border ${
+                      className={`text-xs py-1.5 px-2.5 rounded transition-colors border ${
                         isIdolInInventory(idol.name)
                           ? "bg-slate-700 text-slate-400 border-slate-600 cursor-not-allowed"
                           : "bg-green-600 hover:bg-green-500 text-white border-green-500"
@@ -208,13 +208,13 @@ function UniqueIdols({ onAddIdol, inventory }) {
                   </div>
                 </div>
 
-                <div className="mt-3">
-                  <h4 className="text-xs font-medium text-pink-300">
+                <div className="mt-4">
+                  <h4 className="text-xs font-medium text-pink-400 border-l-4 border-pink-400 pl-2 mb-2">
                     Unique Modifiers:
                   </h4>
-                  <ul className="space-y-1 mt-1.5">
+                  <ul className="space-y-1.5 mt-2">
                     {idol.uniqueModifiers.map((mod, idx) => (
-                      <li key={idx} className="text-xs text-slate-300">
+                      <li key={idx} className="text-[11px] text-slate-300 pl-3">
                         {mod.Mod}
                       </li>
                     ))}
