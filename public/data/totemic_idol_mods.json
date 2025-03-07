@@ -738,14 +738,14 @@
       "id": "explicit.stat_2988344505"
     },
     {
-      "Name": "of Corruption",
+      "Name": "Vaal and Corruption",
       "Code": "MapRelicMapUniqueMonsterItemsDropCorruptedChance1",
       "Mod": "Items dropped by Unique Monsters have 15% chance to be Corrupted",
       "Family": "MapRelicMapUniqueMonsterItemsDropCorruptedChance",
       "id": "explicit.stat_1852765051"
     },
     {
-      "Name": "of Corruption",
+      "Name": "Vaal and Corruption",
       "Code": "MapRelicVaalSideAreaVaalVesselDuplicateRewards1",
       "Mod": "Vaal Side Areas in your Maps have 20% chance for Rewards from Vaal Vessels to be Duplicated",
       "Family": "MapRelicVaalSideAreaVaalVesselDuplicateRewards",

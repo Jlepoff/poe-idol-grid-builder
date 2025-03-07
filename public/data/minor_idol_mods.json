@@ -710,21 +710,21 @@
       "id": "explicit.stat_663610248"
     },
     {
-      "Name": "of Corruption",
+      "Name": "Vaal and Corruption",
       "Code": "MapRelicMapItemsDropCorruptedInCorruptedMapsChance1",
       "Mod": "Items found in your Corrupted Maps have 2% chance to be Corrupted",
       "Family": "MapRelicMapItemsDropCorruptedInCorruptedMapsChance",
       "id": "explicit.stat_1407304212"
     },
     {
-      "Name": "of Corruption",
+      "Name": "Vaal and Corruption",
       "Code": "MapRelicMapUpgradeVaalSideAreaChance1",
       "Mod": "Vaal Side Areas in your Maps have 10% chance to be an Alluring Vaal Side Area",
       "Family": "MapRelicMapUpgradeVaalSideAreaChance",
       "id": "explicit.stat_2063734057"
     },
     {
-      "Name": "of Corruption",
+      "Name": "Vaal and Corruption",
       "Code": "MapRelicMapRareMonsterItemsDropCorruptedChance1",
       "Mod": "Items dropped by Rare Monsters have 5% chance to be Corrupted",
       "Family": "MapRelicMapRareMonsterItemsDropCorruptedChance",
