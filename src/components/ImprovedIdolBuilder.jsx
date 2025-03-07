@@ -14,7 +14,7 @@ function ImprovedIdolBuilder({ modData, idolTypes, onAddIdol }) {
     searchTerm: "",
     filterType: "all",
     viewByName: false,
-    nameFilter: "",
+    selectedNames: [],
   });
 
   // Reset modifiers when type changes
