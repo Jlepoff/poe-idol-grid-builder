@@ -140,8 +140,8 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
   // Slightly smaller grid container with centered content and grid pattern
   return (
     <div 
-      className="grid-container border-2 border-indigo-600 rounded-xl p-1 bg-slate-950 inline-block shadow-sm mx-auto scale-95"
-      style={gridPatternStyle}
+    className="grid-container border-2 border-indigo-600 rounded-xl p-1 bg-slate-950 inline-block shadow-sm mx-auto scale-95 minimal-scrollbar"
+    style={gridPatternStyle}
     >
       {renderGrid()}
     </div>

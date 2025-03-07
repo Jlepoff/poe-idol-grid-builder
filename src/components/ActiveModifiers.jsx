@@ -296,8 +296,8 @@ function ActiveModifiers({ gridState }) {
             <h3 className="font-semibold text-base text-amber-400 border-l-4 border-amber-400 pl-2 mb-3">
               {name}
             </h3>
-            <ul className="space-y-2">
-              {mods.map((mod, index) => (
+            <ul className="space-y-2 minimal-scrollbar">
+            {mods.map((mod, index) => (
                 <li key={index} className="flex justify-between text-sm py-1 hover:bg-slate-800/30 px-2 rounded transition-colors">
                   <span className={`text-slate-200 ${mod.type === 'prefix' ? 'text-blue-200' : mod.type === 'suffix' ? 'text-green-200' : 'text-pink-200'}`}>
                     {mod.mod}
