@@ -47,7 +47,9 @@ function IdolItem({ idol, onRemoveIdol, compactView }) {
   // Special color for unique idols - changed to pinkish, also removed border
   const bgGradient = idol.isUnique
     ? "bg-gradient-to-r from-pink-700/30 to-pink-800/40"
-    : `bg-gradient-to-r ${typeColors[idol.type] || "from-slate-800/30 to-slate-900/40"}`;
+    : `bg-gradient-to-r ${
+        typeColors[idol.type] || "from-slate-800/30 to-slate-900/40"
+      }`;
 
   const opacity = isDragging ? "opacity-50" : "";
 
@@ -56,8 +58,8 @@ function IdolItem({ idol, onRemoveIdol, compactView }) {
 
   // Enhanced placement styling - use a prominent white border
   // Now the border properties won't compete with typeColors
-  const placedStyles = idol.isPlaced 
-    ? "border-2 border-white" 
+  const placedStyles = idol.isPlaced
+    ? "border-2 border-white"
     : "border border-slate-700 border-opacity-75";
 
   // Compact view styles
@@ -65,14 +67,14 @@ function IdolItem({ idol, onRemoveIdol, compactView }) {
     return (
       <div
         ref={drag}
-        className={`${bgGradient} p-3 rounded-lg shadow-sm mb-2 cursor-move ${opacity} ${
-          placedStyles
-        } transition-all hover:shadow-md flex justify-between items-center`}
+        className={`${bgGradient} p-3 rounded-lg shadow-sm mb-2 cursor-move ${opacity} ${placedStyles} transition-all hover:shadow-md flex justify-between items-center`}
         onContextMenu={handleRightClick}
         title="Drag to place on grid or right-click to remove"
       >
         <div className="flex-grow mr-2">
-          <h3 className="font-extrabold text-base text-white truncate">{idol.name}</h3>
+          <h3 className="font-extrabold text-base text-white truncate">
+            {idol.name}
+          </h3>
           <p className="text-xs text-slate-400">{idol.type} Idol</p>
         </div>
         <div className="flex items-center space-x-1">
@@ -100,9 +102,7 @@ function IdolItem({ idol, onRemoveIdol, compactView }) {
   return (
     <div
       ref={drag}
-      className={`${bgGradient} p-6 rounded-lg shadow-sm mb-3 cursor-move ${opacity} ${
-        placedStyles
-      } transition-all hover:shadow-md`}
+      className={`${bgGradient} p-6 rounded-lg shadow-sm mb-3 cursor-move ${opacity} ${placedStyles} transition-all hover:shadow-md`}
       onContextMenu={handleRightClick}
       title="Drag to place on grid or right-click to remove"
     >
@@ -196,27 +196,39 @@ function IdolInventory({ inventory, onRemoveIdol }) {
         <button
           onClick={toggleView}
           className="bg-slate-800 hover:bg-slate-700 text-amber-400 hover:text-amber-300 p-1.5 rounded-md transition-colors"
-          title={compactView ? "Switch to detailed view" : "Switch to compact view"}
+          title={
+            compactView ? "Switch to detailed view" : "Switch to compact view"
+          }
         >
           {compactView ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
               <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" />
             </svg>
           ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
               <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
           )}
         </button>
       </div>
 
-      <div className="max-h-96 overflow-y-auto pr-1">
+      <div className="max-h-96 overflow-y-auto pr-1 minimal-scrollbar">
         {inventory.length > 0 ? (
           <div>
             {inventory.map((idol) => (
-              <IdolItem 
-                key={idol.id} 
-                idol={idol} 
+              <IdolItem
+                key={idol.id}
+                idol={idol}
                 onRemoveIdol={onRemoveIdol}
                 compactView={compactView}
               />
@@ -225,11 +237,24 @@ function IdolInventory({ inventory, onRemoveIdol }) {
         ) : (
           <div className="bg-slate-800/50 rounded-xl p-6 text-center border border-slate-700/50">
             <div className="flex justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-slate-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
               </svg>
             </div>
-            <p className="text-slate-300 text-base mb-5">No idols in inventory.</p>
+            <p className="text-slate-300 text-base mb-5">
+              No idols in inventory.
+            </p>
           </div>
         )}
       </div>

@@ -166,7 +166,7 @@ function UniqueIdols({ onAddIdol, inventory }) {
       </div>
 
       {/* Idol list */}
-      <div className="max-h-96 overflow-y-auto pr-1">
+      <div className="max-h-96 overflow-y-auto pr-1 minimal-scrollbar">
         {filteredIdols.length > 0 ? (
           <div className="space-y-4">
             {filteredIdols.map((idol) => (
@@ -176,7 +176,9 @@ function UniqueIdols({ onAddIdol, inventory }) {
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-extrabold text-base text-white">{idol.name}</h3>
+                    <h3 className="font-extrabold text-base text-white">
+                      {idol.name}
+                    </h3>
                     <p className="text-xs text-pink-300 mt-1">
                       {idol.fullType}
                     </p>

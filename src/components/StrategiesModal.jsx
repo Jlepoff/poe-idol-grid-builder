@@ -74,9 +74,11 @@ function StrategiesModal({ onClose, onLoadStrategy }) {
     <div className="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
       <div className="bg-slate-900 rounded-xl p-6 max-w-2xl w-full shadow-lg border border-slate-800 max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-start mb-5">
-          <h2 className="text-2xl font-bold text-white">Community Strategies</h2>
-          <button 
-            onClick={onClose} 
+          <h2 className="text-2xl font-bold text-white">
+            Community Strategies
+          </h2>
+          <button
+            onClick={onClose}
             className="text-slate-400 hover:text-white transition-colors"
             aria-label="Close"
           >
@@ -96,12 +98,28 @@ function StrategiesModal({ onClose, onLoadStrategy }) {
         </div>
 
         {/* Strategy list */}
-        <div className="flex-grow overflow-y-auto pr-1">
+        <div className="flex-grow overflow-y-auto pr-1 minimal-scrollbar">
           {loading ? (
             <div className="py-12 text-center text-slate-400">
-              <svg className="animate-spin h-8 w-8 mx-auto mb-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-8 w-8 mx-auto mb-4 text-indigo-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Loading strategies...
             </div>
@@ -136,7 +154,9 @@ function StrategiesModal({ onClose, onLoadStrategy }) {
                       Load Strategy
                     </button>
                   </div>
-                  <p className="text-sm mt-2 text-slate-300">{strategy.description}</p>
+                  <p className="text-sm mt-2 text-slate-300">
+                    {strategy.description}
+                  </p>
 
                   {/* Map Device */}
                   {strategy.mapdevice && (
@@ -161,15 +181,17 @@ function StrategiesModal({ onClose, onLoadStrategy }) {
                       </span>
                     </div>
                   )}
-                  
+
                   {/* Source / YouTube Link */}
                   {strategy.source && (
                     <div className="mt-2">
-                      <span className="text-sm font-medium text-indigo-300">Source:</span>
-                      <a 
-                        href={strategy.source} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                      <span className="text-sm font-medium text-indigo-300">
+                        Source:
+                      </span>
+                      <a
+                        href={strategy.source}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="ml-2 text-sm text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
                         onClick={(e) => e.stopPropagation()}
                       >
@@ -202,10 +224,11 @@ function StrategiesModal({ onClose, onLoadStrategy }) {
             </div>
           )}
         </div>
-        
+
         <div className="mt-6 pt-4 border-t border-slate-800">
           <p className="text-sm text-slate-400">
-            These are community strategies for Path of Exile mapping. Click on a strategy to load its idol configuration.
+            These are community strategies for Path of Exile mapping. Click on a
+            strategy to load its idol configuration.
           </p>
         </div>
       </div>
