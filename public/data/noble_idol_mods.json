@@ -241,7 +241,7 @@
       "id": "explicit.stat_440232197"
     },
     {
-      "Name": "Incursion",
+      "Name": "Alva",
       "Code": "MapRelicIncursionAllMonstersMagicChance1",
       "Mod": "Incursions in your Maps have 25% chance for all Monsters to be at least Magic",
       "Family": "MapRelicIncursionAllMonstersMagicChance",
@@ -542,14 +542,14 @@
       "id": "explicit.stat_549540629"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalBarginOptionChance1",
       "Mod": "Immortal Syndicate Members in your Maps are 160% more likely to offer to Bargain for Items",
       "Family": "MapRelicBetrayalBarginOptionChance",
       "id": "explicit.stat_1259656520"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalTargetItemRarityPerEquipment1",
       "Mod": "24% increased Rarity of items from Defeated Syndicate Members in your Maps per Equipment Item they have",
       "Family": "MapRelicBetrayalTargetItemRarityPerEquipment",
