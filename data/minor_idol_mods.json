@@ -255,7 +255,7 @@
       "id": "explicit.stat_2786105132"
     },
     {
-      "Name": "Incursion",
+      "Name": "Alva",
       "Code": "MapRelicIncursionPackSize1",
       "Mod": "Incursions in your Maps have 6% increased Pack Size",
       "Family": "MapRelicIncursionPackSize",
@@ -528,14 +528,14 @@
       "id": "explicit.stat_496819486"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalLeaderInterventionChance1",
       "Mod": "Immortal Syndicate Members in your Maps are 60% more likely to be accompanied by their Leader",
       "Family": "MapRelicBetrayalLeaderInterventionChance",
       "id": "explicit.stat_1820067107"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalExecuteAdditionalRank1",
       "Mod": "Immortal Syndicate Members Executed in your Maps have 60% chance to gain an additional Rank",
       "Family": "MapRelicBetrayalExecuteAdditionalRank",

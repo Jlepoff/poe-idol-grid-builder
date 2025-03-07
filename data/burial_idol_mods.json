@@ -227,7 +227,7 @@
       "id": "explicit.stat_4157613372"
     },
     {
-      "Name": "Incursion",
+      "Name": "Alva",
       "Code": "MapRelicIncursionAdditionalUpgradeNonResident1",
       "Mod": "Killing non-resident Architects in your Maps has 50% chance to add an additional Upgrade Tier to the surviving Architect's Room",
       "Family": "MapRelicIncursionAdditionalUpgradeNonResident",
@@ -521,21 +521,21 @@
       "id": "explicit.stat_1288317603"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalReinforcementChance1",
       "Mod": "Immortal Syndicate Members in your Maps have 25% increased chance to be accompanied by reinforcements",
       "Family": "MapRelicBetrayalReinforcementChance",
       "id": "explicit.stat_2181411965"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalTargetsDropAdditionalVeiledItemChance1",
       "Mod": "Immortal Syndicate Members in your Maps have 60% chance to drop an additional Veiled Item",
       "Family": "MapRelicBetrayalTargetsDropAdditionalVeiledItemChance",
       "id": "explicit.stat_4122946258"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalTargetItemRarity1",
       "Mod": "60% increased Rarity of Items Dropped by Immortal Syndicate Members in your Maps",
       "Family": "MapRelicBetrayalTargetItemRarity",

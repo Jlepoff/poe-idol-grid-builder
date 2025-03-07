@@ -304,35 +304,35 @@
       "id": "explicit.stat_1927544133"
     },
     {
-      "Name": "Incursion",
+      "Name": "Alva",
       "Code": "MapRelicIncursionAddRoomTierArchitectKill1",
       "Mod": "Killing resident Architects in your Maps adds their Upgrade Tier to the surviving Architect's Room",
       "Family": "MapRelicIncursionAddRoomTierArchitectKill",
       "id": "explicit.stat_3052174721"
     },
     {
-      "Name": "Incursion",
+      "Name": "Alva",
       "Code": "MapRelicIncursionSpecialMonster1",
       "Mod": "Incursions in your Maps contain a Vaal Flesh Merchant",
       "Family": "MapRelicIncursionSpecialMonster",
       "id": "explicit.stat_1822007489"
     },
     {
-      "Name": "Incursion",
+      "Name": "Alva",
       "Code": "MapRelicIncursionAdditionalIncursion1",
       "Mod": "Your Maps with Incursions always have four Incursions",
       "Family": "MapRelicIncursionAdditionalIncursion",
       "id": "explicit.stat_4224761993"
     },
     {
-      "Name": "Incursion",
+      "Name": "Alva",
       "Code": "MapRelicIncursionDoubleTimeFromKill1",
       "Mod": "Time gained from Kills is Doubled for Incursions in your Maps",
       "Family": "MapRelicIncursionDoubleTimeFromKill",
       "id": "explicit.stat_1927424401"
     },
     {
-      "Name": "Incursion",
+      "Name": "Alva",
       "Code": "MapRelicIncursionCursedTreasure1",
       "Mod": "Incursions in your Maps contain Cursed Treasures",
       "Family": "MapRelicIncursionCursedTreasure",
@@ -626,14 +626,14 @@
       "id": "explicit.stat_4286661423"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalBarginDropsMoreItems1",
       "Mod": "Immortal Syndicate Members in your Maps drop 200% more Items when Bargained with for Items",
       "Family": "MapRelicBetrayalBarginDropsMoreItems",
       "id": "explicit.stat_574706723"
     },
     {
-      "Name": "Betrayal",
+      "Name": "Jun",
       "Code": "MapRelicBetrayalMapCompletionRandomSafehouseIntelligence1",
       "Mod": "Completing your Maps grants 15 Intelligence for a random Immortal Syndicate Safehouse",
       "Family": "MapRelicBetrayalMapCompletionRandomSafehouseIntelligence",
