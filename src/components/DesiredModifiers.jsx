@@ -11,7 +11,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
     searchTerm: "",
     filterType: "all",
     viewByName: false,
-    nameFilter: "",
+    selectedNames: [],
   });
 
   // Handle adding a modifier
@@ -61,9 +61,9 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
   // Generate idols from desired modifiers
   const handleGenerateIdols = () => {
     if (desiredModifiers.length === 0) return;
-    
+
     // Create a clean copy of each modifier with its count
-    const modifiersToGenerate = desiredModifiers.map(mod => {
+    const modifiersToGenerate = desiredModifiers.map((mod) => {
       // Ensure the modifier has all required fields
       return {
         ...mod,
@@ -73,10 +73,10 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
         Mod: mod.Mod,
         Code: mod.Code,
         id: mod.id,
-        type: mod.type // prefix or suffix
+        type: mod.type, // prefix or suffix
       };
     });
-    
+
     onGenerateIdols(modifiersToGenerate);
   };
 
@@ -108,14 +108,16 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
             <h3 className="font-semibold text-base text-amber-400 border-l-4 border-amber-400 pl-2 mb-4">
               Desired Modifiers ({totalModifierCount})
             </h3>
-            <ul className="max-h-60 overflow-y-auto space-y-2 pr-1">
+            <ul className="max-h-60 overflow-y-auto space-y-2 pr-1 minimal-scrollbar">
               {desiredModifiers.map((mod, index) => (
                 <li
                   key={`${mod.Code}-${index}`}
                   className={`p-3 rounded-md flex justify-between items-start 
-                    ${mod.type === "prefix" 
-                      ? "bg-gradient-to-r from-blue-900/30 to-slate-800 border border-blue-800/50" 
-                      : "bg-gradient-to-r from-green-900/30 to-slate-800 border border-green-800/50"}`}
+                    ${
+                      mod.type === "prefix"
+                        ? "bg-gradient-to-r from-blue-900/30 to-slate-800 border border-blue-800/50"
+                        : "bg-gradient-to-r from-green-900/30 to-slate-800 border border-green-800/50"
+                    }`}
                 >
                   <div>
                     <div className="text-sm">
@@ -135,7 +137,9 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1">{mod.Mod}</div>
+                    <div className="text-[11px] text-slate-400 mt-1">
+                      {mod.Mod}
+                    </div>
                   </div>
                   <button
                     onClick={() => handleRemoveModifier(index)}
@@ -156,7 +160,9 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
         {/* Search controls */}
         <div className="mb-4">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="font-medium text-base text-slate-300 border-l-4 border-slate-600 pl-2">Search Modifiers</h3>
+            <h3 className="font-medium text-base text-slate-300 border-l-4 border-slate-600 pl-2">
+              Search Modifiers
+            </h3>
             {showSearch && (
               <button
                 onClick={() => setShowSearch(false)}
