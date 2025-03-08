@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 
+
 function ImprovedModifierSearch({
   modData,
   onAddModifier,
@@ -16,13 +17,14 @@ function ImprovedModifierSearch({
   const [viewByName, setViewByName] = useState(
     initialState?.viewByName || false
   );
-  
+
   // Change from single nameFilter to array of selected names
   const [selectedNames, setSelectedNames] = useState(
     initialState?.selectedNames || []
   );
-  
+
   const [nameSearchTerm, setNameSearchTerm] = useState("");
+  const [selectedGroupNames, setSelectedGroupNames] = useState([]);
 
   // Update parent when search state changes
   const updateParent = useCallback(() => {
@@ -52,16 +54,76 @@ function ImprovedModifierSearch({
   };
 
   // New handler for toggling name selection
-  const handleNameSelection = (name) => {
-    setSelectedNames(prevNames => {
-      // If name is already selected, remove it
-      if (prevNames.includes(name)) {
-        return prevNames.filter(n => n !== name);
+  const handleNameSelection = (item) => {
+    if (item.isGroup) {
+      // If clicking a group, select/deselect all names in the group
+      const groupNames = getNamesInGroup(item.name);
+      const allSelected = groupNames.every((name) =>
+        selectedNames.includes(name)
+      );
+
+      if (allSelected) {
+        // Remove all names in this group
+        setSelectedNames((prevNames) =>
+          prevNames.filter((name) => !groupNames.includes(name))
+        );
+        // Remove group from selected groups
+        setSelectedGroupNames((prev) =>
+          prev.filter((name) => name !== item.name)
+        );
+      } else {
+        // Add all missing names in this group
+        setSelectedNames((prevNames) => {
+          const newNames = [...prevNames];
+          groupNames.forEach((name) => {
+            if (!newNames.includes(name)) {
+              newNames.push(name);
+            }
+          });
+          return newNames;
+        });
+        // Add group to selected groups if not already there
+        setSelectedGroupNames((prev) => {
+          if (!prev.includes(item.name)) {
+            return [...prev, item.name];
+          }
+          return prev;
+        });
       }
-      // Otherwise add it to the selection
-      return [...prevNames, name];
-    });
+    } else {
+      // Regular name selection logic
+      setSelectedNames((prevNames) => {
+        if (prevNames.includes(item.name)) {
+          return prevNames.filter((n) => n !== item.name);
+        }
+        return [...prevNames, item.name];
+      });
+    }
   };
+
+  // Modifier name group mapping
+  const modifierGroups = useMemo(() => ({
+    "Bossing": ["Conqueror", "Shaper", "Maven", "Synthesis", "Elder"],
+    "Eldritch": ["Eater", "Exarch"], 
+    "Mapping": ["Cartographer", "Kirac", "Scouting"],
+    // Add more groupings as needed
+  }), []);
+
+  const nameToGroupMap = useMemo(() => {
+    const mapping = {};
+    Object.entries(modifierGroups).forEach(([groupName, modNames]) => {
+      modNames.forEach(name => {
+        mapping[name] = groupName;
+      });
+    });
+    return mapping;
+  }, [modifierGroups]);
+
+
+
+  function getNamesInGroup(groupName) {
+    return modifierGroups[groupName] || [];
+  }
 
   // Get all unique modifier names for browsing, with deduplication
   const modifierNames = useMemo(() => {
@@ -105,13 +167,13 @@ function ImprovedModifierSearch({
   const combinedUniqueNames = useMemo(() => {
     // If we're not showing "all types", just return empty array
     if (filterType !== "all") return [];
-    
+
     // Create a Set to deduplicate names that appear in both prefixes and suffixes
     const uniqueNames = new Set([
       ...modifierNames.prefixes,
       ...modifierNames.suffixes,
     ]);
-    
+
     return Array.from(uniqueNames).sort();
   }, [modifierNames.prefixes, modifierNames.suffixes, filterType]);
 
@@ -125,39 +187,41 @@ function ImprovedModifierSearch({
       // When browsing by name in auto-generate mode with multiple selections
       if (viewByName && selectedNames.length > 0) {
         const result = { prefixes: [], suffixes: [] };
-        
+
         // Handle each selected name
-        selectedNames.forEach(nameFilter => {
+        selectedNames.forEach((nameFilter) => {
           const combinedPrefixes = [];
           const modsSeen = new Set();
 
           // Collect unique prefixes by Mod text across all idol types
           // Only if we're showing all or specifically prefixes
           if (filterType === "all" || filterType === "prefix") {
-            Object.entries(modData.prefixes).forEach(([typeName, prefixList]) => {
-              prefixList.forEach((prefix) => {
-                if (prefix.Name === nameFilter) {
-                  const modText = prefix.Mod;
+            Object.entries(modData.prefixes).forEach(
+              ([typeName, prefixList]) => {
+                prefixList.forEach((prefix) => {
+                  if (prefix.Name === nameFilter) {
+                    const modText = prefix.Mod;
 
-                  if (!modsSeen.has(modText)) {
-                    modsSeen.add(modText);
+                    if (!modsSeen.has(modText)) {
+                      modsSeen.add(modText);
 
-                    // Track which idol types support this modifier
-                    const supportedTypes = Object.entries(modData.prefixes)
-                      .filter(([_, typeList]) =>
-                        typeList.some((p) => p.Mod === modText)
-                      )
-                      .map(([type, _]) => type);
+                      // Track which idol types support this modifier
+                      const supportedTypes = Object.entries(modData.prefixes)
+                        .filter(([_, typeList]) =>
+                          typeList.some((p) => p.Mod === modText)
+                        )
+                        .map(([type, _]) => type);
 
-                    combinedPrefixes.push({
-                      ...prefix,
-                      supportedTypes,
-                    });
+                      combinedPrefixes.push({
+                        ...prefix,
+                        supportedTypes,
+                      });
+                    }
                   }
-                }
-              });
-            });
-            
+                });
+              }
+            );
+
             result.prefixes = [...result.prefixes, ...combinedPrefixes];
           }
 
@@ -166,36 +230,38 @@ function ImprovedModifierSearch({
           modsSeen.clear();
 
           if (filterType === "all" || filterType === "suffix") {
-            Object.entries(modData.suffixes).forEach(([typeName, suffixList]) => {
-              suffixList.forEach((suffix) => {
-                if (
-                  suffix.Name === nameFilter ||
-                  suffix.Name === `of ${nameFilter}`
-                ) {
-                  const modText = suffix.Mod;
+            Object.entries(modData.suffixes).forEach(
+              ([typeName, suffixList]) => {
+                suffixList.forEach((suffix) => {
+                  if (
+                    suffix.Name === nameFilter ||
+                    suffix.Name === `of ${nameFilter}`
+                  ) {
+                    const modText = suffix.Mod;
 
-                  if (!modsSeen.has(modText)) {
-                    modsSeen.add(modText);
+                    if (!modsSeen.has(modText)) {
+                      modsSeen.add(modText);
 
-                    const supportedTypes = Object.entries(modData.suffixes)
-                      .filter(([_, typeList]) =>
-                        typeList.some((s) => s.Mod === modText)
-                      )
-                      .map(([type, _]) => type);
+                      const supportedTypes = Object.entries(modData.suffixes)
+                        .filter(([_, typeList]) =>
+                          typeList.some((s) => s.Mod === modText)
+                        )
+                        .map(([type, _]) => type);
 
-                    combinedSuffixes.push({
-                      ...suffix,
-                      supportedTypes,
-                    });
+                      combinedSuffixes.push({
+                        ...suffix,
+                        supportedTypes,
+                      });
+                    }
                   }
-                }
-              });
-            });
-            
+                });
+              }
+            );
+
             result.suffixes = [...result.suffixes, ...combinedSuffixes];
           }
         });
-        
+
         return result;
       }
       // When searching by text in auto-generate mode
@@ -309,7 +375,7 @@ function ImprovedModifierSearch({
     if (viewByName && selectedNames.length > 0) {
       const result = { prefixes: [], suffixes: [] };
 
-      selectedNames.forEach(nameFilter => {
+      selectedNames.forEach((nameFilter) => {
         // Filter prefixes by name
         if (filterType === "all" || filterType === "prefix") {
           if (
@@ -342,7 +408,8 @@ function ImprovedModifierSearch({
           ) {
             // For type-specific filtering in builder context
             const filtered = modData.suffixes[selectedType].filter(
-              (mod) => mod.Name === nameFilter || mod.Name === `of ${nameFilter}`
+              (mod) =>
+                mod.Name === nameFilter || mod.Name === `of ${nameFilter}`
             );
             result.suffixes = [...result.suffixes, ...filtered];
           } else {
@@ -470,14 +537,37 @@ function ImprovedModifierSearch({
 
   // Determine which names to display in the cloud based on filter type
   const nameTagsToDisplay = useMemo(() => {
+    // Function now references the memoized nameToGroupMap
+    const getGroupForName = (name) => {
+      return nameToGroupMap[name] || null;
+    };
+  
+    // Rest of the logic remains the same
+    let names = [];
     if (filterType === "all") {
-      return combinedUniqueNames;
+      names = combinedUniqueNames;
     } else if (filterType === "prefix") {
-      return modifierNames.prefixes;
+      names = modifierNames.prefixes;
     } else {
-      return modifierNames.suffixes;
+      names = modifierNames.suffixes;
     }
-  }, [filterType, modifierNames, combinedUniqueNames]);
+  
+    const result = [];
+    const processedGroups = new Set();
+  
+    names.forEach((name) => {
+      const group = getGroupForName(name);
+  
+      if (group && !processedGroups.has(group)) {
+        result.push({ isGroup: true, name: group });
+        processedGroups.add(group);
+      } else if (!group) {
+        result.push({ isGroup: false, name });
+      }
+    });
+  
+    return result.sort((a, b) => a.name.localeCompare(b.name));
+  }, [filterType, modifierNames, combinedUniqueNames, nameToGroupMap]);
 
   return (
     <div className="bg-slate-800 rounded-lg ring-1 ring-slate-700">
@@ -485,7 +575,9 @@ function ImprovedModifierSearch({
       <div className="flex space-x-2 mb-4 p-3">
         <button
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            !viewByName ? "bg-indigo-600 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+            !viewByName
+              ? "bg-indigo-600 text-white"
+              : "bg-slate-700 text-slate-300 hover:bg-slate-600"
           }`}
           onClick={() => handleViewModeChange(false)}
         >
@@ -493,7 +585,9 @@ function ImprovedModifierSearch({
         </button>
         <button
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            viewByName ? "bg-indigo-600 text-white" : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+            viewByName
+              ? "bg-indigo-600 text-white"
+              : "bg-slate-700 text-slate-300 hover:bg-slate-600"
           }`}
           onClick={() => handleViewModeChange(true)}
         >
@@ -528,36 +622,109 @@ function ImprovedModifierSearch({
           </div>
 
           {/* Selection count display */}
-          {selectedNames.length > 0 && (
-            <div className="mb-3 px-1 py-1 bg-indigo-900/30 border border-indigo-700/50 rounded-md text-sm font-medium text-indigo-300 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              {selectedNames.length} name{selectedNames.length > 1 ? 's' : ''} selected
+          {(selectedNames.length > 0 || selectedGroupNames.length > 0) && (
+            <div className="mb-3 px-1 py-1 bg-indigo-900/30 border border-indigo-700/50 rounded-md text-sm font-medium text-indigo-300 flex items-center justify-between">
+              <div className="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mr-1.5 ml-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                {/* Count individual names plus group names */}
+                {selectedGroupNames.length +
+                  selectedNames.filter(
+                    (name) =>
+                      !selectedGroupNames.some((group) =>
+                        getNamesInGroup(group).includes(name)
+                      )
+                  ).length}{" "}
+                name
+                {selectedGroupNames.length +
+                  selectedNames.filter(
+                    (name) =>
+                      !selectedGroupNames.some((group) =>
+                        getNamesInGroup(group).includes(name)
+                      )
+                  ).length >
+                1
+                  ? "s"
+                  : ""}{" "}
+                selected
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedNames([]);
+                  setSelectedGroupNames([]);
+                }}
+                className="bg-indigo-700 hover:bg-indigo-600 px-2 py-0.5 rounded text-xs text-white transition-colors mr-1"
+              >
+                Reset
+              </button>
             </div>
           )}
 
           {/* Deduplicated name tag cloud with multi-select support */}
           <div className="flex flex-wrap gap-2 max-h-52 overflow-y-auto rounded-md px-1 py-2 custom-scrollbar">
             {nameTagsToDisplay
-              .filter(
-                (name) =>
-                  nameSearchTerm === "" ||
-                  name.toLowerCase().includes(nameSearchTerm.toLowerCase())
-              )
-              .map((name) => (
-                <button
-                  key={`name-tag-${name}`}
-                  className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                    selectedNames.includes(name) 
-                      ? "bg-indigo-600 text-white font-medium" 
-                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                  }`}
-                  onClick={() => handleNameSelection(name)}
-                >
-                  {name}
-                </button>
-              ))}
+              .filter((item) => {
+                if (nameSearchTerm === "") return true;
+
+                if (item.isGroup) {
+                  // Search in group name or any name within the group
+                  return (
+                    item.name
+                      .toLowerCase()
+                      .includes(nameSearchTerm.toLowerCase()) ||
+                    getNamesInGroup(item.name).some((name) =>
+                      name.toLowerCase().includes(nameSearchTerm.toLowerCase())
+                    )
+                  );
+                } else {
+                  return item.name
+                    .toLowerCase()
+                    .includes(nameSearchTerm.toLowerCase());
+                }
+              })
+              .map((item) => {
+                // For groups, check if any name in the group is selected
+                const isSelected = item.isGroup
+                  ? getNamesInGroup(item.name).some((name) =>
+                      selectedNames.includes(name)
+                    )
+                  : selectedNames.includes(item.name);
+
+                // For groups, check if all names in the group are selected
+                const isFullySelected = item.isGroup
+                  ? getNamesInGroup(item.name).every((name) =>
+                      selectedNames.includes(name)
+                    )
+                  : isSelected;
+
+                return (
+                  <button
+                    key={`name-tag-${item.isGroup ? "group-" : ""}${item.name}`}
+                    className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                      isSelected
+                        ? `bg-indigo-600 text-white font-medium ${
+                            !isFullySelected ? "ring-2 ring-indigo-300" : ""
+                          }`
+                        : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                    }`}
+                    onClick={() => handleNameSelection(item)}
+                  >
+                    {item.name}
+                  </button>
+                );
+              })}
           </div>
         </div>
       ) : (
@@ -585,82 +752,137 @@ function ImprovedModifierSearch({
         </div>
       )}
 
-                {/* Group modifiers by selected name when multi-selecting */}
+      {/* Group modifiers by selected name when multi-selecting */}
       {viewByName && selectedNames.length > 0 ? (
         <div className="results space-y-5 px-3 pb-3">
-          {selectedNames.map(name => (
-            <div key={`name-group-${name}`} className="border-t border-slate-700 pt-4 mt-4">
-              <h3 className="font-medium text-amber-400 mb-3 text-base px-1">
-                {name}
-              </h3>
-              
-              {/* Prefix results for this name */}
-              {filteredModifiers.prefixes.filter(p => p.Name === name).length > 0 && (
-                <div className="mb-4">
-                  <h4 className="font-medium text-blue-400 mb-2 text-sm px-1">
-                    Prefixes ({filteredModifiers.prefixes.filter(p => p.Name === name).length})
-                  </h4>
-                  <div className="max-h-36 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
-                    {filteredModifiers.prefixes
-                      .filter(prefix => prefix.Name === name)
-                      .map((prefix, index) => (
-                        <div
-                          key={`prefix-${prefix.Code}-${index}`}
-                          className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
-                          onClick={() => handleAddModifier(prefix, "prefix")}
-                        >
-                          <div className="font-medium text-white">{prefix.Name}</div>
-                          <div className="text-slate-300 text-xs mt-1">{prefix.Mod}</div>
-                          {/* Show supported types in autogen mode */}
-                          {searchContext === "autogen" && prefix.supportedTypes && (
-                            <div className="text-slate-400 text-xs mt-1">
-                              Available on: {prefix.supportedTypes.join(", ")}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
+          {/* Process selected names to handle both direct names and grouped names */}
+          {(() => {
+            // Get unique names to display, handling groups
+            const uniqueNamesToShow = new Set();
 
-              {/* Suffix results for this name */}
-              {filteredModifiers.suffixes.filter(s => s.Name === name || s.Name === `of ${name}`).length > 0 && (
-                <div>
-                  <h4 className="font-medium text-green-400 mb-2 text-sm px-1">
-                    Suffixes ({filteredModifiers.suffixes.filter(s => s.Name === name || s.Name === `of ${name}`).length})
-                  </h4>
-                  <div className="max-h-36 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
-                    {filteredModifiers.suffixes
-                      .filter(suffix => suffix.Name === name || suffix.Name === `of ${name}`)
-                      .map((suffix, index) => (
-                        <div
-                          key={`suffix-${suffix.Code}-${index}`}
-                          className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
-                          onClick={() => handleAddModifier(suffix, "suffix")}
-                        >
-                          <div className="font-medium text-white">{suffix.Name}</div>
-                          <div className="text-slate-300 text-xs mt-1">{suffix.Mod}</div>
-                          {/* Show supported types in autogen mode */}
-                          {searchContext === "autogen" && suffix.supportedTypes && (
-                            <div className="text-slate-400 text-xs mt-1">
-                              Available on: {suffix.supportedTypes.join(", ")}
+            // Add all individual selected names
+            selectedNames.forEach((name) => {
+              uniqueNamesToShow.add(name);
+            });
+
+            // Convert back to array and sort
+            return Array.from(uniqueNamesToShow)
+              .sort()
+              .map((name) => (
+                <div
+                  key={`name-group-${name}`}
+                  className="border-t border-slate-700 pt-4 mt-4"
+                >
+                  <h3 className="font-medium text-amber-400 mb-3 text-base px-1">
+                    {name}
+                  </h3>
+
+                  {/* Prefix results for this name */}
+                  {filteredModifiers.prefixes.filter((p) => p.Name === name)
+                    .length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="font-medium text-blue-400 mb-2 text-sm px-1">
+                        Prefixes (
+                        {
+                          filteredModifiers.prefixes.filter(
+                            (p) => p.Name === name
+                          ).length
+                        }
+                        )
+                      </h4>
+                      <div className="max-h-36 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+                        {filteredModifiers.prefixes
+                          .filter((prefix) => prefix.Name === name)
+                          .map((prefix, index) => (
+                            <div
+                              key={`prefix-${prefix.Code}-${index}`}
+                              className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                              onClick={() =>
+                                handleAddModifier(prefix, "prefix")
+                              }
+                            >
+                              <div className="font-medium text-white">
+                                {prefix.Name}
+                              </div>
+                              <div className="text-slate-300 text-xs mt-1">
+                                {prefix.Mod}
+                              </div>
+                              {/* Show supported types in autogen mode */}
+                              {searchContext === "autogen" &&
+                                prefix.supportedTypes && (
+                                  <div className="text-slate-400 text-xs mt-1">
+                                    Available on:{" "}
+                                    {prefix.supportedTypes.join(", ")}
+                                  </div>
+                                )}
                             </div>
-                          )}
-                        </div>
-                      ))}
-                  </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Suffix results for this name */}
+                  {filteredModifiers.suffixes.filter(
+                    (s) => s.Name === name || s.Name === `of ${name}`
+                  ).length > 0 && (
+                    <div>
+                      <h4 className="font-medium text-green-400 mb-2 text-sm px-1">
+                        Suffixes (
+                        {
+                          filteredModifiers.suffixes.filter(
+                            (s) => s.Name === name || s.Name === `of ${name}`
+                          ).length
+                        }
+                        )
+                      </h4>
+                      <div className="max-h-36 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+                        {filteredModifiers.suffixes
+                          .filter(
+                            (suffix) =>
+                              suffix.Name === name ||
+                              suffix.Name === `of ${name}`
+                          )
+                          .map((suffix, index) => (
+                            <div
+                              key={`suffix-${suffix.Code}-${index}`}
+                              className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                              onClick={() =>
+                                handleAddModifier(suffix, "suffix")
+                              }
+                            >
+                              <div className="font-medium text-white">
+                                {suffix.Name}
+                              </div>
+                              <div className="text-slate-300 text-xs mt-1">
+                                {suffix.Mod}
+                              </div>
+                              {/* Show supported types in autogen mode */}
+                              {searchContext === "autogen" &&
+                                suffix.supportedTypes && (
+                                  <div className="text-slate-400 text-xs mt-1">
+                                    Available on:{" "}
+                                    {suffix.supportedTypes.join(", ")}
+                                  </div>
+                                )}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* No results for this name */}
+                  {filteredModifiers.prefixes.filter((p) => p.Name === name)
+                    .length === 0 &&
+                    filteredModifiers.suffixes.filter(
+                      (s) => s.Name === name || s.Name === `of ${name}`
+                    ).length === 0 && (
+                      <div className="text-slate-400 py-3 text-sm px-1">
+                        No modifiers found for "{name}" with current filters
+                      </div>
+                    )}
                 </div>
-              )}
-              
-              {/* No results for this name */}
-              {filteredModifiers.prefixes.filter(p => p.Name === name).length === 0 &&
-               filteredModifiers.suffixes.filter(s => s.Name === name || s.Name === `of ${name}`).length === 0 && (
-                <div className="text-slate-400 py-3 text-sm px-1">
-                  No modifiers found for "{name}" with current filters
-                </div>
-              )}
-            </div>
-          ))}
+              ));
+          })()}
         </div>
       ) : (
         /* Standard results display when not using multi-select or when in text search mode */
@@ -679,7 +901,9 @@ function ImprovedModifierSearch({
                     onClick={() => handleAddModifier(prefix, "prefix")}
                   >
                     <div className="font-medium text-white">{prefix.Name}</div>
-                    <div className="text-slate-300 text-xs mt-1">{prefix.Mod}</div>
+                    <div className="text-slate-300 text-xs mt-1">
+                      {prefix.Mod}
+                    </div>
                     {/* Show supported types in autogen mode */}
                     {searchContext === "autogen" && prefix.supportedTypes && (
                       <div className="text-slate-400 text-xs mt-1">
@@ -706,7 +930,9 @@ function ImprovedModifierSearch({
                     onClick={() => handleAddModifier(suffix, "suffix")}
                   >
                     <div className="font-medium text-white">{suffix.Name}</div>
-                    <div className="text-slate-300 text-xs mt-1">{suffix.Mod}</div>
+                    <div className="text-slate-300 text-xs mt-1">
+                      {suffix.Mod}
+                    </div>
                     {/* Show supported types in autogen mode */}
                     {searchContext === "autogen" && suffix.supportedTypes && (
                       <div className="text-slate-400 text-xs mt-1">
@@ -724,7 +950,8 @@ function ImprovedModifierSearch({
             filteredModifiers.prefixes.length === 0 &&
             filteredModifiers.suffixes.length === 0 && (
               <p className="text-slate-400 py-2 text-sm text-center">
-                No modifiers found matching "{searchTerm || selectedNames.join(', ')}"
+                No modifiers found matching "
+                {searchTerm || selectedNames.join(", ")}"
               </p>
             )}
 
