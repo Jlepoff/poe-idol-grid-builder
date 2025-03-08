@@ -830,7 +830,7 @@ function App() {
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-xl font-bold text-white">Idol Grid</h2>
                             </div>
-                            <div className="flex justify-center items-center max-w-full overflow-x-auto">
+                            <div className="flex justify-center items-center max-w-full overflow-x-auto grid-container-parent minimal-scrollbar">
                                 <Grid
                                     gridState={gridState}
                                     onPlaceIdol={handlePlaceIdol}
