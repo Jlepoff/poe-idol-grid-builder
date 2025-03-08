@@ -877,7 +877,7 @@ function ImprovedModifierSearch({
                       (s) => s.Name === name || s.Name === `of ${name}`
                     ).length === 0 && (
                       <div className="text-slate-400 py-3 text-sm px-1">
-                        No modifiers found for "{name}" with current filters
+                        No modifiers found for "{name}" with current idol type
                       </div>
                     )}
                 </div>
