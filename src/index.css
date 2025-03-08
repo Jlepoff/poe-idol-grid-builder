@@ -81,6 +81,35 @@
   .grid-container > div > div {
     @apply min-w-14 min-h-14 flex items-center justify-center;
   }
+  /* Target that specific scrollbar in the grid container */
+  .grid-container + .simplebar-horizontal {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.4) transparent;
+  }
+
+  .grid-container + .simplebar-horizontal .simplebar-scrollbar:before {
+    background-color: rgba(99, 102, 241, 0.4);
+    border-radius: 3px;
+  }
+
+  /* Direct fix that targets the scrollbar directly */
+  .grid-container-parent::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .grid-container-parent::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .grid-container-parent::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.4);
+    border-radius: 3px;
+  }
+
+  .grid-container-parent::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.6);
+  }
 
   /* Grid pattern background */
   .grid-pattern {
