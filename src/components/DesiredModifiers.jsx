@@ -2,9 +2,11 @@
 import React, { useState, useRef } from "react";
 import ImprovedModifierSearch from "./ImprovedModifierSearch";
 
-function DesiredModifiers({ modData, onGenerateIdols }) {
+function DesiredModifiers({ modData, onGenerateIdols, inventory }) {
   const [desiredModifiers, setDesiredModifiers] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showLoadConfirm, setShowLoadConfirm] = useState(false);
 
   // Use ref for search history to avoid rerenders
   const searchHistoryRef = useRef({
@@ -58,6 +60,12 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
     }
   };
 
+  // Handle right-click to remove a modifier
+  const handleRightClick = (e, index) => {
+    e.preventDefault();
+    handleRemoveModifier(index);
+  };
+
   // Generate idols from desired modifiers
   const handleGenerateIdols = () => {
     if (desiredModifiers.length === 0) return;
@@ -91,15 +99,154 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
     0
   );
 
+  // Clear all desired modifiers
+  const handleClearModifiers = () => {
+    setShowClearConfirm(true);
+  };
+
+  const confirmClearModifiers = () => {
+    setDesiredModifiers([]);
+    setShowClearConfirm(false);
+  };
+
+  // Load modifiers from inventory
+  const isValidInventory = () => {
+    if (!inventory || inventory.length === 0) return false;
+
+    // Check if inventory has any non-unique idols with prefixes or suffixes
+    return inventory.some(
+      (idol) =>
+        !idol.isUnique &&
+        ((idol.prefixes && idol.prefixes.length > 0) ||
+          (idol.suffixes && idol.suffixes.length > 0))
+    );
+  };
+
+  const handleLoadFromInventory = () => {
+    setShowLoadConfirm(true);
+  };
+
+  const confirmLoadFromInventory = () => {
+    // Keep track of existing modifiers
+    const existingModsMap = {};
+    desiredModifiers.forEach((mod) => {
+      existingModsMap[mod.Code] = mod.count || 1;
+    });
+
+    // Extract all prefixes and suffixes from inventory
+    const modsFromInventory = [];
+    let nonUniqueCount = 0;
+
+    inventory.forEach((idol) => {
+      if (idol.isUnique) return; // Skip unique idols
+      nonUniqueCount++;
+
+      // Process prefixes
+      if (idol.prefixes && idol.prefixes.length > 0) {
+        idol.prefixes.forEach((prefix) => {
+          // Skip if missing required data
+          if (!prefix.Code || !prefix.Name || !prefix.Mod) return;
+
+          const existingIndex = modsFromInventory.findIndex(
+            (mod) => mod.Code === prefix.Code
+          );
+
+          if (existingIndex >= 0) {
+            modsFromInventory[existingIndex].count++;
+          } else {
+            modsFromInventory.push({
+              ...prefix,
+              type: "prefix",
+              count: 1,
+            });
+          }
+        });
+      }
+
+      // Process suffixes
+      if (idol.suffixes && idol.suffixes.length > 0) {
+        idol.suffixes.forEach((suffix) => {
+          // Skip if missing required data
+          if (!suffix.Code || !suffix.Name || !suffix.Mod) return;
+
+          const existingIndex = modsFromInventory.findIndex(
+            (mod) => mod.Code === suffix.Code
+          );
+
+          if (existingIndex >= 0) {
+            modsFromInventory[existingIndex].count++;
+          } else {
+            modsFromInventory.push({
+              ...suffix,
+              type: "suffix",
+              count: 1,
+            });
+          }
+        });
+      }
+    });
+
+    // Merge with existing modifiers
+    const mergedModifiers = [...desiredModifiers];
+
+    modsFromInventory.forEach((mod) => {
+      const existingIndex = mergedModifiers.findIndex(
+        (existing) => existing.Code === mod.Code
+      );
+
+      if (existingIndex >= 0) {
+        // Update count if already exists
+        mergedModifiers[existingIndex].count += mod.count;
+      } else {
+        // Add as new
+        mergedModifiers.push(mod);
+      }
+    });
+
+    setDesiredModifiers(mergedModifiers);
+    setShowLoadConfirm(false);
+
+    // Create an event with the IDs to remove
+    // This will be handled by the parent component
+    const event = {
+      type: "LOAD_FROM_INVENTORY",
+      idolIds: nonUniqueCount,
+    };
+
+    onGenerateIdols(null, true, event);
+  };
+
   return (
     <div className="bg-slate-900 p-6 rounded-xl shadow-sm">
-      <h2 className="text-xl font-bold mb-6 text-white">Auto-Generate Idols</h2>
+      <h2 className="text-xl font-bold mb-4 text-white">Auto-Generate Idols</h2>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
+        <div className="flex space-x-3">
+          {isValidInventory() && (
+            <button
+              className="flex-1 py-2.5 px-4 rounded-md text-sm font-medium bg-amber-600 hover:bg-amber-500 text-white transition-colors ring-1 ring-amber-800"
+              onClick={handleLoadFromInventory}
+            >
+              Load From Inventory
+            </button>
+          )}
+          <button
+            className={`flex-1 py-2.5 px-4 rounded-md text-sm font-medium transition-colors ${
+              desiredModifiers.length === 0
+                ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                : "bg-red-600 hover:bg-red-500 text-white ring-1 ring-red-800"
+            }`}
+            onClick={handleClearModifiers}
+            disabled={desiredModifiers.length === 0}
+          >
+            Clear Modifiers
+          </button>
+        </div>
+
         <p className="text-slate-300 text-sm">
           Add modifiers you want on your idols, then generate and place them
           automatically. Click a modifier multiple times to increase its
-          quantity.
+          quantity. Right-click to remove a modifier.
         </p>
 
         {/* Display selected modifiers */}
@@ -118,6 +265,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
                         ? "bg-gradient-to-r from-blue-900/30 to-slate-800 border border-blue-800/50"
                         : "bg-gradient-to-r from-green-900/30 to-slate-800 border border-green-800/50"
                     }`}
+                  onContextMenu={(e) => handleRightClick(e, index)}
                 >
                   <div>
                     <div className="text-sm">
@@ -211,6 +359,113 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
           </div>
         )}
       </div>
+
+      {/* Clear Confirmation Modal */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-slate-900 rounded-xl p-6 max-w-md w-full shadow-lg border border-slate-800">
+            <div className="flex justify-between items-start mb-5">
+              <h2 className="text-xl font-bold text-white">Clear Modifiers</h2>
+              <button
+                onClick={() => setShowClearConfirm(false)}
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <p className="text-slate-300 mb-4">
+                Are you sure you want to clear all desired modifiers?
+              </p>
+
+              <div className="bg-red-900/30 border border-red-800 p-4 rounded-lg">
+                <p className="text-red-200 font-medium mb-2">Warning:</p>
+                <ul className="text-red-100 text-sm space-y-2 ml-4 list-disc">
+                  <li>All modifiers in the list will be permanently removed</li>
+                  <li>
+                    If these modifiers were loaded from your inventory, they
+                    cannot be recovered
+                  </li>
+                  <li>To use these modifiers to create new idols, click <strong>"Generate & Place Idols"</strong>.</li>
+                  <li>This action cannot be undone</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                className="px-4 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
+                onClick={() => setShowClearConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-500 text-white font-medium transition-colors"
+                onClick={confirmClearModifiers}
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Load from Inventory Confirmation Modal */}
+      {showLoadConfirm && (
+        <div className="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-slate-900 rounded-xl p-6 max-w-md w-full shadow-lg border border-slate-800">
+            <div className="flex justify-between items-start mb-5">
+              <h2 className="text-xl font-bold text-white">
+                Load From Inventory
+              </h2>
+              <button
+                onClick={() => setShowLoadConfirm(false)}
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="text-slate-300 mb-6 space-y-4">
+              <p>
+                This will extract modifiers from your inventory and add them to your desired modifier list. 
+                You can then use these later to generate new idols.
+              </p>
+              <div className="bg-amber-900/30 border border-amber-800 p-4 rounded-lg">
+                <p className="text-amber-200 font-medium mb-2">Important:</p>
+                <ul className="text-amber-100 text-sm space-y-2 ml-4 list-disc">
+                  <li>
+                    <strong>All non-unique idols in your inventory will be removed</strong>
+                  </li>
+                  <li>
+                    <strong>The current grid layout will be cleared</strong>
+                  </li>
+                  <li>
+                    Unique idols will remain in your inventory
+                  </li>
+                  <li>
+                    You'll need to click "Generate & Place Idols" to create new idols with these modifiers
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button
+                className="px-4 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
+                onClick={() => setShowLoadConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded-md bg-amber-600 hover:bg-amber-500 text-white font-medium transition-colors"
+                onClick={confirmLoadFromInventory}
+              >
+                Extract Modifiers
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

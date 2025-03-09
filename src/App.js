@@ -380,17 +380,50 @@ function App() {
         };
     };
 
-    const handleGenerateIdols = (desiredModifiers) => {
+
+
+    const handleGenerateIdols = (desiredModifiers, isFromInventory = false, event = null) => {
+        // Special case for Load From Inventory: just clear non-unique idols and reset grid
+        if (isFromInventory && event?.type === "LOAD_FROM_INVENTORY") {
+            // Filter to keep only unique idols
+            const uniqueIdolsOnly = inventory.filter(idol => idol.isUnique);
+
+            // Reset grid
+            const emptyGrid = Array(7)
+                .fill()
+                .map(() => Array(6).fill(null));
+
+            // Update state and save changes
+            setInventory(uniqueIdolsOnly);
+            saveInventory(uniqueIdolsOnly);
+            setGridState(emptyGrid);
+            saveGridState(emptyGrid);
+
+            // Successfully loaded from inventory
+            setGenerationResult({
+                success: true,
+                message: "Inventory modifiers loaded and non-unique idols removed.",
+                fromInventory: true
+            });
+
+            return; // Don't proceed to idol generation
+        }
+
+        // Skip if no modifiers
         if (!desiredModifiers || desiredModifiers.length === 0) {
             return;
         }
 
-        // Call the generator function - it now just creates idols without placement
+        // Create deep copies of current state to work with
+        const currentGrid = JSON.parse(JSON.stringify(gridState));
+        const currentInventory = JSON.parse(JSON.stringify(inventory));
+
+        // Call the generator function
         const result = generateAndPlaceIdols(
             desiredModifiers,
             modData,
             idolTypes,
-            gridState
+            currentGrid
         );
 
         if (!result || !result.idols || result.idols.length === 0) {
@@ -406,29 +439,29 @@ function App() {
             return;
         }
 
-        // Add generated idols to inventory
-        const newInventory = [...inventory];
-        result.idols.forEach((idol) => {
-            newInventory.push({
-                ...idol,
-                isPlaced: false, // All start as not placed
-            });
-        });
+        // Add generated idols to inventory (creating a new array)
+        const newIdols = result.idols.map(idol => ({
+            ...idol,
+            id: `idol-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            isPlaced: false
+        }));
 
-        // Update inventory state
-        setInventory(newInventory);
-        saveInventory(newInventory);
+        const updatedInventory = [...currentInventory, ...newIdols];
+
+        // Important: We update inventory state BEFORE running optimize
+        setInventory(updatedInventory);
+        saveInventory(updatedInventory);
 
         // Now use the existing optimization function to place the idols
-        const optimizationResult = optimizeGrid(newInventory, idolTypes, gridState);
+        const optimizationResult = optimizeGrid(updatedInventory, idolTypes, currentGrid);
 
         // Update grid with optimized layout
         setGridState(optimizationResult.grid);
         saveGridState(optimizationResult.grid);
 
-        // Update inventory to mark placed idols
-        const updatedInventory = newInventory.map((idol) => {
-            // Check if this idol is in the grid
+        // Update inventory to mark placed idols correctly
+        const finalInventory = updatedInventory.map((idol) => {
+            // Check if this idol is in the optimized grid
             let isPlaced = false;
             for (let row = 0; row < optimizationResult.grid.length; row++) {
                 for (let col = 0; col < optimizationResult.grid[row].length; col++) {
@@ -446,8 +479,8 @@ function App() {
             };
         });
 
-        setInventory(updatedInventory);
-        saveInventory(updatedInventory);
+        setInventory(finalInventory);
+        saveInventory(finalInventory);
 
         // Show generation results
         setGenerationResult({
@@ -455,12 +488,15 @@ function App() {
             placed: optimizationResult.placedCount,
             notPlaced: optimizationResult.notPlacedIdols,
             modifiersRequested: desiredModifiers.length,
-            success: result.idols.length > 0,
+            success: result.idols.length > 0
         });
 
         // Switch to grid view
         setActiveTab("builder");
-    };
+    }
+
+
+
 
     // Handle loading strategy from the StrategiesButton component
     const handleLoadStrategy = (shareUrl) => {
@@ -489,7 +525,8 @@ function App() {
                 });
 
                 // Switch to grid view
-                setActiveTab("builder");
+                // setActiveTab("builder");
+                // Just keep active tab that was used last
             }
         }
     };
@@ -811,6 +848,7 @@ function App() {
                                 <DesiredModifiers
                                     modData={modData}
                                     onGenerateIdols={handleGenerateIdols}
+                                    inventory={inventory}
                                 />
                             ) : activeTab === "unique" ? (
                                 <UniqueIdols onAddIdol={handleAddIdol} inventory={inventory} />

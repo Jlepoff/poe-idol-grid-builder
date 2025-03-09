@@ -43,23 +43,47 @@ function ClearButton({ onClear }) {
       </button>
 
       {showConfirm && (
-        <div className="absolute right-0 mt-2 p-4 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-10 w-72">
-          <p className="text-sm mb-4 text-slate-300">
-            Are you sure you want to clear all idols and grid layout?
-          </p>
-          <div className="flex justify-end space-x-3">
-            <button
-              className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-md text-sm transition-colors"
-              onClick={() => setShowConfirm(false)}
-            >
-              Cancel
-            </button>
-            <button
-              className="px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded-md text-sm font-medium transition-colors"
-              onClick={confirmClear}
-            >
-              Clear
-            </button>
+        <div className="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-slate-900 rounded-xl p-6 max-w-md w-full shadow-lg border border-slate-800">
+            <div className="flex justify-between items-start mb-5">
+              <h2 className="text-xl font-bold text-white">Clear All Data</h2>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="text-slate-400 hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="mb-6">
+              <p className="text-slate-300 mb-4">
+                Are you sure you want to clear all idols and grid layout? This action cannot be undone.
+              </p>
+              
+              <div className="bg-red-900/30 border border-red-800 p-4 rounded-lg">
+                <p className="text-red-200 font-medium mb-2">Warning:</p>
+                <ul className="text-red-100 text-sm space-y-2 ml-4 list-disc">
+                  <li>All idols in your inventory will be removed</li>
+                  <li>Your grid layout will be completely reset</li>
+                  <li>All saved data will be deleted</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3">
+              <button
+                className="px-4 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-500 text-white font-medium transition-colors"
+                onClick={confirmClear}
+              >
+                Clear All
+              </button>
+            </div>
           </div>
         </div>
       )}
