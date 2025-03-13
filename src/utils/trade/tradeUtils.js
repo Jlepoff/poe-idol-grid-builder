@@ -17,10 +17,6 @@ function extractNumericValue(modText) {
   return null;
 }
 
-function cleanModifierId(id) {
-  return id.startsWith('.') ? id.substring(1) : id;
-}
-
 export const generateTradeUrl = (idol) => {
   if (!idol) return "";
 
@@ -43,15 +39,14 @@ export const generateTradeUrl = (idol) => {
     idol.prefixes.forEach(prefix => {
       if (prefix.trade) {
         const numericValue = extractNumericValue(prefix.Mod);
-        const cleanId = cleanModifierId(prefix.trade);
         if (numericValue !== null) {
           filters.push({
-            id: cleanId,
+            id: prefix.trade,
             value: { min: numericValue, max: numericValue },
             disabled: false
           });
         } else {
-          filters.push({ id: cleanId });
+          filters.push({ id: prefix.trade });
         }
       }
     });
@@ -61,15 +56,14 @@ export const generateTradeUrl = (idol) => {
     idol.suffixes.forEach(suffix => {
       if (suffix.trade) {
         const numericValue = extractNumericValue(suffix.Mod);
-        const cleanId = cleanModifierId(suffix.trade);
         if (numericValue !== null) {
           filters.push({
-            id: cleanId,
+            id: suffix.trade,
             value: { min: numericValue, max: numericValue },
             disabled: false
           });
         } else {
-          filters.push({ id: cleanId });
+          filters.push({ id: suffix.trade });
         }
       }
     });
@@ -98,8 +92,7 @@ export const generateTradeUrlWithMultipleModifiers = (idolType, prefixes, suffix
   if (prefixes && prefixes.length > 0) {
     prefixes.forEach(prefix => {
       if (prefix.trade) {
-        const cleanId = cleanModifierId(prefix.trade);
-        prefixFilters.push({ id: cleanId });
+        prefixFilters.push({ id: prefix.trade });
       }
     });
   }
@@ -108,8 +101,7 @@ export const generateTradeUrlWithMultipleModifiers = (idolType, prefixes, suffix
   if (suffixes && suffixes.length > 0) {
     suffixes.forEach(suffix => {
       if (suffix.trade) {
-        const cleanId = cleanModifierId(suffix.trade);
-        suffixFilters.push({ id: cleanId });
+        suffixFilters.push({ id: suffix.trade });
       }
     });
   }
