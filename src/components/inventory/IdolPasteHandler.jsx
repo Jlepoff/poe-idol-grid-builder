@@ -88,20 +88,21 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             for (let i = modStart; i < modEnd; i++) {
               const line = lines[i].trim();
               if (line && !line.includes("(implicit)")) {
-                if (currentMod === "" || /^[A-Z]/.test(line)) {
-                  if (currentMod) {
-                    uniqueModifiers.push({
-                      Mod: currentMod,
-                      Name: "Unique",
-                      id: `unique-${Date.now()}-${Math.random()}`,
-                    });
-                  }
+                // Check if this line starts a new modifier (capital letter or number)
+                if (currentMod && (/^[A-Z0-9]/.test(line) || /^\(/.test(line))) {
+                  uniqueModifiers.push({
+                    Mod: currentMod,
+                    Name: "Unique",
+                    id: `unique-${Date.now()}-${Math.random()}`,
+                  });
                   currentMod = line;
                 } else {
-                  currentMod += " " + line;
+                  // Add to current modifier with a space
+                  currentMod = currentMod ? `${currentMod} ${line}` : line;
                 }
               }
             }
+            // Add the last modifier
             if (currentMod) {
               uniqueModifiers.push({
                 Mod: currentMod,

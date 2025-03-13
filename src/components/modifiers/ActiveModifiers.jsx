@@ -109,9 +109,9 @@ function ActiveModifiers() {
       : 'Strategy:';
     
     const statsText = exportableModifiers.map(mod => {
-      if (!mod || !mod.mod) return '';
+      if (!mod || (!mod.mod && !mod.Mod)) return '';
       
-      let modText = mod.mod;
+      let modText = mod.mod || mod.Mod;
       if (mod.count > 1) {
         modText = `${modText} (${mod.count}x)`;
       }
@@ -194,12 +194,22 @@ function ActiveModifiers() {
               </h3>
               <ul className="space-y-2 minimal-scrollbar">
                 {mods.map((mod, index) => {
-                  if (!mod || !mod.mod) return null;
+                  if (!mod) return null;
+                  
+                  // Display Mod or mod property
+                  let displayMod = "";
+                  if (mod.mod) {
+                    displayMod = mod.mod;
+                  } else if (mod.Mod) {
+                    displayMod = mod.Mod;
+                  } else {
+                    return null; // Skip if no mod text found
+                  }
                   
                   return (
                     <li key={index} className="flex justify-between text-sm py-1 hover:bg-slate-800/30 px-2 rounded transition-colors">
                       <span className={`text-slate-200 ${mod.type === 'prefix' ? 'text-blue-200' : mod.type === 'suffix' ? 'text-green-200' : 'text-pink-200'}`}>
-                        {mod.mod}
+                        {displayMod}
                       </span>
                       <span className="text-slate-400 ml-2 font-medium">
                         {mod.count > 1 ? `(${mod.count}×)` : ""}

@@ -147,6 +147,7 @@ export function determineModifierType(modText) {
   return "suffix";
 }
 
+// Modified calculateStackedModifiers function with debugging
 export const calculateStackedModifiers = (gridState) => {
   if (!gridState || !Array.isArray(gridState)) {
     return [];
@@ -155,6 +156,7 @@ export const calculateStackedModifiers = (gridState) => {
   // Extract all unique modifiers from placed idols
   const allModifiers = [];
   const processedCells = new Set();
+  const uniqueIdolsFound = [];
 
   for (let row = 0; row < gridState.length; row++) {
     for (let col = 0; col < gridState[row].length; col++) {
@@ -168,8 +170,16 @@ export const calculateStackedModifiers = (gridState) => {
       if (processedCells.has(cellKey)) continue;
       processedCells.add(cellKey);
 
-      // Add unique idol modifiers
+      // Debug unique idols
       if (cell.isUnique && cell.uniqueModifiers) {
+        uniqueIdolsFound.push({
+          name: cell.name,
+          position,
+          modCount: cell.uniqueModifiers?.length,
+          mods: cell.uniqueModifiers
+        });
+
+        // Add unique idol modifiers
         cell.uniqueModifiers.forEach(mod => {
           if (mod && mod.Mod) {
             allModifiers.push({
@@ -178,6 +188,8 @@ export const calculateStackedModifiers = (gridState) => {
               name: "Unique",
               type: "unique"
             });
+          } else {
+            console.warn("Invalid mod found in unique idol:", mod);
           }
         });
         continue;
@@ -215,10 +227,16 @@ export const calculateStackedModifiers = (gridState) => {
   const grouped = {};
 
   allModifiers.forEach(mod => {
-    if (!mod || !mod.Mod) return; // Skip invalid modifiers
+    if (!mod || !mod.Mod) {
+      console.warn("Invalid modifier found:", mod);
+      return; // Skip invalid modifiers
+    }
 
     const baseKey = getBaseEffectKey(mod.Mod);
-    if (!baseKey) return; // Skip if we couldn't generate a base key
+    if (!baseKey) {
+      console.warn("Could not generate base key for mod:", mod.Mod);
+      return; // Skip if we couldn't generate a base key
+    }
 
     if (!grouped[baseKey]) {
       grouped[baseKey] = {
