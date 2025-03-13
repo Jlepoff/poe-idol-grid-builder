@@ -93,7 +93,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
                     uniqueModifiers.push({
                       Mod: currentMod,
                       Name: "Unique",
-                      Code: `Unique-${Date.now()}-${Math.random()}`,
+                      id: `unique-${Date.now()}-${Math.random()}`,
                     });
                   }
                   currentMod = line;
@@ -106,7 +106,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
               uniqueModifiers.push({
                 Mod: currentMod,
                 Name: "Unique",
-                Code: `Unique-${Date.now()}-${Math.random()}`,
+                id: `unique-${Date.now()}-${Math.random()}`,
               });
             }
           }
@@ -233,8 +233,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
             if (areModsEquivalent(prefix.Mod, modLine)) {
               prefixes.push({ 
                 ...prefix, 
-                Mod: modLine,
-                id: prefix.id 
+                Mod: modLine
               });
               found = true;
               break;
@@ -246,8 +245,7 @@ function IdolPasteHandler({ onAddIdol, modData }) {
               if (areModsEquivalent(suffix.Mod, modLine)) {
                 suffixes.push({ 
                   ...suffix, 
-                  Mod: modLine,
-                  id: suffix.id 
+                  Mod: modLine
                 });
                 found = true;
                 break;
@@ -260,15 +258,13 @@ function IdolPasteHandler({ onAddIdol, modData }) {
               prefixes.push({
                 Name: "Unknown Prefix",
                 Mod: modLine,
-                Code: `Unknown-${Date.now()}-${Math.random()}`,
-                Family: "Unknown",
+                id: `unknown-${Date.now()}-${Math.random()}`
               });
             } else {
               suffixes.push({
                 Name: "Unknown Suffix",
                 Mod: modLine,
-                Code: `Unknown-${Date.now()}-${Math.random()}`,
-                Family: "Unknown",
+                id: `unknown-${Date.now()}-${Math.random()}`
               });
             }
           }

@@ -1,4 +1,4 @@
-// components/modifiers/ModifierSearch.jsx
+// components/modifiers/ModifierSearch.jsx (Part 1)
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useModifiers } from "../../hooks/useModifiers";
 
@@ -280,8 +280,7 @@ function ModifierSearch({
               }
             });
           });
-        }
-
+        }// components/modifiers/ModifierSearch.jsx (Part 2)
         // Do the same for suffixes
         // Only if we're showing all or specifically suffixes
         const combinedSuffixes = [];
@@ -375,14 +374,13 @@ function ModifierSearch({
                 (mod) => mod.Name === nameFilter
               );
               result.prefixes = [...result.prefixes, ...filtered];
-            });
+            });// components/modifiers/ModifierSearch.jsx (Part 3)
           }
         }
 
         // Filter suffixes by name
         if (filterType === "all" || filterType === "suffix") {
           if (
-            // components/modifiers/ModifierSearch.jsx (continued)
             searchContext === "builder" &&
             selectedType &&
             modData.suffixes[selectedType]
@@ -752,7 +750,7 @@ function ModifierSearch({
                         .filter((prefix) => prefix.Name === name)
                         .map((prefix, index) => (
                           <div
-                            key={`prefix-${prefix.Code}-${index}`}
+                            key={`prefix-${prefix.id}-${index}`}
                             className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
                             onClick={() => onAddModifier(prefix, "prefix")}
                           >
@@ -797,7 +795,7 @@ function ModifierSearch({
                         )
                         .map((suffix, index) => (
                           <div
-                            key={`suffix-${suffix.Code}-${index}`}
+                            key={`suffix-${suffix.id}-${index}`}
                             className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
                             onClick={() => onAddModifier(suffix, "suffix")}
                           >
@@ -844,7 +842,7 @@ function ModifierSearch({
               <div className="max-h-40 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
                 {filteredModifiers.prefixes.map((prefix, index) => (
                   <div
-                    key={`prefix-${prefix.Code}-${index}`}
+                    key={`prefix-${prefix.id}-${index}`}
                     className="p-2.5 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
                     onClick={() => onAddModifier(prefix, "prefix")}
                   >
@@ -872,7 +870,7 @@ function ModifierSearch({
               <div className="max-h-40 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
                 {filteredModifiers.suffixes.map((suffix, index) => (
                   <div
-                    key={`suffix-${suffix.Code}-${index}`}
+                    key={`suffix-${suffix.id}-${index}`}
                     className="p-2.5 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
                     onClick={() => onAddModifier(suffix, "suffix")}
                   >

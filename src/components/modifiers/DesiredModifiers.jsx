@@ -20,7 +20,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
   const handleAddModifier = (modifier, type) => {
     // Check if this modifier already exists in the list
     const existingIndex = desiredModifiers.findIndex(
-      (mod) => mod.Code === modifier.Code
+      (mod) => mod.id === modifier.id
     );
 
     if (existingIndex >= 0) {
@@ -73,7 +73,6 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
         // Ensure these fields are present as they might be used in generation
         Name: mod.Name,
         Mod: mod.Mod,
-        Code: mod.Code,
         id: mod.id,
         type: mod.type, // prefix or suffix
       };
@@ -111,7 +110,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
             <ul className="max-h-60 overflow-y-auto space-y-2 pr-1 minimal-scrollbar">
               {desiredModifiers.map((mod, index) => (
                 <li
-                  key={`${mod.Code}-${index}`}
+                  key={`${mod.id}-${index}`}
                   className={`p-3 rounded-md flex justify-between items-start 
                     ${
                       mod.type === "prefix"

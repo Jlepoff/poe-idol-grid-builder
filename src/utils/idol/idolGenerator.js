@@ -4,22 +4,22 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
   const modifierGroups = {};
 
   desiredModifiers.forEach((mod) => {
-    if (!modifierGroups[mod.Code]) {
-      modifierGroups[mod.Code] = {
+    if (!modifierGroups[mod.id]) {
+      modifierGroups[mod.id] = {
         ...mod,
         count: 1,
         originalCount: 1,
       };
     } else {
-      modifierGroups[mod.Code].count++;
-      modifierGroups[mod.Code].originalCount++;
+      modifierGroups[mod.id].count++;
+      modifierGroups[mod.id].originalCount++;
     }
   });
 
   const uniqueModifiers = Object.values(modifierGroups);
   const modifierUsage = {};
   uniqueModifiers.forEach((mod) => {
-    modifierUsage[mod.Code] = 0;
+    modifierUsage[mod.id] = 0;
   });
 
   const idols = [];
@@ -29,13 +29,13 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
 
     if (modifier.type === "prefix") {
       for (const [typeName, prefixes] of Object.entries(modData.prefixes)) {
-        if (prefixes.some((prefix) => prefix.Code === modifier.Code)) {
+        if (prefixes.some((prefix) => prefix.id === modifier.id)) {
           availableTypes.push(typeName);
         }
       }
     } else {
       for (const [typeName, suffixes] of Object.entries(modData.suffixes)) {
-        if (suffixes.some((suffix) => suffix.Code === modifier.Code)) {
+        if (suffixes.some((suffix) => suffix.id === modifier.id)) {
           availableTypes.push(typeName);
         }
       }
@@ -96,36 +96,36 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
   const getAvailableModifiers = (modType, idolTypeName, usedModifiers = []) => {
     return uniqueModifiers
       .filter((mod) => {
-        if (mod.type !== modType || modifierUsage[mod.Code] >= mod.count) {
+        if (mod.type !== modType || modifierUsage[mod.id] >= mod.count) {
           return false;
         }
 
-        if (usedModifiers.includes(mod.Code)) {
+        if (usedModifiers.includes(mod.id)) {
           return false;
         }
 
         if (mod.type === "prefix") {
           return modData.prefixes[idolTypeName] &&
             modData.prefixes[idolTypeName].some(
-              (prefix) => prefix.Code === mod.Code
+              (prefix) => prefix.id === mod.id
             );
         } else {
           return modData.suffixes[idolTypeName] &&
             modData.suffixes[idolTypeName].some(
-              (suffix) => suffix.Code === mod.Code
+              (suffix) => suffix.id === mod.id
             );
         }
       })
       .map((mod) => ({
         ...mod,
-        originalCode: mod.Code,
-        displayCount: modifierUsage[mod.Code] + 1,
+        originalId: mod.id,
+        displayCount: modifierUsage[mod.id] + 1,
         totalCount: mod.originalCount,
       }));
   };
 
   for (const modifier of uniqueModifiers) {
-    if (modifierUsage[modifier.Code] >= modifier.count) {
+    if (modifierUsage[modifier.id] >= modifier.count) {
       continue;
     }
 
@@ -148,7 +148,7 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
       if (!idolType) continue;
 
       for (let i = 0; i < distribution[idolTypeName]; i++) {
-        if (modifierUsage[modifier.Code] >= modifier.count) {
+        if (modifierUsage[modifier.id] >= modifier.count) {
           break;
         }
 
@@ -158,46 +158,46 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
 
         if (modifier.type === "prefix") {
           const currentPrefix = getAvailableModifiers("prefix", idolTypeName).find(
-            p => p.Code === modifier.Code
+            p => p.id === modifier.id
           );
 
           if (currentPrefix) {
             selectedPrefixes.push(currentPrefix);
-            usedModifiers.push(currentPrefix.Code);
+            usedModifiers.push(currentPrefix.id);
 
             const otherPrefixes = getAvailableModifiers("prefix", idolTypeName, usedModifiers);
             if (otherPrefixes.length > 0) {
               selectedPrefixes.push(otherPrefixes[0]);
-              usedModifiers.push(otherPrefixes[0].Code);
+              usedModifiers.push(otherPrefixes[0].id);
             }
 
             const availableSuffixes = getAvailableModifiers("suffix", idolTypeName, usedModifiers);
             selectedSuffixes = availableSuffixes.slice(0, 2);
-            selectedSuffixes.forEach(suffix => usedModifiers.push(suffix.Code));
+            selectedSuffixes.forEach(suffix => usedModifiers.push(suffix.id));
           }
         } else {
           const currentSuffix = getAvailableModifiers("suffix", idolTypeName).find(
-            s => s.Code === modifier.Code
+            s => s.id === modifier.id
           );
 
           if (currentSuffix) {
             selectedSuffixes.push(currentSuffix);
-            usedModifiers.push(currentSuffix.Code);
+            usedModifiers.push(currentSuffix.id);
 
             const otherSuffixes = getAvailableModifiers("suffix", idolTypeName, usedModifiers);
             if (otherSuffixes.length > 0) {
               selectedSuffixes.push(otherSuffixes[0]);
-              usedModifiers.push(otherSuffixes[0].Code);
+              usedModifiers.push(otherSuffixes[0].id);
             }
 
             const availablePrefixes = getAvailableModifiers("prefix", idolTypeName, usedModifiers);
             selectedPrefixes = availablePrefixes.slice(0, 2);
-            selectedPrefixes.forEach(prefix => usedModifiers.push(prefix.Code));
+            selectedPrefixes.forEach(prefix => usedModifiers.push(prefix.id));
           }
         }
 
-        if ((modifier.type === "prefix" && selectedPrefixes.some(p => p.Code === modifier.Code)) ||
-          (modifier.type === "suffix" && selectedSuffixes.some(s => s.Code === modifier.Code))) {
+        if ((modifier.type === "prefix" && selectedPrefixes.some(p => p.id === modifier.id)) ||
+          (modifier.type === "suffix" && selectedSuffixes.some(s => s.id === modifier.id))) {
 
           const idolId = Date.now() + Math.random();
 
@@ -210,11 +210,11 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
           };
 
           selectedPrefixes.forEach(prefix => {
-            modifierUsage[prefix.originalCode]++;
+            modifierUsage[prefix.originalId]++;
           });
 
           selectedSuffixes.forEach(suffix => {
-            modifierUsage[suffix.originalCode]++;
+            modifierUsage[suffix.originalId]++;
           });
 
           createdPerType[idolTypeName]++;

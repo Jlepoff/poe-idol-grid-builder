@@ -41,9 +41,9 @@ export const generateTradeUrl = (idol) => {
 
   if (idol.prefixes && idol.prefixes.length > 0) {
     idol.prefixes.forEach(prefix => {
-      if (prefix.id) {
+      if (prefix.trade) {
         const numericValue = extractNumericValue(prefix.Mod);
-        const cleanId = cleanModifierId(prefix.id);
+        const cleanId = cleanModifierId(prefix.trade);
         if (numericValue !== null) {
           filters.push({
             id: cleanId,
@@ -59,9 +59,9 @@ export const generateTradeUrl = (idol) => {
 
   if (idol.suffixes && idol.suffixes.length > 0) {
     idol.suffixes.forEach(suffix => {
-      if (suffix.id) {
+      if (suffix.trade) {
         const numericValue = extractNumericValue(suffix.Mod);
-        const cleanId = cleanModifierId(suffix.id);
+        const cleanId = cleanModifierId(suffix.trade);
         if (numericValue !== null) {
           filters.push({
             id: cleanId,
@@ -91,7 +91,7 @@ export const generateTradeUrl = (idol) => {
 export const hasValidTradeData = (idol) => {
   if (!idol) return false;
   if (idol.isUnique) return true;
-  const hasValidPrefix = idol.prefixes && idol.prefixes.length > 0 && idol.prefixes.some((prefix) => !!prefix.id);
-  const hasValidSuffix = idol.suffixes && idol.suffixes.length > 0 && idol.suffixes.some((suffix) => !!suffix.id);
+  const hasValidPrefix = idol.prefixes && idol.prefixes.length > 0 && idol.prefixes.some((prefix) => !!prefix.trade);
+  const hasValidSuffix = idol.suffixes && idol.suffixes.length > 0 && idol.suffixes.some((suffix) => !!suffix.trade);
   return hasValidPrefix || hasValidSuffix;
 };
