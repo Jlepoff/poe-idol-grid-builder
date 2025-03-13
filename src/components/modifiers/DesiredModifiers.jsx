@@ -332,6 +332,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
             <ModifierSearch
               modData={modData}
               onAddModifier={handleAddModifier}
+              modifierList={desiredModifiers}
               initialState={searchHistoryRef.current}
               onSearchUpdate={handleSearchUpdate}
               searchContext="autogen"

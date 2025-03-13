@@ -745,17 +745,39 @@ function ModifierSearch({
                       }
                       )
                     </h4>
-                    <div className="max-h-36 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+                    <div
+                      className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
+                        filteredModifiers.prefixes.filter(
+                          (p) => p.Name === name
+                        ).length === 1
+                          ? "h-auto"
+                          : "h-36"
+                      }`}
+                    >
                       {filteredModifiers.prefixes
                         .filter((prefix) => prefix.Name === name)
                         .map((prefix, index) => (
                           <div
                             key={`prefix-${prefix.id}-${index}`}
-                            className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                            className="p-3 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                             onClick={() => onAddModifier(prefix, "prefix")}
                           >
                             <div className="font-medium text-white">
                               {prefix.Name}
+                              {modifierList &&
+                                modifierList.find(
+                                  (m) => m.id === prefix.id
+                                ) && (
+                                  <span className="text-yellow-400 font-bold ml-2">
+                                    (
+                                    {
+                                      modifierList.find(
+                                        (m) => m.id === prefix.id
+                                      ).count
+                                    }
+                                    ×)
+                                  </span>
+                                )}
                             </div>
                             <div className="text-slate-300 text-xs mt-1">
                               {prefix.Mod}
@@ -787,7 +809,16 @@ function ModifierSearch({
                       }
                       )
                     </h4>
-                    <div className="max-h-36 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+                    <div
+                      className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
+                        filteredModifiers.suffixes.filter(
+                          (suffix) =>
+                            suffix.Name === name || suffix.Name === `of ${name}`
+                        ).length === 1
+                          ? "h-auto"
+                          : "h-36"
+                      }`}
+                    >
                       {filteredModifiers.suffixes
                         .filter(
                           (suffix) =>
@@ -796,11 +827,25 @@ function ModifierSearch({
                         .map((suffix, index) => (
                           <div
                             key={`suffix-${suffix.id}-${index}`}
-                            className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                            className="p-3 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                             onClick={() => onAddModifier(suffix, "suffix")}
                           >
                             <div className="font-medium text-white">
                               {suffix.Name}
+                              {modifierList &&
+                                modifierList.find(
+                                  (m) => m.id === suffix.id
+                                ) && (
+                                  <span className="text-yellow-400 font-bold ml-2">
+                                    (
+                                    {
+                                      modifierList.find(
+                                        (m) => m.id === suffix.id
+                                      ).count
+                                    }
+                                    ×)
+                                  </span>
+                                )}
                             </div>
                             <div className="text-slate-300 text-xs mt-1">
                               {suffix.Mod}
@@ -839,14 +884,28 @@ function ModifierSearch({
               <h3 className="font-medium text-blue-400 mb-2 text-sm px-1">
                 Prefixes ({filteredModifiers.prefixes.length})
               </h3>
-              <div className="max-h-40 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+              <div
+                className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
+                  filteredModifiers.prefixes.length === 1 ? "h-auto" : "h-40"
+                }`}
+              >
                 {filteredModifiers.prefixes.map((prefix, index) => (
                   <div
                     key={`prefix-${prefix.id}-${index}`}
-                    className="p-2.5 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                    className="p-2.5 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                     onClick={() => onAddModifier(prefix, "prefix")}
                   >
-                    <div className="font-medium text-white">{prefix.Name}</div>
+                    <div className="font-medium text-white">
+                      {prefix.Name}
+                      {modifierList &&
+                        modifierList.find((m) => m.id === prefix.id) && (
+                          <span className="text-yellow-400 font-bold ml-2">
+                            (
+                            {modifierList.find((m) => m.id === prefix.id).count}
+                            ×)
+                          </span>
+                        )}
+                    </div>
                     <div className="text-slate-300 text-xs mt-1">
                       {prefix.Mod}
                     </div>
@@ -867,14 +926,28 @@ function ModifierSearch({
               <h3 className="font-medium text-green-400 mb-2 text-sm px-1">
                 Suffixes ({filteredModifiers.suffixes.length})
               </h3>
-              <div className="max-h-40 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+              <div
+                className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
+                  filteredModifiers.suffixes.length === 1 ? "h-auto" : "h-40"
+                }`}
+              >
                 {filteredModifiers.suffixes.map((suffix, index) => (
                   <div
                     key={`suffix-${suffix.id}-${index}`}
-                    className="p-2.5 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                    className="p-2.5 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                     onClick={() => onAddModifier(suffix, "suffix")}
                   >
-                    <div className="font-medium text-white">{suffix.Name}</div>
+                    <div className="font-medium text-white">
+                      {suffix.Name}
+                      {modifierList &&
+                        modifierList.find((m) => m.id === suffix.id) && (
+                          <span className="text-yellow-400 font-bold ml-2">
+                            (
+                            {modifierList.find((m) => m.id === suffix.id).count}
+                            ×)
+                          </span>
+                        )}
+                    </div>
                     <div className="text-slate-300 text-xs mt-1">
                       {suffix.Mod}
                     </div>
