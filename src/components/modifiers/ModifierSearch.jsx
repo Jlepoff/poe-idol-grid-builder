@@ -745,7 +745,15 @@ function ModifierSearch({
                       }
                       )
                     </h4>
-                    <div className="max-h-36 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+                    <div
+                      className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
+                        filteredModifiers.prefixes.filter(
+                          (p) => p.Name === name
+                        ).length === 1
+                          ? "h-auto"
+                          : "h-36"
+                      }`}
+                    >
                       {filteredModifiers.prefixes
                         .filter((prefix) => prefix.Name === name)
                         .map((prefix, index) => (
@@ -787,7 +795,16 @@ function ModifierSearch({
                       }
                       )
                     </h4>
-                    <div className="max-h-36 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+                    <div
+                      className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
+                        filteredModifiers.suffixes.filter(
+                          (suffix) =>
+                            suffix.Name === name || suffix.Name === `of ${name}`
+                        ).length === 1
+                          ? "h-auto"
+                          : "h-36"
+                      }`}
+                    >
                       {filteredModifiers.suffixes
                         .filter(
                           (suffix) =>
@@ -839,7 +856,11 @@ function ModifierSearch({
               <h3 className="font-medium text-blue-400 mb-2 text-sm px-1">
                 Prefixes ({filteredModifiers.prefixes.length})
               </h3>
-              <div className="max-h-40 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+              <div
+                className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
+                  filteredModifiers.prefixes.length === 1 ? "h-auto" : "h-40"
+                }`}
+              >
                 {filteredModifiers.prefixes.map((prefix, index) => (
                   <div
                     key={`prefix-${prefix.id}-${index}`}
@@ -867,7 +888,11 @@ function ModifierSearch({
               <h3 className="font-medium text-green-400 mb-2 text-sm px-1">
                 Suffixes ({filteredModifiers.suffixes.length})
               </h3>
-              <div className="max-h-40 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar">
+              <div
+                className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
+                  filteredModifiers.suffixes.length === 1 ? "h-auto" : "h-40"
+                }`}
+              >
                 {filteredModifiers.suffixes.map((suffix, index) => (
                   <div
                     key={`suffix-${suffix.id}-${index}`}
