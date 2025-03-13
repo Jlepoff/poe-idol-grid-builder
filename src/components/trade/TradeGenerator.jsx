@@ -105,7 +105,7 @@ function TradeGenerator({ modData, idolTypes }) {
   return (
     <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
       <h2 className="text-xl font-bold mb-1 text-white">Generate Trade</h2>
-      <p className="text-sm text-slate-400 mb-4">Search the trade site for idols matching any combination of modifiers using count.</p>
+      <p className="text-sm text-slate-400 mb-4">Input any combination of prefixes and suffixes to generate a trade URL that includes the selected prefix and suffix modifiers, with their counts configurable under the "Show Filters" section on the Path of Exile trade site.</p>
 
       <div className="space-y-5">
         {/* Error message */}
