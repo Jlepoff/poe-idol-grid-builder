@@ -117,6 +117,10 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
                         ? "bg-gradient-to-r from-blue-900/30 to-slate-800 border border-blue-800/50"
                         : "bg-gradient-to-r from-green-900/30 to-slate-800 border border-green-800/50"
                     }`}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      handleRemoveModifier(index);
+                    }}
                 >
                   <div>
                     <div className="text-sm">

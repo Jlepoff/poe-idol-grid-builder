@@ -221,7 +221,8 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
 
   return (
     <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-      <h2 className="text-xl font-bold mb-4 text-white">Idol Builder</h2>
+      <h2 className="text-xl font-bold mb-1 text-white">Idol Builder</h2>
+      <p className="text-sm text-slate-400 mb-4">Create custom idols with specific modifiers to add to your inventory.</p>
 
       <div className="space-y-5">
         {/* Error message */}
@@ -273,6 +274,10 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
                     <li
                       key={index}
                       className="bg-slate-800 p-3 rounded-md flex justify-between ring-1 ring-slate-700"
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        handleRemovePrefix(index);
+                      }}
                     >
                       <div>
                         <div className="text-sm font-medium text-blue-400">{prefix.Name}</div>
@@ -308,6 +313,10 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
                     <li
                       key={index}
                       className="bg-slate-800 p-3 rounded-md flex justify-between ring-1 ring-slate-700"
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        handleRemoveSuffix(index);
+                      }}
                     >
                       <div>
                         <div className="text-sm font-medium text-green-400">{suffix.Name}</div>

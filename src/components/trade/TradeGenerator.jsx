@@ -104,7 +104,8 @@ function TradeGenerator({ modData, idolTypes }) {
 
   return (
     <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
-      <h2 className="text-xl font-bold mb-4 text-white">Generate Trade</h2>
+      <h2 className="text-xl font-bold mb-1 text-white">Generate Trade</h2>
+      <p className="text-sm text-slate-400 mb-4">Search the trade site for idols matching any combination of modifiers using count.</p>
 
       <div className="space-y-5">
         {/* Error message */}
@@ -144,6 +145,10 @@ function TradeGenerator({ modData, idolTypes }) {
                     <li
                       key={index}
                       className="bg-slate-800 p-3 rounded-md flex justify-between ring-1 ring-slate-700"
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        handleRemovePrefix(index);
+                      }}
                     >
                       <div>
                         <div className="text-sm font-medium text-blue-400">{prefix.Name}</div>
@@ -179,6 +184,10 @@ function TradeGenerator({ modData, idolTypes }) {
                     <li
                       key={index}
                       className="bg-slate-800 p-3 rounded-md flex justify-between ring-1 ring-slate-700"
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        handleRemoveSuffix(index);
+                      }}
                     >
                       <div>
                         <div className="text-sm font-medium text-green-400">{suffix.Name}</div>
