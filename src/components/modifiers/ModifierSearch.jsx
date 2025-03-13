@@ -759,7 +759,7 @@ function ModifierSearch({
                         .map((prefix, index) => (
                           <div
                             key={`prefix-${prefix.id}-${index}`}
-                            className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                            className="p-3 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                             onClick={() => onAddModifier(prefix, "prefix")}
                           >
                             <div className="font-medium text-white">
@@ -813,7 +813,7 @@ function ModifierSearch({
                         .map((suffix, index) => (
                           <div
                             key={`suffix-${suffix.id}-${index}`}
-                            className="p-3 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                            className="p-3 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                             onClick={() => onAddModifier(suffix, "suffix")}
                           >
                             <div className="font-medium text-white">
@@ -864,7 +864,7 @@ function ModifierSearch({
                 {filteredModifiers.prefixes.map((prefix, index) => (
                   <div
                     key={`prefix-${prefix.id}-${index}`}
-                    className="p-2.5 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                    className="p-2.5 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                     onClick={() => onAddModifier(prefix, "prefix")}
                   >
                     <div className="font-medium text-white">{prefix.Name}</div>
@@ -896,7 +896,7 @@ function ModifierSearch({
                 {filteredModifiers.suffixes.map((suffix, index) => (
                   <div
                     key={`suffix-${suffix.id}-${index}`}
-                    className="p-2.5 hover:bg-slate-600 border-b border-slate-600 text-sm cursor-pointer transition-colors"
+                    className="p-2.5 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                     onClick={() => onAddModifier(suffix, "suffix")}
                   >
                     <div className="font-medium text-white">{suffix.Name}</div>
