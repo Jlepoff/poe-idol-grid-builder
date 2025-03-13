@@ -330,6 +330,28 @@ function AppContent() {
                     </h1>
                     <div className="w-full h-px bg-slate-700 my-4"></div>
 
+                    {/* Warning Alert Banner - Smaller Version */}
+                    <div className="bg-red-900/30 border border-red-800/50 rounded-md p-2 mx-2 mb-2 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                            <svg
+                                className="w-4 h-4 text-red-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                            <p className="text-red-300 text-xs">
+                                <span className="font-bold">Note:</span> Old share URLs are invalid and must be regenerated.
+                            </p>
+                        </div>
+                    </div>
+
                     {/* buttons container */}
                     <div className="flex flex-wrap justify-center mt-3 space-x-0 sm:space-x-4 gap-2 sm:gap-0 px-2 sm:px-0">
                         <StrategiesButton onLoadStrategy={handleLoadStrategy} />
