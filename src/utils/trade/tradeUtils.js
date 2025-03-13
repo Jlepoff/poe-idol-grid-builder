@@ -88,6 +88,87 @@ export const generateTradeUrl = (idol) => {
   return `https://www.pathofexile.com/trade/search/Phrecia?q=${encodedQuery}`;
 };
 
+export const generateTradeUrlWithMultipleModifiers = (idolType, prefixes, suffixes) => {
+  if (!idolType || (!prefixes?.length && !suffixes?.length)) return "";
+
+  const prefixFilters = [];
+  const suffixFilters = [];
+
+  // Process prefixes
+  if (prefixes && prefixes.length > 0) {
+    prefixes.forEach(prefix => {
+      if (prefix.trade) {
+        const cleanId = cleanModifierId(prefix.trade);
+        prefixFilters.push({ id: cleanId });
+      }
+    });
+  }
+
+  // Process suffixes
+  if (suffixes && suffixes.length > 0) {
+    suffixes.forEach(suffix => {
+      if (suffix.trade) {
+        const cleanId = cleanModifierId(suffix.trade);
+        suffixFilters.push({ id: cleanId });
+      }
+    });
+  }
+
+  if (prefixFilters.length === 0 && suffixFilters.length === 0) return "";
+
+  const stats = [
+    {
+      type: "and",
+      filters: [],
+      disabled: false
+    }
+  ];
+
+  // Add prefix count group if we have prefixes
+  if (prefixFilters.length > 0) {
+    stats.push({
+      type: "count",
+      value: {
+        min: 1
+      },
+      filters: prefixFilters
+    });
+  }
+
+  // Add suffix count group if we have suffixes
+  if (suffixFilters.length > 0) {
+    stats.push({
+      type: "count",
+      value: {
+        min: 1
+      },
+      filters: suffixFilters
+    });
+  }
+
+  const query = {
+    query: {
+      type: `${idolType} Idol`,
+      stats: stats,
+      status: {
+        option: "online"
+      },
+      filters: {
+        type_filters: {
+          filters: {
+            category: {
+              option: "idol"
+            }
+          }
+        }
+      }
+    }
+  };
+
+  const encodedQuery = encodeURIComponent(JSON.stringify(query));
+  return `https://www.pathofexile.com/trade/search/Phrecia?q=${encodedQuery}`;
+};
+
 export const hasValidTradeData = (idol) => {
   if (!idol) return false;
   if (idol.isUnique) return true;

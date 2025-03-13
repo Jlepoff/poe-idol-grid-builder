@@ -16,6 +16,7 @@ import ShareButton from "./components/common/ShareButton";
 import ClearButton from "./components/common/ClearButton";
 import StrategiesButton from "./components/strategies/StrategiesButton";
 import UniqueIdols from "./components/builder/UniqueIdols";
+import TradeGenerator from "./components/trade/TradeGenerator";
 
 // Context
 import { AppProvider, AppContext } from "./context/AppContext";
@@ -251,7 +252,7 @@ function AppContent() {
                 Inventory
             </button>
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === "modifiers"
+                className={`flex-1 py-2 px-2 ${activeTab === "modifiers"
                     ? "border-b-2 border-amber-400 text-amber-400"
                     : "text-slate-400"
                     }`}
@@ -260,7 +261,7 @@ function AppContent() {
                 Mods
             </button>
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === "autogen"
+                className={`flex-1 py-2 px-2 ${activeTab === "autogen"
                     ? "border-b-2 border-amber-400 text-amber-400"
                     : "text-slate-400"
                     }`}
@@ -269,7 +270,7 @@ function AppContent() {
                 Auto
             </button>
             <button
-                className={`flex-1 py-2 px-3 ${activeTab === "unique"
+                className={`flex-1 py-2 px-2 ${activeTab === "unique"
                     ? "border-b-2 border-amber-400 text-amber-400"
                     : "text-slate-400"
                     }`}
@@ -277,9 +278,17 @@ function AppContent() {
             >
                 Unique
             </button>
+            <button
+                className={`flex-1 py-2 px-2 ${activeTab === "trade"
+                    ? "border-b-2 border-amber-400 text-amber-400"
+                    : "text-slate-400"
+                    }`}
+                onClick={() => setActiveTab("trade")}
+            >
+                Trade
+            </button>
         </div>
     );
-
     // Loading state
     if (isLoading) {
         return (
@@ -371,6 +380,15 @@ function AppContent() {
                                 >
                                     Unique Idols
                                 </button>
+                                <button
+                                    className={`py-2.5 px-6 flex-1 ${activeTab === "trade"
+                                        ? "bg-indigo-600 text-white font-medium"
+                                        : "hover:bg-slate-700 text-slate-300"
+                                        } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
+                                    onClick={() => setActiveTab("trade")}
+                                >
+                                    Generate Trade
+                                </button>
                             </div>
                         </div>
 
@@ -378,7 +396,8 @@ function AppContent() {
                         <div
                             className={`space-y-6 ${activeTab !== "builder" &&
                                 activeTab !== "autogen" &&
-                                activeTab !== "unique"
+                                activeTab !== "unique" &&
+                                activeTab !== "trade"
                                 ? "hidden md:block"
                                 : ""
                                 }`}
@@ -390,6 +409,11 @@ function AppContent() {
                                 />
                             ) : activeTab === "unique" ? (
                                 <UniqueIdols onAddIdol={handleAddIdol} inventory={inventory} />
+                            ) : activeTab === "trade" ? (
+                                <TradeGenerator
+                                    modData={modData}
+                                    idolTypes={idolTypes}
+                                />
                             ) : (
                                 <IdolBuilder
                                     modData={modData}
