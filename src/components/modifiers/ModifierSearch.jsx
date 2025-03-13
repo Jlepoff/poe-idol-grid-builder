@@ -764,6 +764,20 @@ function ModifierSearch({
                           >
                             <div className="font-medium text-white">
                               {prefix.Name}
+                              {modifierList &&
+                                modifierList.find(
+                                  (m) => m.id === prefix.id
+                                ) && (
+                                  <span className="text-yellow-400 font-bold ml-2">
+                                    (
+                                    {
+                                      modifierList.find(
+                                        (m) => m.id === prefix.id
+                                      ).count
+                                    }
+                                    ×)
+                                  </span>
+                                )}
                             </div>
                             <div className="text-slate-300 text-xs mt-1">
                               {prefix.Mod}
@@ -818,6 +832,20 @@ function ModifierSearch({
                           >
                             <div className="font-medium text-white">
                               {suffix.Name}
+                              {modifierList &&
+                                modifierList.find(
+                                  (m) => m.id === suffix.id
+                                ) && (
+                                  <span className="text-yellow-400 font-bold ml-2">
+                                    (
+                                    {
+                                      modifierList.find(
+                                        (m) => m.id === suffix.id
+                                      ).count
+                                    }
+                                    ×)
+                                  </span>
+                                )}
                             </div>
                             <div className="text-slate-300 text-xs mt-1">
                               {suffix.Mod}
@@ -867,7 +895,17 @@ function ModifierSearch({
                     className="p-2.5 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                     onClick={() => onAddModifier(prefix, "prefix")}
                   >
-                    <div className="font-medium text-white">{prefix.Name}</div>
+                    <div className="font-medium text-white">
+                      {prefix.Name}
+                      {modifierList &&
+                        modifierList.find((m) => m.id === prefix.id) && (
+                          <span className="text-yellow-400 font-bold ml-2">
+                            (
+                            {modifierList.find((m) => m.id === prefix.id).count}
+                            ×)
+                          </span>
+                        )}
+                    </div>
                     <div className="text-slate-300 text-xs mt-1">
                       {prefix.Mod}
                     </div>
@@ -899,7 +937,17 @@ function ModifierSearch({
                     className="p-2.5 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
                     onClick={() => onAddModifier(suffix, "suffix")}
                   >
-                    <div className="font-medium text-white">{suffix.Name}</div>
+                    <div className="font-medium text-white">
+                      {suffix.Name}
+                      {modifierList &&
+                        modifierList.find((m) => m.id === suffix.id) && (
+                          <span className="text-yellow-400 font-bold ml-2">
+                            (
+                            {modifierList.find((m) => m.id === suffix.id).count}
+                            ×)
+                          </span>
+                        )}
+                    </div>
                     <div className="text-slate-300 text-xs mt-1">
                       {suffix.Mod}
                     </div>
