@@ -1,776 +1,666 @@
 {
-  "prefixes": [
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain an Abyss",
-      "Family": "MapRelicAdditionalAbyssChance",
-      "id": "explicit.stat_4278144676"
-    },
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssIncreasedChancePerPackSize1",
-      "Mod": "Your Maps have +5% chance to contain an Abyss per 2% increased Pack Size",
-      "Family": "MapRelicIncreasedAbyssChancePerPackSize",
-      "id": "explicit.stat_827686764"
-    },
-    {
-      "Name": "Alva",
-      "Code": "MapRelicAdditionalIncursionChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain Alva",
-      "Family": "MapRelicAdditionalIncursionChance",
-      "id": "explicit.stat_2709296039"
-    },
-    {
-      "Name": "Rogue Exile",
-      "Code": "MapRelicAnarchyManyExiles1",
-      "Mod": "Your Maps have a 12% chance to contain 10 additional Rogue Exiles",
-      "Family": "MapRelicAnarchyManyExiles",
-      "id": "explicit.stat_776258428"
-    },
-    {
-      "Name": "Rogue Exile",
-      "Code": "MapRelicAnarchyAdditionalExilesChanceExtraLarge",
-      "Mod": "Your Maps have a 70% chance to contain an additional Rogue Exile",
-      "Family": "MapRelicAnarchyAdditionalExilesChance",
-      "id": "explicit.stat_1123357133"
-    },
-    {
-      "Name": "Einhar",
-      "Code": "MapRelicBestiaryAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain Einhar",
-      "Family": "MapRelicBestiaryAdditionalChance",
-      "id": "explicit.stat_1566972708"
-    },
-    {
-      "Name": "Beyond",
-      "Code": "MapRelicBeyondAdditionalChanceExtraLarge",
-      "Mod": "70% chance for your Maps to attract Beyond Demons",
-      "Family": "MapRelicBeyondAdditionalChance",
-      "id": "explicit.stat_3438840900"
-    },
-    {
-      "Name": "Blight",
-      "Code": "MapRelicBlightAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain a Blight Encounter",
-      "Family": "MapRelicBlightAdditionalEncounterChance",
-      "id": "explicit.stat_764545335"
-    },
-    {
-      "Name": "Breach",
-      "Code": "MapRelicBreachAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain Breaches",
-      "Family": "MapRelicBreachAdditionalChance",
-      "id": "explicit.stat_1133841298"
-    },
-    {
-      "Name": "Breach",
-      "Code": "MapRelicBreachTenAdditionalBreachChance1",
-      "Mod": "Your Maps which contain Breaches have 2% chance to contain ten additional Breaches",
-      "Family": "MapRelicBreachTenAdditionalBreachChance",
-      "id": "explicit.stat_2714721644"
-    },
-    {
-      "Name": "Delirium",
-      "Code": "MapRelicDeliriumAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain a Mirror of Delirium",
-      "Family": "MapRelicDeliriumAdditionalChance",
-      "id": "explicit.stat_1808954678"
-    },
-    {
-      "Name": "Delirium",
-      "Code": "MapRelicDeliriumDeliriousMapChance1",
-      "Mod": "Maps found in your Maps have 5% chance to have layers of Delirium",
-      "Family": "MapRelicDeliriumDeliriousMapChance",
-      "id": "explicit.stat_1482478377"
-    },
-    {
-      "Name": "Niko",
-      "Code": "MapRelicDelveAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain Niko",
-      "Family": "MapRelicDelveAdditionalChance",
-      "id": "explicit.stat_4267923742"
-    },
-    {
-      "Name": "Domination",
-      "Code": "MapRelicShrineNumExtraLarge",
-      "Mod": "Your Maps contain an additional Shrine",
-      "Family": "MapRelicShrineNum",
-      "id": "explicit.stat_1468737867"
-    },
-    {
-      "Name": "Domination",
-      "Code": "MapRelicShrineNumExtraLarge",
-      "Mod": "Your Maps contain 2 additional Shrines",
-      "Family": "MapRelicShrineNum",
-      "id": ".explicit.stat_1468737867"
-    },
-    {
-      "Name": "Essence",
-      "Code": "MapRelicEssenceAdditionalMonolithsExtraLarge",
-      "Mod": "Your Maps contain an additional Imprisoned Monster",
-      "Family": "MapRelicEssenceAdditionalMonoliths",
-      "id": "explicit.stat_395808938"
-    },
-    {
-      "Name": "Essence",
-      "Code": "MapRelicEssenceAdditionalMonolithsExtraLarge",
-      "Mod": "Your Maps contain 2 additional Imprisoned Monsters",
-      "Family": "MapRelicEssenceAdditionalMonoliths",
-      "id": ".explicit.stat_395808938"
-    },
-    {
-      "Name": "Expedition",
-      "Code": "MapRelicExpeditionAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain an Expedition Encounter",
-      "Family": "MapRelicExpeditionAdditionalChance",
-      "id": "explicit.stat_4154778375"
-    },
-    {
-      "Name": "Harbinger",
-      "Code": "MapRelicHarbingerExtraHarbingersExtraLarge",
-      "Mod": "Your Maps contain an additional Harbinger",
-      "Family": "MapRelicHarbingerExtraHarbingers",
-      "id": "explicit.stat_504850499"
-    },
-    {
-      "Name": "Harbinger",
-      "Code": "MapRelicHarbingerExtraHarbingersExtraLarge",
-      "Mod": "Your Maps contain 2 additional Harbingers",
-      "Family": "MapRelicHarbingerExtraHarbingers",
-      "id": ".explicit.stat_504850499"
-    },
-    {
-      "Name": "Harvest",
-      "Code": "MapRelicHarvestAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain The Sacred Grove",
-      "Family": "MapRelicHarvestAdditionalChance",
-      "id": "explicit.stat_1145451936"
-    },
-    {
-      "Name": "Heist",
-      "Code": "MapRelicHeistAdditionalCacheChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain a Smuggler's Cache",
-      "Family": "MapRelicHeistAdditionalCacheChance",
-      "id": "explicit.stat_1975869602"
-    },
-    {
-      "Name": "Jun",
-      "Code": "MapRelicBetrayalAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain Jun",
-      "Family": "MapRelicBetrayalAdditionalChance",
-      "id": "explicit.stat_527292219"
-    },
-    {
-      "Name": "Legion",
-      "Code": "MapRelicLegionAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain a Legion Encounter",
-      "Family": "MapRelicLegionAdditionalChance",
-      "id": "explicit.stat_1981273563"
-    },
-    {
-      "Name": "Cartographer",
-      "Code": "MapRelicMapRandomCraftOnCompletionChance1",
-      "Mod": "12% chance on Completing your Maps to gain a free use of a random Map Crafting option",
-      "Family": "MapRelicMapRandomCraftOnCompletionChance",
-      "id": "explicit.stat_2721059969"
-    },
-    {
-      "Name": "Cartographer",
-      "Code": "MapRelicMapSpecialCraftOnCompletionChance1",
-      "Mod": "4% chance on Completing your Maps to gain a free use of a special Map Crafting option",
-      "Family": "MapRelicMapSpecialCraftOnCompletionChance",
-      "id": "explicit.stat_3858757876"
-    },
-    {
-      "Name": "Ultimatum",
-      "Code": "MapRelicUltimatumAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain an Ultimatum Encounter",
-      "Family": "MapRelicUltimatumAdditionalChance",
-      "id": "explicit.stat_1365687125"
-    },
-    {
-      "Name": "Ritual",
-      "Code": "MapRelicRitualAdditionalChanceExtraLarge",
-      "Mod": "Your Maps have +70% chance to contain Ritual Altars",
-      "Family": "MapRelicRitualAdditionalChance",
-      "id": "explicit.stat_1314822783"
-    },
-    {
-      "Name": "Ambush",
-      "Code": "MapRelicStrongboxAdditionalExtraLarge",
-      "Mod": "Your Maps contain an additional Strongbox",
-      "Family": "MapRelicStrongboxAdditional",
-      "id": "explicit.stat_3240183538"
-    },
-    {
-      "Name": "Ambush",
-      "Code": "MapRelicStrongboxAdditionalExtraLarge",
-      "Mod": "Your Maps contain 2 additional Strongboxes",
-      "Family": "MapRelicStrongboxAdditional",
-      "id": ".explicit.stat_3240183538"
-    },
-    {
-      "Name": "Torment",
-      "Code": "MapRelicTormentExtraSpiritsExtraLarge",
-      "Mod": "Your Maps are haunted by an additional Tormented Spirit",
-      "Family": "MapRelicTormentExtraSpirits",
-      "id": "explicit.stat_358129101"
-    },
-    {
-      "Name": "Torment",
-      "Code": "MapRelicTormentExtraSpiritsExtraLarge",
-      "Mod": "Your Maps are haunted by 2 additional Tormented Spirits",
-      "Family": "MapRelicTormentExtraSpirits",
-      "id": "explicit.stat_358129101"
-    },
-    {
-      "Name": "Cartographer",
-      "Code": "MapRelicIncreasedItemQuantity1",
-      "Mod": "6% increased Quantity of Items found in your Maps",
-      "Family": "MapRelicIncreasedItemQuantity",
-      "id": "explicit.stat_2390685262"
-    },
-    {
-      "Name": "Cartographer",
-      "Code": "MapRelicIncreasedPackSize1",
-      "Mod": "6% increased Pack size",
-      "Family": "MapRelicIncreasedPackSize",
-      "id": "explicit.stat_2017682521"
-    },
-    {
-      "Name": "Cartographer",
-      "Code": "MapRelicMapModEffectPerFiveQuality1",
-      "Mod": "5% increased effect of Explicit Modifiers on your Maps per 5% Map Quality",
-      "Family": "MapRelicMapModEffectPerFiveQuality",
-      "id": "explicit.stat_2490189905"
-    },
-    {
-      "Name": "Cartographer",
-      "Code": "MapRelicMapModEffectPerMapMod1",
-      "Mod": "3% increased effect of Explicit Modifiers on your Maps per Explicit Modifier",
-      "Family": "MapRelicMapModEffectPerMapMod",
-      "id": "explicit.stat_2792863714"
-    }
-  ],
-  "suffixes": [
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssJewelsCorruptedExtraMods1",
-      "Mod": "Abyss Jewels found in Abyssal Troves or dropped by Stygian Spires in your Maps have 25% chance to be Corrupted and have 5 or 6 random Modifiers",
-      "Family": "MapRelicAbyssJewelsCorruptedExtraMods",
-      "id": "explicit.stat_4842372"
-    },
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssTroveJewelCorruptChance1",
-      "Mod": "Abyss Jewels dropped by Abyssal Troves or Stygian Spires in your Maps have a 1% Chance to be Rare and Corrupted",
-      "Family": "MapRelicAbyssTroveJewelCorruptChance",
-      "id": "explicit.stat_286869897"
-    },
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssChasmSpawnFiveAdditionalRareChance1",
-      "Mod": "Abyss Pits in your Maps have 20% chance to spawn 5 additional Rare Monsters",
-      "Family": "MapRelicAbyssChasmSpawnFiveAdditionalRareChance",
-      "id": "explicit.stat_4049011082"
-    },
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssTroveDropScarabChance1",
-      "Mod": "Abyssal Troves and Stygian Spires in your Maps have 5% chance to drop an Abyss Scarab",
-      "Family": "MapRelicAbyssTroveDropScarabChance",
-      "id": "explicit.stat_1028265433"
-    },
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssGarunteeFourChasms1",
-      "Mod": "Abysses in your Maps that do not lead to an Abyssal Depths lead to 4 Pits if able",
-      "Family": "MapRelicAbyssGarunteeFourChasms",
-      "id": "explicit.stat_1977826050"
-    },
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssGarunteeThreeChasms1",
-      "Mod": "Abysses in your Maps that do not lead to an Abyssal Depths lead to at least 3 Pits if able",
-      "Family": "MapRelicAbyssGarunteeThreeChasms",
-      "id": "explicit.stat_911724954"
-    },
-    {
-      "Name": "Abyss",
-      "Code": "MapRelicAbyssIncreasedMonstersPerChasm1",
-      "Mod": "Abysses in your Maps spawn 12% increased Monsters for each prior Pit in that Abyss",
-      "Family": "MapRelicAbyssIncreasedMonstersPerChasm",
-      "id": "explicit.stat_1927544133"
-    },
-    {
-      "Name": "Alva",
-      "Code": "MapRelicIncursionAddRoomTierArchitectKill1",
-      "Mod": "Killing resident Architects in your Maps adds their Upgrade Tier to the surviving Architect's Room",
-      "Family": "MapRelicIncursionAddRoomTierArchitectKill",
-      "id": "explicit.stat_3052174721"
-    },
-    {
-      "Name": "Alva",
-      "Code": "MapRelicIncursionSpecialMonster1",
-      "Mod": "Incursions in your Maps contain a Vaal Flesh Merchant",
-      "Family": "MapRelicIncursionSpecialMonster",
-      "id": "explicit.stat_1822007489"
-    },
-    {
-      "Name": "Alva",
-      "Code": "MapRelicIncursionAdditionalIncursion1",
-      "Mod": "Your Maps with Incursions always have four Incursions",
-      "Family": "MapRelicIncursionAdditionalIncursion",
-      "id": "explicit.stat_4224761993"
-    },
-    {
-      "Name": "Alva",
-      "Code": "MapRelicIncursionDoubleTimeFromKill1",
-      "Mod": "Time gained from Kills is Doubled for Incursions in your Maps",
-      "Family": "MapRelicIncursionDoubleTimeFromKill",
-      "id": "explicit.stat_1927424401"
-    },
-    {
-      "Name": "Alva",
-      "Code": "MapRelicIncursionCursedTreasure1",
-      "Mod": "Incursions in your Maps contain Cursed Treasures",
-      "Family": "MapRelicIncursionCursedTreasure",
-      "id": "explicit.stat_1419687153"
-    },
-    {
-      "Name": "Rogue Exile",
-      "Code": "MapRelicAnarchyExileSpecialRewardChance1",
-      "Mod": "Wild Rogue Exiles in your Maps have 60% chance to have additional Rewards",
-      "Family": "MapRelicAnarchyExileSpecialRewardChance",
-      "id": "explicit.stat_113499389"
-    },
-    {
-      "Name": "Einhar",
-      "Code": "MapRelicBestiaryLessCommonVarieties1",
-      "Mod": "Beasts in your Maps are more likely to be less common varieties",
-      "Family": "MapRelicBestiaryLessCommonVarieties",
-      "id": "explicit.stat_4062346714"
-    },
-    {
-      "Name": "Einhar",
-      "Code": "MapRelicBesitaryEinharIgnoresCompletion1",
-      "Mod": "Einhar remains in your Maps after his Mission is Complete",
-      "Family": "MapRelicBesitaryEinharIgnoresCompletion",
-      "id": "explicit.stat_1766031838"
-    },
-    {
-      "Name": "Einhar",
-      "Code": "MapRelicBestiaryRedReplaceYellowChance1",
-      "Mod": "Yellow Beasts in your Maps have 18% chance to be replaced with Red Beasts",
-      "Family": "MapRelicBestiaryRedReplaceYellowChance",
-      "id": "explicit.stat_4103953516"
-    },
-    {
-      "Name": "Einhar",
-      "Code": "MapRelicBestiaryBeastBreakFreeChance1",
-      "Mod": "Beasts in your Maps have a 20% chance to break free Beasts which break free in your Maps gain Bestial Rage Defeating Beasts grants Hunters' Cunning per Bestial Rage on the defeated Beast",
-      "Family": "MapRelicBestiaryBeastBreakFreeChance",
-      "id": "explicit.stat_3241030924"
-    },
-    {
-      "Name": "Beyond",
-      "Code": "MapRelicBeyondIncreasedPortalChance1",
-      "Mod": "Slaying Enemies in your Maps has a 18% increased chance to spawn a Beyond Portal",
-      "Family": "MapRelicBeyondIncreasedPortalChance",
-      "id": "explicit.stat_3036422124"
-    },
-    {
-      "Name": "Beyond",
-      "Code": "MapRelicBeyondBossSpecialBuff1",
-      "Mod": "Gain Demonic Power on defeating a Beyond Boss in your Maps",
-      "Family": "MapRelicBeyondBossSpecialBuff",
-      "id": "explicit.stat_3366450400"
-    },
-    {
-      "Name": "Blight",
-      "Code": "MapRelicBlightChestNumLuckyRewards1",
-      "Mod": "Varieties of Items contained in 5 Blight Chests in your Maps are Lucky",
-      "Family": "MapRelicBlightChestNumLuckyRewards",
-      "id": "explicit.stat_1730598557"
-    },
-    {
-      "Name": "Blight",
-      "Code": "MapRelicBlightChestReopenableChance1",
-      "Mod": "Blight chests in your Maps have a 10% chance to be openable again",
-      "Family": "MapRelicBlightChestReopenableChance",
-      "id": "explicit.stat_278772496"
-    },
-    {
-      "Name": "Blight",
-      "Code": "MapRelicBlightTouchedBuff1",
-      "Mod": "Completing a Blight Encounter in your Maps grants all Players Blightreach",
-      "Family": "MapRelicBlightTouchedBuff",
-      "id": "explicit.stat_3127831894"
-    },
-    {
-      "Name": "Blight",
-      "Code": "MapRelicBlightTowersAreChests1",
-      "Mod": "Blight Towers in your Maps can be Salvaged after the Blight Encounter Higher Tier Towers grant better Salvaged Rewards Salvaged Rewards are improved for each different Tower Type built during Encounter",
-      "Family": "MapRelicBlightTowersAreChests",
-      "id": "explicit.stat_1421406768"
-    },
-    {
-      "Name": "Breach",
-      "Code": "MapRelicBreachBossBreachstoneChance1",
-      "Mod": "Breach Bosses Defeated in your Maps have 5% chance to drop a Breachstone",
-      "Family": "MapRelicBreachBossBreachstoneChance",
-      "id": "explicit.stat_988187710"
-    },
-    {
-      "Name": "Breach",
-      "Code": "MapRelicBreachAdditionalChests1",
-      "Mod": "Breaches in your Maps contain 3 additional Clasped Hands",
-      "Family": "MapRelicBreachAdditionalChests",
-      "id": "explicit.stat_2224050171"
-    },
-    {
-      "Name": "Breach",
-      "Code": "MapRelicBreachAdditionalChests1",
-      "Mod": "Breaches in your Maps contain 2 additional Clasped Hands",
-      "Family": "MapRelicBreachAdditionalChests",
-      "id": ".explicit.stat_2224050171"
-    },
-    {
-      "Name": "Breach",
-      "Code": "MapRelicBreachSuperBossSpawnChance1",
-      "Mod": "Breaches in your Maps have 3% chance to contain Xesht-Ula, the Open Hand",
-      "Family": "MapRelicBreachSuperBossSpawnChance",
-      "id": "explicit.stat_1601064200"
-    },
-    {
-      "Name": "Breach",
-      "Code": "MapRelicBreachBreachloardSpawnChanceOnLargeChestOpen1",
-      "Mod": "Breach Boss' Clasped Hands in your Maps have 5% chance to spawn a Breach Boss when opened",
-      "Family": "MapRelicBreachBreachloardSpawnChanceOnLargeChestOpen",
-      "id": "explicit.stat_3465894962"
-    },
-    {
-      "Name": "Exarch",
-      "Code": "MapRelicCleansingFireDoubleProgressChance1",
-      "Mod": "Your Maps have 15% chance to award double progress towards encountering The Searing Exarch",
-      "Family": "MapRelicCleansingFireDoubleProgressChance",
-      "id": "explicit.stat_2523194133"
-    },
-    {
-      "Name": "Exarch",
-      "Code": "MapRelicCleansingFireDupeCurrencyChance1",
-      "Mod": "Eldritch Embers found in your Maps influenced by The Searing Exarch have 15% chance to be Duplicated",
-      "Family": "MapRelicCleansingFireDupeCurrencyChance",
-      "id": "explicit.stat_2514681311"
-    },
-    {
-      "Name": "Delirium",
-      "Code": "MapRelicDeliriumThreeAdditionalRewardTypesChance1",
-      "Mod": "Delirium Encounters in your Maps have 12% chance to generate three additional Reward types",
-      "Family": "MapRelicDeliriumThreeAdditionalRewardTypesChance",
-      "id": "explicit.stat_2312030426"
-    },
-    {
-      "Name": "Delirium",
-      "Code": "MapRelicDeliriumSplinterStackSize1",
-      "Mod": "30% increased Stack size of Simulacrum Splinters found in your Maps",
-      "Family": "MapRelicDeliriumSplinterStackSize",
-      "id": "explicit.stat_2301218725"
-    },
-    {
-      "Name": "Delirium",
-      "Code": "MapRelicDeliriumUniqueMonsterAdditionalDeliriumOrbChance1",
-      "Mod": "Delirious Unique Monsters in your Maps have a 2% chance to drop an additional Delirium Orb",
-      "Family": "MapRelicDeliriumUniqueMonsterAdditionalDeliriumOrbChance",
-      "id": "explicit.stat_4142971786"
-    },
-    {
-      "Name": "Delirium",
-      "Code": "MapRelicDeliriumUniqueMonsterAdditionalClusterJewelChance1",
-      "Mod": "Delirious Unique Monsters in your Maps have a 3% chance to drop an additional Cluster Jewel",
-      "Family": "MapRelicDeliriumUniqueMonsterAdditionalClusterJewelChance",
-      "id": "explicit.stat_3312982927"
-    },
-    {
-      "Name": "Niko",
-      "Code": "MapRelicDelveGuardedSulphite1",
-      "Mod": "Voltaxic Sulphite Veins and Chests in your Maps are guarded by Sulphite-hoarding Monsters",
-      "Family": "MapRelicDelveGuardedSulphite",
-      "id": "explicit.stat_2503157846"
-    },
-    {
-      "Name": "Niko",
-      "Code": "MapRelicDelveMaxResistancePerSulphiteMined1",
-      "Mod": "You Gain +3% to all maximum Elemental Resistances per stack of Sulphite Intoxication.",
-      "Family": "MapRelicDelveMaxResistancePerSulphiteMined",
-      "id": "explicit.stat_3363725306"
-    },
-    {
-      "Name": "Niko",
-      "Code": "MapRelicDelveSurprise1",
-      "Mod": "Voltaxic Sulphite Veins and Chests found in your Maps contains Doomed Spirits",
-      "Family": "MapRelicDelveSurprise",
-      "id": "explicit.stat_3236481633"
-    },
-    {
-      "Name": "Domination",
-      "Code": "MapRelicShrineGarunteedMagicPack1",
-      "Mod": "Shrines in your Maps are guarded by at least one Magic Pack",
-      "Family": "MapRelicShrineGarunteedMagicPack",
-      "id": "explicit.stat_2167121354"
-    },
-    {
-      "Name": "Domination",
-      "Code": "MapRelicShrineAdditionalEffect1",
-      "Mod": "Shrines in your Maps grant a random additional Shrine Effect",
-      "Family": "MapRelicShrineAdditionalEffect",
-      "id": "explicit.stat_1594755360"
-    },
-    {
-      "Name": "Domination",
-      "Code": "MapRelicShrineGreedShrineChance1",
-      "Mod": "Shrines in your Maps have 12% chance to be a Covetous Shrine",
-      "Family": "MapRelicShrineGreedShrineChance",
-      "id": "explicit.stat_2831543675"
-    },
-    {
-      "Name": "Essence",
-      "Code": "MapRelicEssenceNumAtMaxTier1",
-      "Mod": "Imprisoned Monsters in your Maps have at least 1 Essence at the highest possible tier",
-      "Family": "MapRelicEssenceNumAtMaxTier",
-      "id": "explicit.stat_2175157402"
-    },
-    {
-      "Name": "Essence",
-      "Code": "MapRelicEssenceCorruptConvert1",
-      "Mod": "Using Remnants of Corruption on Imprisoned Monsters in your Maps replaces all Essences with one of the Essences on the Imprisoned Monster",
-      "Family": "MapRelicEssenceCorruptConvert",
-      "id": "explicit.stat_1019460035"
-    },
-    {
-      "Name": "Expedition",
-      "Code": "MapRelicExpeditionExplosivePlacementDistance1",
-      "Mod": "120% increased Explosive Placement Range in your Maps",
-      "Family": "MapRelicExpeditionExplosivePlacementDistance",
-      "id": "explicit.stat_1539368271"
-    },
-    {
-      "Name": "Expedition",
-      "Code": "MapRelicExpeditionAdditionalRelics1",
-      "Mod": "Expeditions in your Maps have +2 Remnants",
-      "Family": "MapRelicExpeditionAdditionalRelics",
-      "id": "explicit.stat_3753446846"
-    },
-    {
-      "Name": "Expedition",
-      "Code": "MapRelicExpeditionIncreasedEliteMarkerCount1",
-      "Mod": "Your Maps contain 25% increased number of Runic Monster Markers",
-      "Family": "MapRelicExpeditionIncreasedEliteMarkerCount",
-      "id": "explicit.stat_1640965354"
-    },
-    {
-      "Name": "Harbinger",
-      "Code": "MapRelicHarbingerNumShardsToDropAsFullCurrency1",
-      "Mod": "Currency Shards dropped by Harbingers in your Maps can drop as Currency Items instead",
-      "Family": "MapRelicHarbingerNumShardsToDropAsFullCurrency",
-      "id": "explicit.stat_866347860"
-    },
-    {
-      "Name": "Harvest",
-      "Code": "MapRelicHarvestDuplicatedMonsterChance1",
-      "Mod": "Plants Harvested in your Maps have 8% chance to spawn duplicated Monsters",
-      "Family": "MapRelicHarvestDuplicatedMonsterChance",
-      "id": "explicit.stat_2634325281"
-    },
-    {
-      "Name": "Harvest",
-      "Code": "MapRelicHarvestSeedsAdditionalMonsterChance1",
-      "Mod": "Harvested Plants in your Maps have 15% chance to spawn an additional Monster",
-      "Family": "MapRelicHarvestSeedsAdditionalMonsterChance",
-      "id": "explicit.stat_4128958145"
-    },
-    {
-      "Name": "Harvest",
-      "Code": "MapRelicHarvestDuplicateLifeforceChance1",
-      "Mod": "Lifeforce dropped by Harvest Monsters in your Maps has 15% chance to be Duplicated",
-      "Family": "MapRelicHarvestDuplicateLifeforceChance",
-      "id": "explicit.stat_2591612078"
-    },
-    {
-      "Name": "Heist",
-      "Code": "MapRelicHeistBlueprintDropRevealedChance1",
-      "Mod": "Blueprints that drop in your Maps have 15% chance to be fully Revealed",
-      "Family": "MapRelicHeistBlueprintDropRevealedChance",
-      "id": "explicit.stat_3113439544"
-    },
-    {
-      "Name": "Heist",
-      "Code": "MapRelicHeistSixCachesChance1",
-      "Mod": "Your Maps that contain Smuggler's Caches have a 6% chance to contain 6 additional Smuggler's Caches",
-      "Family": "MapRelicHeistSixCachesChance",
-      "id": "explicit.stat_1488908340"
-    },
-    {
-      "Name": "Heist",
-      "Code": "MapRelicHeistCacheBlueprintChancePerOpenedCache1",
-      "Mod": "Smuggler's Caches in your Maps have 15% increased chance to contain Blueprints for each Smuggler's Cache opened in the Map",
-      "Family": "MapRelicHeistCacheBlueprintChancePerOpenedCache",
-      "id": "explicit.stat_3556555275"
-    },
-    {
-      "Name": "Heist",
-      "Code": "MapRelicHeistHuckSpawnsFromCache1",
-      "Mod": "Huck accompanies you on opening the first Smuggler's Cache in each of your Maps",
-      "Family": "MapRelicHeistHuckSpawnsFromCache",
-      "id": "explicit.stat_4286661423"
-    },
-    {
-      "Name": "Jun",
-      "Code": "MapRelicBetrayalBarginDropsMoreItems1",
-      "Mod": "Immortal Syndicate Members in your Maps drop 200% more Items when Bargained with for Items",
-      "Family": "MapRelicBetrayalBarginDropsMoreItems",
-      "id": "explicit.stat_574706723"
-    },
-    {
-      "Name": "Jun",
-      "Code": "MapRelicBetrayalMapCompletionRandomSafehouseIntelligence1",
-      "Mod": "Completing your Maps grants 15 Intelligence for a random Immortal Syndicate Safehouse",
-      "Family": "MapRelicBetrayalMapCompletionRandomSafehouseIntelligence",
-      "id": "explicit.stat_424189350"
-    },
-    {
-      "Name": "Trial of Ascendancy",
-      "Code": "MapRelicAscendancyImprovedOfferingChance1",
-      "Mod": "Labyrinth Trials in your Maps have 25% chance to award an Improved Offering to the Goddess",
-      "Family": "MapRelicAscendancyImprovedOfferingChance",
-      "id": "explicit.stat_340272125"
-    },
-    {
-      "Name": "Legion",
-      "Code": "MapRelicLegionAdditionalNumSergeants1",
-      "Mod": "Legion Encounters in your Maps contain 2 additional Sergeants",
-      "Family": "MapRelicLegionAdditionalNumSergeants",
-      "id": "explicit.stat_480028751"
-    },
-    {
-      "Name": "Legion",
-      "Code": "MapRelicLegionSpawnBothGenerals1",
-      "Mod": "Legion Encounters with a General in your Maps have both Generals",
-      "Family": "MapRelicLegionSpawnBothGenerals",
-      "id": "explicit.stat_2347014488"
-    },
-    {
-      "Name": "Legion",
-      "Code": "MapRelicLegionSplinterDropAsFragmentChance1",
-      "Mod": "0.75% chance for Timeless Splinters to drop as Timeless Emblems instead in your Maps",
-      "Family": "MapRelicLegionSplinterDropAsFragmentChance",
-      "id": "explicit.stat_407036985"
-    },
-    {
-      "Name": "Ultimatum",
-      "Code": "MapRelicUltimatumAdditionalRewardTiers1",
-      "Mod": "Ultimatum Encounters in your Maps grant rewards as though you completed an additional Round",
-      "Family": "MapRelicUltimatumAdditionalRewardTiers",
-      "id": "explicit.stat_1937345315"
-    },
-    {
-      "Name": "Ultimatum",
-      "Code": "MapRelicUltimatumTrialmasterDropsStackOfCatalysts1",
-      "Mod": "Ultimatum Boss drops a full stack of a random Catalyst",
-      "Family": "MapRelicUltimatumTrialmasterDropsStackOfCatalysts",
-      "id": "explicit.stat_236047788"
-    },
-    {
-      "Name": "Ultimatum",
-      "Code": "MapRelicUltimatumRewardDupeChance1",
-      "Mod": "Ultimatum Rewards in your Maps have 25% chance to be duplicated",
-      "Family": "MapRelicUltimatumRewardDupeChance",
-      "id": "explicit.stat_1683239984"
-    },
-    {
-      "Name": "Ritual",
-      "Code": "MapRelicRitualFourEncounters1",
-      "Mod": "Your Maps with Ritual Altars always have four Ritual Altars",
-      "Family": "MapRelicRitualFourEncounters",
-      "id": "explicit.stat_2302977956"
-    },
-    {
-      "Name": "Ritual",
-      "Code": "MapRelicRitualAdditionalRerolls1",
-      "Mod": "Ritual Altars in your Maps allow rerolling Favours an additional time",
-      "Family": "MapRelicRitualAdditionalRerolls",
-      "id": "explicit.stat_120737942"
-    },
-    {
-      "Name": "Ritual",
-      "Code": "MapRelicRitualVesselFromFinalEncounterChance1",
-      "Mod": "Completing the final Ritual Altar in your Maps has 20% chance to drop a Blood-filled Vessel",
-      "Family": "MapRelicRitualVesselFromFinalEncounterChance",
-      "id": "explicit.stat_3008766302"
-    },
-    {
-      "Name": "Skittering",
-      "Code": "MapRelicScarabChanceToNotConsume1",
-      "Mod": "Map Device has 5% chance not to consume Scarabs",
-      "Family": "MapRelicScarabChanceToNotConsume",
-      "id": "explicit.stat_4140427516"
-    },
-    {
-      "Name": "Skittering",
-      "Code": "MapRelicScarabLessCommonTypes1",
-      "Mod": "Scarabs found in your Maps are more likely to be less common varieties",
-      "Family": "MapRelicScarabLessCommonTypes",
-      "id": "explicit.stat_2789471089"
-    },
-    {
-      "Name": "Ambush",
-      "Code": "MapRelicStrongboxAtLeastRare1",
-      "Mod": "Strongboxes in your Maps are at least Rare",
-      "Family": "MapRelicStrongboxAtLeastRare",
-      "id": "explicit.stat_1564500422"
-    },
-    {
-      "Name": "Ambush",
-      "Code": "MapRelicStrongboxCorrupted1",
-      "Mod": "Strongboxes in your Maps are Corrupted",
-      "Family": "MapRelicStrongboxCorrupted",
-      "id": "explicit.stat_2681419531"
-    },
-    {
-      "Name": "Ambush",
-      "Code": "MapRelicStrongboxReopenChance1",
-      "Mod": "Strongboxes opened in your Maps have 9% chance to be openable again",
-      "Family": "MapRelicStrongboxReopenChance",
-      "id": "explicit.stat_3353484695"
-    },
-    {
-      "Name": "Synthesis",
-      "Code": "MapRelicSynthesisMonsterPackSize1",
-      "Mod": "Synthesised Monsters in Synthesis Maps have 30% increased Pack Size",
-      "Family": "MapRelicSynthesisMonsterPackSize",
-      "id": "explicit.stat_2049349490"
-    },
-    {
-      "Name": "Eater",
-      "Code": "MapRelicTangleInfluencePackSize1",
-      "Mod": "Monster Packs Influenced by The Eater of Worlds in your Maps have 35% increased Pack Size",
-      "Family": "MapRelicTangleInfluencePackSize",
-      "id": "explicit.stat_4185631652"
-    },
-    {
-      "Name": "Torment",
-      "Code": "MapRelicTormentRareSpiritsMoreCommon1",
-      "Mod": "Tormented Spirits in your Maps are more likely to be less common varieties",
-      "Family": "MapRelicTormentRareSpiritsMoreCommon",
-      "id": "explicit.stat_564845047"
-    },
-    {
-      "Name": "Maven",
-      "Code": "MapRelicMavenWitnessesAdditionalMapChance1",
-      "Mod": "Defeating a Map Boss while Witnessed by The Maven has 15% chance to count as also Witnessing an additional random Map Boss",
-      "Family": "MapRelicMavenWitnessesAdditionalMapChance",
-      "id": "explicit.stat_3089299676"
-    }
-  ]
+    "prefixes": [
+        {
+            "Name": "Abyss",
+            "Mod": "Your Maps have +70% chance to contain an Abyss",
+            "trade": "explicit.stat_4278144676",
+            "id": "f4478439-6022-4bbe-a551-5fff06b3dfe9"
+        },
+        {
+            "Name": "Abyss",
+            "Mod": "Your Maps have +5% chance to contain an Abyss per 2% increased Pack Size",
+            "trade": "explicit.stat_827686764",
+            "id": "34949f2a-c1a3-4541-8756-ae3d36af86c8"
+        },
+        {
+            "Name": "Alva",
+            "Mod": "Your Maps have +70% chance to contain Alva",
+            "trade": "explicit.stat_2709296039",
+            "id": "ebe1365c-7376-4f42-9441-4468d002af10"
+        },
+        {
+            "Name": "Rogue Exile",
+            "Mod": "Your Maps have a 12% chance to contain 10 additional Rogue Exiles",
+            "trade": "explicit.stat_776258428",
+            "id": "2cb63c6b-31e6-4c90-b03d-6dc2d1423011"
+        },
+        {
+            "Name": "Rogue Exile",
+            "Mod": "Your Maps have a 70% chance to contain an additional Rogue Exile",
+            "trade": "explicit.stat_1123357133",
+            "id": "70b27011-50d4-49dc-90cd-2343ed7efbde"
+        },
+        {
+            "Name": "Einhar",
+            "Mod": "Your Maps have +70% chance to contain Einhar",
+            "trade": "explicit.stat_1566972708",
+            "id": "980ab03d-9bf0-4394-9b0e-14fb9e922b4e"
+        },
+        {
+            "Name": "Beyond",
+            "Mod": "70% chance for your Maps to attract Beyond Demons",
+            "trade": "explicit.stat_3438840900",
+            "id": "3ea9a4b0-8acd-47a6-9ed9-5b517236ed4e"
+        },
+        {
+            "Name": "Blight",
+            "Mod": "Your Maps have +70% chance to contain a Blight Encounter",
+            "trade": "explicit.stat_764545335",
+            "id": "f3aca5f4-b682-479c-be57-56fe02364ad7"
+        },
+        {
+            "Name": "Breach",
+            "Mod": "Your Maps have +70% chance to contain Breaches",
+            "trade": "explicit.stat_1133841298",
+            "id": "3b14d654-15ad-428a-b1f8-158fae97b847"
+        },
+        {
+            "Name": "Breach",
+            "Mod": "Your Maps which contain Breaches have 2% chance to contain ten additional Breaches",
+            "trade": "explicit.stat_2714721644",
+            "id": "c0269faf-1afa-418f-baf4-4d6a183deb61"
+        },
+        {
+            "Name": "Delirium",
+            "Mod": "Your Maps have +70% chance to contain a Mirror of Delirium",
+            "trade": "explicit.stat_1808954678",
+            "id": "cff82076-5dd9-4437-b1a4-4c1277d73cb6"
+        },
+        {
+            "Name": "Delirium",
+            "Mod": "Maps found in your Maps have 5% chance to have layers of Delirium",
+            "trade": "explicit.stat_1482478377",
+            "id": "d5008e66-cfd4-40ee-80e7-ac0370297a4c"
+        },
+        {
+            "Name": "Niko",
+            "Mod": "Your Maps have +70% chance to contain Niko",
+            "trade": "explicit.stat_4267923742",
+            "id": "a7f3374c-e662-4e5e-b089-913f8f7d148a"
+        },
+        {
+            "Name": "Domination",
+            "Mod": "Your Maps contain an additional Shrine",
+            "trade": "explicit.stat_1468737867",
+            "id": "c73274d2-de23-4084-b3e4-6b2402b78decx"
+        },
+        {
+            "Name": "Domination",
+            "Mod": "Your Maps contain 2 additional Shrines",
+            "trade": "explicit.stat_1468737867",
+            "id": "49e94daa-81ae-4a0b-96ef-36849f911a23"
+        },
+        {
+            "Name": "Essence",
+            "Mod": "Your Maps contain an additional Imprisoned Monster",
+            "trade": "explicit.stat_395808938",
+            "id": "803bf5a5-c065-40db-9d9a-0188a4ab43e7x"
+        },
+        {
+            "Name": "Essence",
+            "Mod": "Your Maps contain 2 additional Imprisoned Monsters",
+            "trade": "explicit.stat_395808938",
+            "id": "653fa4f9-5262-4840-9701-07191e4d960d"
+        },
+        {
+            "Name": "Expedition",
+            "Mod": "Your Maps have +70% chance to contain an Expedition Encounter",
+            "trade": "explicit.stat_4154778375",
+            "id": "cc53f123-1ebf-4e54-a613-4bc5f9cf780f"
+        },
+        {
+            "Name": "Harbinger",
+            "Mod": "Your Maps contain an additional Harbinger",
+            "trade": "explicit.stat_504850499",
+            "id": "c9fd4498-6068-41d7-b5f0-eea1b464887fx"
+        },
+        {
+            "Name": "Harbinger",
+            "Mod": "Your Maps contain 2 additional Harbingers",
+            "trade": "explicit.stat_504850499",
+            "id": "33c55669-65b4-4060-b8ee-56fd0501993f"
+        },
+        {
+            "Name": "Harvest",
+            "Mod": "Your Maps have +70% chance to contain The Sacred Grove",
+            "trade": "explicit.stat_1145451936",
+            "id": "23cf4cdb-e8f3-4a33-a5f2-ca1f7a9d8a72"
+        },
+        {
+            "Name": "Heist",
+            "Mod": "Your Maps have +70% chance to contain a Smuggler's Cache",
+            "trade": "explicit.stat_1975869602",
+            "id": "fd35948f-525f-4b4a-9822-1d9fcaa4a051"
+        },
+        {
+            "Name": "Jun",
+            "Mod": "Your Maps have +70% chance to contain Jun",
+            "trade": "explicit.stat_527292219",
+            "id": "e9f23572-9972-4c30-8010-32aa43095531"
+        },
+        {
+            "Name": "Legion",
+            "Mod": "Your Maps have +70% chance to contain a Legion Encounter",
+            "trade": "explicit.stat_1981273563",
+            "id": "9b0eac67-f704-41ba-9de6-972c30ee88c0"
+        },
+        {
+            "Name": "Cartographer",
+            "Mod": "12% chance on Completing your Maps to gain a free use of a random Map Crafting option",
+            "trade": "explicit.stat_2721059969",
+            "id": "e458ba0c-9cf8-4072-affe-adef01217e7e"
+        },
+        {
+            "Name": "Cartographer",
+            "Mod": "4% chance on Completing your Maps to gain a free use of a special Map Crafting option",
+            "trade": "explicit.stat_3858757876",
+            "id": "a988b859-a003-48ae-9e4a-0daf2c34a652"
+        },
+        {
+            "Name": "Ultimatum",
+            "Mod": "Your Maps have +70% chance to contain an Ultimatum Encounter",
+            "trade": "explicit.stat_1365687125",
+            "id": "c4a84a4d-19d3-4289-9d47-4afc61630413"
+        },
+        {
+            "Name": "Ritual",
+            "Mod": "Your Maps have +70% chance to contain Ritual Altars",
+            "trade": "explicit.stat_1314822783",
+            "id": "ed6d387e-9986-45bd-99f9-e46bcc78dc71"
+        },
+        {
+            "Name": "Ambush",
+            "Mod": "Your Maps contain an additional Strongbox",
+            "trade": "explicit.stat_3240183538",
+            "id": "e4c075d2-ae43-4c71-9b5f-c4afb179d550x"
+        },
+        {
+            "Name": "Ambush",
+            "Mod": "Your Maps contain 2 additional Strongboxes",
+            "trade": "explicit.stat_3240183538",
+            "id": "1277ec1f-0e9e-4f38-895c-30a62247a241"
+        },
+        {
+            "Name": "Torment",
+            "Mod": "Your Maps are haunted by an additional Tormented Spirit",
+            "trade": "explicit.stat_358129101",
+            "id": "832682e5-cd44-488e-9a42-b7b08828e706x"
+        },
+        {
+            "Name": "Torment",
+            "Mod": "Your Maps are haunted by 2 additional Tormented Spirits",
+            "trade": "explicit.stat_358129101",
+            "id": "5b4e61c2-80b3-430f-b008-69d17884b471"
+        },
+        {
+            "Name": "Cartographer",
+            "Mod": "6% increased Quantity of Items found in your Maps",
+            "trade": "explicit.stat_2390685262",
+            "id": "96347c21-17b7-4625-ba8c-48e2167d2a28"
+        },
+        {
+            "Name": "Cartographer",
+            "Mod": "6% increased Pack size",
+            "trade": "explicit.stat_2017682521",
+            "id": "9aabea88-67b5-4f27-99bb-18e53085fb09"
+        },
+        {
+            "Name": "Cartographer",
+            "Mod": "5% increased effect of Explicit Modifiers on your Maps per 5% Map Quality",
+            "trade": "explicit.stat_2490189905",
+            "id": "1fb76801-c177-491c-b8c9-23d50277301e"
+        },
+        {
+            "Name": "Cartographer",
+            "Mod": "3% increased effect of Explicit Modifiers on your Maps per Explicit Modifier",
+            "trade": "explicit.stat_2792863714",
+            "id": "64a5d84f-85b5-4d66-a1cf-deecbbbeb28f"
+        }
+    ],
+    "suffixes": [
+        {
+            "Name": "Abyss",
+            "Mod": "Abyss Jewels found in Abyssal Troves or dropped by Stygian Spires in your Maps have 25% chance to be Corrupted and have 5 or 6 random Modifiers",
+            "trade": "explicit.stat_4842372",
+            "id": "dd457369-26bc-42d0-8772-1426356218de"
+        },
+        {
+            "Name": "Abyss",
+            "Mod": "Abyss Jewels dropped by Abyssal Troves or Stygian Spires in your Maps have a 1% Chance to be Rare and Corrupted",
+            "trade": "explicit.stat_286869897",
+            "id": "c206b5ff-986a-483f-8e40-49532662eba9"
+        },
+        {
+            "Name": "Abyss",
+            "Mod": "Abyss Pits in your Maps have 20% chance to spawn 5 additional Rare Monsters",
+            "trade": "explicit.stat_4049011082",
+            "id": "073e5f9b-2122-498b-8a5f-d6dda74788d5"
+        },
+        {
+            "Name": "Abyss",
+            "Mod": "Abyssal Troves and Stygian Spires in your Maps have 5% chance to drop an Abyss Scarab",
+            "trade": "explicit.stat_1028265433",
+            "id": "de72df9e-4390-469b-bb60-028fd34f9f88"
+        },
+        {
+            "Name": "Abyss",
+            "Mod": "Abysses in your Maps that do not lead to an Abyssal Depths lead to 4 Pits if able",
+            "trade": "explicit.stat_1977826050",
+            "id": "f240900a-5203-4489-85ad-320457406f7a"
+        },
+        {
+            "Name": "Abyss",
+            "Mod": "Abysses in your Maps that do not lead to an Abyssal Depths lead to at least 3 Pits if able",
+            "trade": "explicit.stat_911724954",
+            "id": "07427b82-6a72-4cc4-afbb-a26c775cd66b"
+        },
+        {
+            "Name": "Abyss",
+            "Mod": "Abysses in your Maps spawn 12% increased Monsters for each prior Pit in that Abyss",
+            "trade": "explicit.stat_1927544133",
+            "id": "ff38a600-18b6-42e6-b202-9fc3ed3915ea"
+        },
+        {
+            "Name": "Alva",
+            "Mod": "Killing resident Architects in your Maps adds their Upgrade Tier to the surviving Architect's Room",
+            "trade": "explicit.stat_3052174721",
+            "id": "0d5b1f2c-74c2-4f9a-9a5b-2a731d06e368"
+        },
+        {
+            "Name": "Alva",
+            "Mod": "Incursions in your Maps contain a Vaal Flesh Merchant",
+            "trade": "explicit.stat_1822007489",
+            "id": "bdcc8d7f-eb07-438c-a177-63f802050445"
+        },
+        {
+            "Name": "Alva",
+            "Mod": "Your Maps with Incursions always have four Incursions",
+            "trade": "explicit.stat_4224761993",
+            "id": "6a124759-fd34-474f-816b-7a60942fe692"
+        },
+        {
+            "Name": "Alva",
+            "Mod": "Time gained from Kills is Doubled for Incursions in your Maps",
+            "trade": "explicit.stat_1927424401",
+            "id": "3e9f42ca-b32c-4e25-90fd-244bdb402244"
+        },
+        {
+            "Name": "Alva",
+            "Mod": "Incursions in your Maps contain Cursed Treasures",
+            "trade": "explicit.stat_1419687153",
+            "id": "6348de02-0029-4b9c-8332-70aeac89f5cf"
+        },
+        {
+            "Name": "Rogue Exile",
+            "Mod": "Wild Rogue Exiles in your Maps have 60% chance to have additional Rewards",
+            "trade": "explicit.stat_113499389",
+            "id": "9b64694e-fb86-47ac-b6d2-7cd5fe7be136"
+        },
+        {
+            "Name": "Einhar",
+            "Mod": "Beasts in your Maps are more likely to be less common varieties",
+            "trade": "explicit.stat_4062346714",
+            "id": "da91c512-fe92-4629-bd4c-b94f3e160215"
+        },
+        {
+            "Name": "Einhar",
+            "Mod": "Einhar remains in your Maps after his Mission is Complete",
+            "trade": "explicit.stat_1766031838",
+            "id": "cf8d9b12-6141-4e9c-b832-4d3407c357f5"
+        },
+        {
+            "Name": "Einhar",
+            "Mod": "Yellow Beasts in your Maps have 18% chance to be replaced with Red Beasts",
+            "trade": "explicit.stat_4103953516",
+            "id": "112bf503-b5a7-440d-992c-1147b10953bb"
+        },
+        {
+            "Name": "Einhar",
+            "Mod": "Beasts in your Maps have a 20% chance to break free Beasts which break free in your Maps gain Bestial Rage Defeating Beasts grants Hunters' Cunning per Bestial Rage on the defeated Beast",
+            "trade": "explicit.stat_3241030924",
+            "id": "19fd85f5-1620-438c-8ee0-7994994b9671"
+        },
+        {
+            "Name": "Beyond",
+            "Mod": "Slaying Enemies in your Maps has a 18% increased chance to spawn a Beyond Portal",
+            "trade": "explicit.stat_3036422124",
+            "id": "870aac4a-2542-4669-be90-c5b844257d9f"
+        },
+        {
+            "Name": "Beyond",
+            "Mod": "Gain Demonic Power on defeating a Beyond Boss in your Maps",
+            "trade": "explicit.stat_3366450400",
+            "id": "454383bb-3c63-425e-8527-b8f49a21873d"
+        },
+        {
+            "Name": "Blight",
+            "Mod": "Varieties of Items contained in 5 Blight Chests in your Maps are Lucky",
+            "trade": "explicit.stat_1730598557",
+            "id": "cd278129-6d26-4ac3-857f-41e435a23b20"
+        },
+        {
+            "Name": "Blight",
+            "Mod": "Blight chests in your Maps have a 10% chance to be openable again",
+            "trade": "explicit.stat_278772496",
+            "id": "d23119fa-1f3b-4aab-a269-ad558f1d489c"
+        },
+        {
+            "Name": "Blight",
+            "Mod": "Completing a Blight Encounter in your Maps grants all Players Blightreach",
+            "trade": "explicit.stat_3127831894",
+            "id": "62c71457-191f-4f52-bc6d-fddcfb0e3c3e"
+        },
+        {
+            "Name": "Blight",
+            "Mod": "Blight Towers in your Maps can be Salvaged after the Blight Encounter Higher Tier Towers grant better Salvaged Rewards Salvaged Rewards are improved for each different Tower Type built during Encounter",
+            "trade": "explicit.stat_1421406768",
+            "id": "7293b790-4631-4214-9616-a989ff9ac891"
+        },
+        {
+            "Name": "Breach",
+            "Mod": "Breach Bosses Defeated in your Maps have 5% chance to drop a Breachstone",
+            "trade": "explicit.stat_988187710",
+            "id": "83eb9c77-1828-4b71-b5e8-3e1ae4874b39"
+        },
+        {
+            "Name": "Breach",
+            "Mod": "Breaches in your Maps contain 3 additional Clasped Hands",
+            "trade": "explicit.stat_2224050171",
+            "id": "21f46648-264a-4e6b-a2a6-0b6c5ac3d00b"
+        },
+        {
+            "Name": "Breach",
+            "Mod": "Breaches in your Maps contain 2 additional Clasped Hands",
+            "trade": "explicit.stat_2224050171",
+            "id": "e86dd9eb-8b97-4e35-b624-05d528cabf51"
+        },
+        {
+            "Name": "Breach",
+            "Mod": "Breaches in your Maps have 3% chance to contain Xesht-Ula, the Open Hand",
+            "trade": "explicit.stat_1601064200",
+            "id": "250c3c33-6552-4dec-be9b-583052c1b9f1"
+        },
+        {
+            "Name": "Breach",
+            "Mod": "Breach Boss' Clasped Hands in your Maps have 5% chance to spawn a Breach Boss when opened",
+            "trade": "explicit.stat_3465894962",
+            "id": "a4a72d46-a440-4981-8042-0a2169ffc579"
+        },
+        {
+            "Name": "Exarch",
+            "Mod": "Your Maps have 15% chance to award double progress towards encountering The Searing Exarch",
+            "trade": "explicit.stat_2523194133",
+            "id": "ab57c678-9098-4240-a632-bf9680cf2f58"
+        },
+        {
+            "Name": "Exarch",
+            "Mod": "Eldritch Embers found in your Maps influenced by The Searing Exarch have 15% chance to be Duplicated",
+            "trade": "explicit.stat_2514681311",
+            "id": "d3c7d353-09f7-4842-81a4-97b2677add4b"
+        },
+        {
+            "Name": "Delirium",
+            "Mod": "Delirium Encounters in your Maps have 12% chance to generate three additional Reward types",
+            "trade": "explicit.stat_2312030426",
+            "id": "1d685e92-3627-4480-baa0-7f25ca587263"
+        },
+        {
+            "Name": "Delirium",
+            "Mod": "30% increased Stack size of Simulacrum Splinters found in your Maps",
+            "trade": "explicit.stat_2301218725",
+            "id": "9f532de0-889a-4352-b346-b0f5560a94bc"
+        },
+        {
+            "Name": "Delirium",
+            "Mod": "Delirious Unique Monsters in your Maps have a 2% chance to drop an additional Delirium Orb",
+            "trade": "explicit.stat_4142971786",
+            "id": "2a0af95e-2e0c-4c4f-a2b7-5577e41c0c3f"
+        },
+        {
+            "Name": "Delirium",
+            "Mod": "Delirious Unique Monsters in your Maps have a 3% chance to drop an additional Cluster Jewel",
+            "trade": "explicit.stat_3312982927",
+            "id": "ecdb506f-8963-441c-adec-38676fe23d9b"
+        },
+        {
+            "Name": "Niko",
+            "Mod": "Voltaxic Sulphite Veins and Chests in your Maps are guarded by Sulphite-hoarding Monsters",
+            "trade": "explicit.stat_2503157846",
+            "id": "3cc0e588-c214-4bff-a15e-2062f1684b7c"
+        },
+        {
+            "Name": "Niko",
+            "Mod": "You Gain +3% to all maximum Elemental Resistances per stack of Sulphite Intoxication.",
+            "trade": "explicit.stat_3363725306",
+            "id": "092f88dd-a52e-49e2-8429-60a71ecdb799"
+        },
+        {
+            "Name": "Niko",
+            "Mod": "Voltaxic Sulphite Veins and Chests found in your Maps contains Doomed Spirits",
+            "trade": "explicit.stat_3236481633",
+            "id": "5ccb834e-5f06-41ff-80f4-b9bf18823207"
+        },
+        {
+            "Name": "Domination",
+            "Mod": "Shrines in your Maps are guarded by at least one Magic Pack",
+            "trade": "explicit.stat_2167121354",
+            "id": "bd6ccbd2-85b0-4d38-a6a1-62bb293444b1"
+        },
+        {
+            "Name": "Domination",
+            "Mod": "Shrines in your Maps grant a random additional Shrine Effect",
+            "trade": "explicit.stat_1594755360",
+            "id": "ae7e4e70-ffac-49d3-859d-f8189f0de346"
+        },
+        {
+            "Name": "Domination",
+            "Mod": "Shrines in your Maps have 12% chance to be a Covetous Shrine",
+            "trade": "explicit.stat_2831543675",
+            "id": "3271ee1d-101d-40b2-93d4-c95f1a9a2d84"
+        },
+        {
+            "Name": "Essence",
+            "Mod": "Imprisoned Monsters in your Maps have at least 1 Essence at the highest possible tier",
+            "trade": "explicit.stat_2175157402",
+            "id": "4687fbe9-adee-46db-a548-9bcb2518885b"
+        },
+        {
+            "Name": "Essence",
+            "Mod": "Using Remnants of Corruption on Imprisoned Monsters in your Maps replaces all Essences with one of the Essences on the Imprisoned Monster",
+            "trade": "explicit.stat_1019460035",
+            "id": "2c8e4da0-ddc0-4993-82b0-cf6a3c155056"
+        },
+        {
+            "Name": "Expedition",
+            "Mod": "120% increased Explosive Placement Range in your Maps",
+            "trade": "explicit.stat_1539368271",
+            "id": "2ac4ee76-444d-4349-aec8-067feed5a30a"
+        },
+        {
+            "Name": "Expedition",
+            "Mod": "Expeditions in your Maps have +2 Remnants",
+            "trade": "explicit.stat_3753446846",
+            "id": "56239306-9a13-4d0f-90fb-211c110a0467"
+        },
+        {
+            "Name": "Expedition",
+            "Mod": "Your Maps contain 25% increased number of Runic Monster Markers",
+            "trade": "explicit.stat_1640965354",
+            "id": "71e75a90-ce6e-410d-b70c-a17bc60d494e"
+        },
+        {
+            "Name": "Harbinger",
+            "Mod": "Currency Shards dropped by Harbingers in your Maps can drop as Currency Items instead",
+            "trade": "explicit.stat_866347860",
+            "id": "41c5ab49-5320-446c-809c-4a7fd80b73d0"
+        },
+        {
+            "Name": "Harvest",
+            "Mod": "Plants Harvested in your Maps have 8% chance to spawn duplicated Monsters",
+            "trade": "explicit.stat_2634325281",
+            "id": "75e3e344-b724-433f-8c29-5d9460926a14"
+        },
+        {
+            "Name": "Harvest",
+            "Mod": "Harvested Plants in your Maps have 15% chance to spawn an additional Monster",
+            "trade": "explicit.stat_4128958145",
+            "id": "afd62c0f-0349-46ca-8a53-800f6e61930b"
+        },
+        {
+            "Name": "Harvest",
+            "Mod": "Lifeforce dropped by Harvest Monsters in your Maps has 15% chance to be Duplicated",
+            "trade": "explicit.stat_2591612078",
+            "id": "61fdefeb-b022-4d93-b12a-ebad93bbbcf7"
+        },
+        {
+            "Name": "Heist",
+            "Mod": "Blueprints that drop in your Maps have 15% chance to be fully Revealed",
+            "trade": "explicit.stat_3113439544",
+            "id": "3b9dbce5-3a19-4cb4-8a35-738c6145b14f"
+        },
+        {
+            "Name": "Heist",
+            "Mod": "Your Maps that contain Smuggler's Caches have a 6% chance to contain 6 additional Smuggler's Caches",
+            "trade": "explicit.stat_1488908340",
+            "id": "c8110600-58ed-4d59-a05a-9cbc2933a308"
+        },
+        {
+            "Name": "Heist",
+            "Mod": "Smuggler's Caches in your Maps have 15% increased chance to contain Blueprints for each Smuggler's Cache opened in the Map",
+            "trade": "explicit.stat_3556555275",
+            "id": "08c12179-ee22-4f9b-a3a8-b18a48bd88c9"
+        },
+        {
+            "Name": "Heist",
+            "Mod": "Huck accompanies you on opening the first Smuggler's Cache in each of your Maps",
+            "trade": "explicit.stat_4286661423",
+            "id": "c18d4724-5333-467f-ad69-b41cf18359d9"
+        },
+        {
+            "Name": "Jun",
+            "Mod": "Immortal Syndicate Members in your Maps drop 200% more Items when Bargained with for Items",
+            "trade": "explicit.stat_574706723",
+            "id": "4e947fca-1146-43bb-b94c-41180376a6b4"
+        },
+        {
+            "Name": "Jun",
+            "Mod": "Completing your Maps grants 15 Intelligence for a random Immortal Syndicate Safehouse",
+            "trade": "explicit.stat_424189350",
+            "id": "3bd1e6b0-7c60-4885-995c-48e166714cf5"
+        },
+        {
+            "Name": "Trial of Ascendancy",
+            "Mod": "Labyrinth Trials in your Maps have 25% chance to award an Improved Offering to the Goddess",
+            "trade": "explicit.stat_340272125",
+            "id": "2743d91a-79b4-4739-b0c8-ed076864cddd"
+        },
+        {
+            "Name": "Legion",
+            "Mod": "Legion Encounters in your Maps contain 2 additional Sergeants",
+            "trade": "explicit.stat_480028751",
+            "id": "310d6f48-362a-485f-a22f-a0cb0b63a3c1"
+        },
+        {
+            "Name": "Legion",
+            "Mod": "Legion Encounters with a General in your Maps have both Generals",
+            "trade": "explicit.stat_2347014488",
+            "id": "0827f225-fd25-4eaa-8691-65536d06f759"
+        },
+        {
+            "Name": "Legion",
+            "Mod": "0.75% chance for Timeless Splinters to drop as Timeless Emblems instead in your Maps",
+            "trade": "explicit.stat_407036985",
+            "id": "df162159-df1b-4658-857d-d8c0dfeeee7c"
+        },
+        {
+            "Name": "Ultimatum",
+            "Mod": "Ultimatum Encounters in your Maps grant rewards as though you completed an additional Round",
+            "trade": "explicit.stat_1937345315",
+            "id": "3dda086a-c760-4d8b-aa0e-6c3e16574b95"
+        },
+        {
+            "Name": "Ultimatum",
+            "Mod": "Ultimatum Boss drops a full stack of a random Catalyst",
+            "trade": "explicit.stat_236047788",
+            "id": "9b400a65-29b6-45f6-b700-3e6864eda259"
+        },
+        {
+            "Name": "Ultimatum",
+            "Mod": "Ultimatum Rewards in your Maps have 25% chance to be duplicated",
+            "trade": "explicit.stat_1683239984",
+            "id": "4a26741b-79a9-4169-9353-56d1ae99544b"
+        },
+        {
+            "Name": "Ritual",
+            "Mod": "Your Maps with Ritual Altars always have four Ritual Altars",
+            "trade": "explicit.stat_2302977956",
+            "id": "b640cb5f-6bd5-4e58-b2d2-53c2f21f9679"
+        },
+        {
+            "Name": "Ritual",
+            "Mod": "Ritual Altars in your Maps allow rerolling Favours an additional time",
+            "trade": "explicit.stat_120737942",
+            "id": "19a7e2de-5c16-4d55-a6df-43a7a58452ae"
+        },
+        {
+            "Name": "Ritual",
+            "Mod": "Completing the final Ritual Altar in your Maps has 20% chance to drop a Blood-filled Vessel",
+            "trade": "explicit.stat_3008766302",
+            "id": "304f5aef-447c-4ce2-8259-ec3eed684c97"
+        },
+        {
+            "Name": "Skittering",
+            "Mod": "Map Device has 5% chance not to consume Scarabs",
+            "trade": "explicit.stat_4140427516",
+            "id": "6527d602-f48f-4d10-83e6-cbadfe989a06"
+        },
+        {
+            "Name": "Skittering",
+            "Mod": "Scarabs found in your Maps are more likely to be less common varieties",
+            "trade": "explicit.stat_2789471089",
+            "id": "9f5d9c1d-e541-4a36-8a7e-7467af40622d"
+        },
+        {
+            "Name": "Ambush",
+            "Mod": "Strongboxes in your Maps are at least Rare",
+            "trade": "explicit.stat_1564500422",
+            "id": "0d6a276d-2949-4728-82cc-3d192b9e9e5d"
+        },
+        {
+            "Name": "Ambush",
+            "Mod": "Strongboxes in your Maps are Corrupted",
+            "trade": "explicit.stat_2681419531",
+            "id": "45ea5feb-5031-4e39-a496-40afe67e7092"
+        },
+        {
+            "Name": "Ambush",
+            "Mod": "Strongboxes opened in your Maps have 9% chance to be openable again",
+            "trade": "explicit.stat_3353484695",
+            "id": "d5080fe7-9439-4216-8f8c-292ab492658c"
+        },
+        {
+            "Name": "Synthesis",
+            "Mod": "Synthesised Monsters in Synthesis Maps have 30% increased Pack Size",
+            "trade": "explicit.stat_2049349490",
+            "id": "5010521f-9bd2-4362-bcfc-54bd71364a39"
+        },
+        {
+            "Name": "Eater",
+            "Mod": "Monster Packs Influenced by The Eater of Worlds in your Maps have 35% increased Pack Size",
+            "trade": "explicit.stat_4185631652",
+            "id": "cded476c-48da-4e37-8a4a-a63070126822"
+        },
+        {
+            "Name": "Torment",
+            "Mod": "Tormented Spirits in your Maps are more likely to be less common varieties",
+            "trade": "explicit.stat_564845047",
+            "id": "342082c9-6b64-4b8a-a76a-3e19f18bffcb"
+        },
+        {
+            "Name": "Maven",
+            "Mod": "Defeating a Map Boss while Witnessed by The Maven has 15% chance to count as also Witnessing an additional random Map Boss",
+            "trade": "explicit.stat_3089299676",
+            "id": "c21631ab-0f75-4956-88ec-ef2bb2212b74"
+        }
+    ]
 }
