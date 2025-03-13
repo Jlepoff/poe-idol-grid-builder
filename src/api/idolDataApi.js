@@ -14,11 +14,9 @@ export const loadIdolData = async () => {
 
     const responses = await Promise.all([
       fetch(`${baseUrl}/data/minor_idol_mods.json`),
-      fetch(`${baseUrl}/data/kamasan_idol_mods.json`),
-      fetch(`${baseUrl}/data/totemic_idol_mods.json`),
-      fetch(`${baseUrl}/data/noble_idol_mods.json`),
+      fetch(`${baseUrl}/data/kamasan_noble_idol_mods.json`),
+      fetch(`${baseUrl}/data/burial_totemic_idol_mods.json`),
       fetch(`${baseUrl}/data/conqueror_idol_mods.json`),
-      fetch(`${baseUrl}/data/burial_idol_mods.json`),
     ]);
 
     const failedResponses = responses.filter((r) => !r.ok);
@@ -30,29 +28,27 @@ export const loadIdolData = async () => {
 
     const [
       minorData,
-      kamasanData,
-      totemicData,
-      nobleData,
+      kamasanNobleData,
+      burialTotemicData,
       conquerorData,
-      burialData,
     ] = await Promise.all(responses.map((r) => r.json()));
 
     const modData = {
       prefixes: {
         Minor: minorData.prefixes,
-        Kamasan: kamasanData.prefixes,
-        Totemic: totemicData.prefixes,
-        Noble: nobleData.prefixes,
+        Kamasan: kamasanNobleData.prefixes,
+        Totemic: burialTotemicData.prefixes,
+        Noble: kamasanNobleData.prefixes,
         Conqueror: conquerorData.prefixes,
-        Burial: burialData.prefixes,
+        Burial: burialTotemicData.prefixes,
       },
       suffixes: {
         Minor: minorData.suffixes,
-        Kamasan: kamasanData.suffixes,
-        Totemic: totemicData.suffixes,
-        Noble: nobleData.suffixes,
+        Kamasan: kamasanNobleData.suffixes,
+        Totemic: burialTotemicData.suffixes,
+        Noble: kamasanNobleData.suffixes,
         Conqueror: conquerorData.suffixes,
-        Burial: burialData.suffixes,
+        Burial: burialTotemicData.suffixes,
       },
     };
 
