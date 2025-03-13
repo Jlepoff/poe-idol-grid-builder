@@ -374,38 +374,38 @@ function AppContent() {
                     <div className="md:col-span-3 lg:col-span-4">
                         {/* Desktop Tabs */}
                         <div className="hidden md:block mb-6">
-                            <div className="bg-slate-800 rounded-lg overflow-hidden flex w-full">
+                            <div className="bg-slate-800 rounded-lg overflow-hidden flex flex-wrap w-full">
                                 <button
-                                    className={`py-2.5 px-6 flex-1 ${activeTab === "builder"
-                                        ? "bg-indigo-600 text-white font-medium"
-                                        : "hover:bg-slate-700 text-slate-300"
+                                    className={`py-2.5 px-4 min-w-[120px] flex-grow ${activeTab === "builder"
+                                            ? "bg-indigo-600 text-white font-medium"
+                                            : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("builder")}
                                 >
                                     Manual Builder
                                 </button>
                                 <button
-                                    className={`py-2.5 px-6 flex-1 ${activeTab === "autogen"
-                                        ? "bg-indigo-600 text-white font-medium"
-                                        : "hover:bg-slate-700 text-slate-300"
+                                    className={`py-2.5 px-4 min-w-[120px] flex-grow ${activeTab === "autogen"
+                                            ? "bg-indigo-600 text-white font-medium"
+                                            : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("autogen")}
                                 >
                                     Auto-Generate
                                 </button>
                                 <button
-                                    className={`py-2.5 px-6 flex-1 ${activeTab === "unique"
-                                        ? "bg-indigo-600 text-white font-medium"
-                                        : "hover:bg-slate-700 text-slate-300"
+                                    className={`py-2.5 px-4 min-w-[100px] flex-grow ${activeTab === "unique"
+                                            ? "bg-indigo-600 text-white font-medium"
+                                            : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("unique")}
                                 >
                                     Unique Idols
                                 </button>
                                 <button
-                                    className={`py-2.5 px-6 flex-1 ${activeTab === "trade"
-                                        ? "bg-indigo-600 text-white font-medium"
-                                        : "hover:bg-slate-700 text-slate-300"
+                                    className={`py-2.5 px-4 min-w-[100px] flex-grow ${activeTab === "trade"
+                                            ? "bg-indigo-600 text-white font-medium"
+                                            : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("trade")}
                                 >
