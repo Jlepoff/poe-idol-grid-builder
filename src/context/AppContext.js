@@ -257,6 +257,21 @@ export const AppProvider = ({ children }) => {
     setGenerationResult(null);
   }, []);
 
+  // Clear inventory except unique idols and reset grid
+  const handleClearInventoryExceptUniques = useCallback(() => {
+    // Create empty grid
+    const emptyGrid = Array(7).fill().map(() => Array(6).fill(null));
+    setGridState(emptyGrid);
+    saveGridState(emptyGrid);
+
+    // Filter inventory to keep only unique idols
+    const uniqueIdols = inventory.filter(idol => idol.isUnique);
+    setInventory(uniqueIdols);
+    saveInventory(uniqueIdols);
+
+    setGenerationResult(null);
+  }, [inventory]);
+
   // Auto-optimize idol placement
   const handleOptimizeGrid = useCallback(() => {
     const optimizationResult = optimizeGrid(inventory, idolTypes, gridState);
@@ -357,7 +372,7 @@ export const AppProvider = ({ children }) => {
       success: result.idols.length > 0,
     });
 
-    setActiveTab("builder");
+    // setActiveTab("builder");
   }, [gridState, inventory, idolTypes, modData]);
 
   const handleLoadStrategy = useCallback((shareUrl) => {
@@ -381,7 +396,7 @@ export const AppProvider = ({ children }) => {
           message: "Strategy loaded successfully!",
         });
 
-        setActiveTab("builder");
+        // setActiveTab("builder");
       }
     }
   }, [modData]);
@@ -406,7 +421,7 @@ export const AppProvider = ({ children }) => {
     setFirstVisit,
     setInventorySearchTerm,
 
-    // Actions
+    // Action functions
     handleAddIdol,
     handleRemoveIdol,
     canPlaceIdol,
@@ -415,6 +430,7 @@ export const AppProvider = ({ children }) => {
     handlePlaceIdol,
     handleRemoveFromGrid,
     handleClearAll,
+    handleClearInventoryExceptUniques,
     handleOptimizeGrid,
     handleGenerateIdols,
     handleLoadStrategy,

@@ -1,12 +1,35 @@
 // components/modifiers/DesiredModifiers.jsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import ModifierSearch from "./ModifierSearch";
 import Card from "../common/Card";
 import Button from "../common/Button";
+import Modal from "../common/Modal";
+import { AppContext } from "../../context/AppContext";
+import { extractModifiersFromInventory } from "../../utils/modifiers/extractModifiersFromInventory";
+
+// Key for local storage
+const STORAGE_KEY = "poe-idol-desired-modifiers";
 
 function DesiredModifiers({ modData, onGenerateIdols }) {
-  const [desiredModifiers, setDesiredModifiers] = useState([]);
+  // Load previously saved desired modifiers if available
+  const loadSavedModifiers = () => {
+    try {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      return savedData ? JSON.parse(savedData) : [];
+    } catch (err) {
+      console.error("Failed to load saved modifiers:", err);
+      return [];
+    }
+  };
+
+  const [desiredModifiers, setDesiredModifiers] = useState(loadSavedModifiers);
   const [showSearch, setShowSearch] = useState(false);
+  const [loadingFromInventory, setLoadingFromInventory] = useState(false);
+  // Separate modal state for load and clear confirmations
+  const [isLoadModalOpen, setIsLoadModalOpen] = useState(false);
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+  const { inventory, handleClearInventoryExceptUniques } =
+    useContext(AppContext);
 
   // Use ref for search history to avoid rerenders
   const searchHistoryRef = useRef({
@@ -15,6 +38,15 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
     viewByName: false,
     selectedNames: [],
   });
+
+  // Save desired modifiers to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(desiredModifiers));
+    } catch (err) {
+      console.error("Failed to save desired modifiers:", err);
+    }
+  }, [desiredModifiers]);
 
   // Handle adding a modifier
   const handleAddModifier = (modifier, type) => {
@@ -60,6 +92,49 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
     }
   };
 
+  // Load modifiers from inventory
+  const handleLoadFromInventory = () => {
+    setLoadingFromInventory(true);
+
+    try {
+      // Extract modifiers from inventory
+      const extractedModifiers = extractModifiersFromInventory(
+        inventory,
+        modData
+      );
+
+      // Merge with existing modifiers
+      const mergedModifiers = [...desiredModifiers];
+
+      extractedModifiers.forEach((extractedMod) => {
+        const existingIndex = mergedModifiers.findIndex(
+          (mod) => mod.id === extractedMod.id
+        );
+
+        if (existingIndex >= 0) {
+          // Update count if modifier already exists
+          mergedModifiers[existingIndex] = {
+            ...mergedModifiers[existingIndex],
+            count:
+              (mergedModifiers[existingIndex].count || 0) + extractedMod.count,
+          };
+        } else {
+          // Add new modifier
+          mergedModifiers.push(extractedMod);
+        }
+      });
+
+      setDesiredModifiers(mergedModifiers);
+
+      // Clear the grid and inventory (excluding unique idols)
+      handleClearInventoryExceptUniques();
+    } catch (error) {
+      console.error("Error loading modifiers from inventory:", error);
+    } finally {
+      setLoadingFromInventory(false);
+    }
+  };
+
   // Generate idols from desired modifiers
   const handleGenerateIdols = () => {
     if (desiredModifiers.length === 0) return;
@@ -78,7 +153,12 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
       };
     });
 
+    // Generate idols
     onGenerateIdols(modifiersToGenerate);
+
+    // Clear the desired modifiers list
+    setDesiredModifiers([]);
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   // Track search state changes
@@ -92,6 +172,9 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
     0
   );
 
+  // Check if we have non-unique idols in inventory
+  const hasNonUniqueIdols = inventory.some((idol) => !idol.isUnique);
+
   return (
     <Card title="Auto-Generate Idols">
       <div className="space-y-6">
@@ -100,6 +183,75 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
           automatically. Click a modifier multiple times to increase its
           quantity.
         </p>
+
+        {/* Load from Inventory Button */}
+        <Button
+          variant={hasNonUniqueIdols ? "amber" : "disabled"}
+          onClick={() => setIsLoadModalOpen(true)}
+          disabled={!hasNonUniqueIdols || loadingFromInventory}
+          className="w-full py-3"
+        >
+          {loadingFromInventory ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Processing...
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 14l3-3m0 0l3 3m-3-3v9"
+                />
+              </svg>
+              Load Modifiers from Inventory
+            </span>
+          )}
+        </Button>
+
+          {/* Clear All Button */}
+          {desiredModifiers.length > 0 && (
+          <Button
+            variant="danger"
+            onClick={() => setIsClearModalOpen(true)}
+            className="w-full py-1"
+          >
+            Clear All Desired Modifiers
+          </Button>
+        )}
 
         {/* Display selected modifiers */}
         {desiredModifiers.length > 0 ? (
@@ -117,10 +269,10 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
                         ? "bg-gradient-to-r from-blue-900/30 to-slate-800 border border-blue-800/50"
                         : "bg-gradient-to-r from-green-900/30 to-slate-800 border border-green-800/50"
                     }`}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      handleRemoveModifier(index);
-                    }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    handleRemoveModifier(index);
+                  }}
                 >
                   <div>
                     <div className="text-sm">
@@ -212,6 +364,73 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
           </div>
         )}
       </div>
+
+      {/* Load Confirmation Modal */}
+      {isLoadModalOpen && (
+        <Modal
+          isOpen={isLoadModalOpen}
+          onClose={() => setIsLoadModalOpen(false)}
+          title="Load Modifiers Confirmation"
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                onClick={() => setIsLoadModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="amber"
+                onClick={() => {
+                  setIsLoadModalOpen(false);
+                  handleLoadFromInventory();
+                }}
+              >
+                Confirm
+              </Button>
+            </>
+          }
+        >
+          <p>
+            This will extract modifiers from your inventory and add them to the
+            desired modifiers list. When generated, these modifiers will be
+            optimized across idols which could result in different combinations
+            than your original inventory. Some combinations may be more costly
+            to trade for. Do you want to continue?
+          </p>
+        </Modal>
+      )}
+
+      {/* Clear All Confirmation Modal */}
+      {isClearModalOpen && (
+        <Modal
+          isOpen={isClearModalOpen}
+          onClose={() => setIsClearModalOpen(false)}
+          title="Clear All Modifiers"
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                onClick={() => setIsClearModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="red"
+                onClick={() => {
+                  setIsClearModalOpen(false);
+                  setDesiredModifiers([]);
+                  localStorage.removeItem(STORAGE_KEY);
+                }}
+              >
+                Confirm
+              </Button>
+            </>
+          }
+        >
+          <p>Are you sure you want to clear all desired modifiers?</p>
+        </Modal>
+      )}
     </Card>
   );
 }
