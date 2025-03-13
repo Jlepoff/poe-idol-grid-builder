@@ -65,15 +65,11 @@ const areExclusiveModifiers = (mod1, mod2) => {
 };
 
 export const generateIdols = (desiredModifiers, modData, idolTypes) => {
+  // Group by ID and track counts
   const modifierGroups = {};
-
   desiredModifiers.forEach((mod) => {
     if (!modifierGroups[mod.id]) {
-      modifierGroups[mod.id] = {
-        ...mod,
-        count: 1,
-        originalCount: 1,
-      };
+      modifierGroups[mod.id] = { ...mod, count: 1, originalCount: 1 };
     } else {
       modifierGroups[mod.id].count++;
       modifierGroups[mod.id].originalCount++;
@@ -87,228 +83,161 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
   });
 
   const idols = [];
+  const typeCounts = {};
+  idolTypes.forEach(type => {
+    typeCounts[type.name] = 0;
+  });
 
-  const getAvailableIdolTypes = (modifier) => {
-    const availableTypes = [];
+  // Check if two modifiers are exclusive and can't be on the same idol
+  const areModsCompatible = (mod1, mod2) => {
+    return !areExclusiveModifiers(mod1, mod2);
+  };
 
-    if (modifier.type === "prefix") {
-      for (const [typeName, prefixes] of Object.entries(modData.prefixes)) {
-        if (prefixes.some((prefix) => prefix.id === modifier.id)) {
-          availableTypes.push(typeName);
-        }
-      }
-    } else {
-      for (const [typeName, suffixes] of Object.entries(modData.suffixes)) {
-        if (suffixes.some((suffix) => suffix.id === modifier.id)) {
-          availableTypes.push(typeName);
+  // Determine idol type based on available modifiers and distribution balance
+  const determineIdolType = (availablePrefixes, availableSuffixes) => {
+    // Define pairs of idol types that share modifiers
+    const typePairs = [
+      ["Burial", "Totemic"],
+      ["Noble", "Kamasan"]
+    ];
+
+    // Check which types can support the selected modifiers
+    const eligibleTypes = idolTypes.filter(type => {
+      const hasValidPrefix = availablePrefixes.length === 0 ||
+        availablePrefixes.some(p => modData.prefixes[type.name] &&
+          modData.prefixes[type.name].some(tp => tp.id === p.id));
+      const hasValidSuffix = availableSuffixes.length === 0 ||
+        availableSuffixes.some(s => modData.suffixes[type.name] &&
+          modData.suffixes[type.name].some(ts => ts.id === s.id));
+      return hasValidPrefix && hasValidSuffix;
+    }).map(type => type.name);
+
+    if (eligibleTypes.length === 0) return null;
+
+    // Check if we have a pair of compatible types
+    for (const [type1, type2] of typePairs) {
+      if (eligibleTypes.includes(type1) && eligibleTypes.includes(type2)) {
+        // Calculate grid efficiency based on dimensions
+        const type1Item = idolTypes.find(t => t.name === type1);
+        const type2Item = idolTypes.find(t => t.name === type2);
+
+        const type1Cells = type1Item.width * type1Item.height;
+        const type2Cells = type2Item.width * type2Item.height;
+
+        const type1Count = typeCounts[type1] || 0;
+        const type2Count = typeCounts[type2] || 0;
+
+        // Balance based on both count and cell usage
+        const type1CellsUsed = type1Count * type1Cells;
+        const type2CellsUsed = type2Count * type2Cells;
+
+        // Choose the type with fewer cells used or the one with better cell-to-mod ratio
+        if (type1CellsUsed <= type2CellsUsed) {
+          typeCounts[type1] = (typeCounts[type1] || 0) + 1;
+          return type1;
+        } else {
+          typeCounts[type2] = (typeCounts[type2] || 0) + 1;
+          return type2;
         }
       }
     }
 
-    return availableTypes;
-  };
-
-  const distributeModifiersAcrossTypes = (modifier, count) => {
-    const availableTypes = getAvailableIdolTypes(modifier);
-    const distribution = {};
-
-    availableTypes.forEach(type => {
-      distribution[type] = 0;
+    // If no pairs, choose smallest available type for efficiency
+    const sortedEligible = [...eligibleTypes].sort((a, b) => {
+      const typeA = idolTypes.find(t => t.name === a);
+      const typeB = idolTypes.find(t => t.name === b);
+      return (typeA.width * typeA.height) - (typeB.width * typeB.height);
     });
 
-    if (count > 5) {
-      const hasKamasan = availableTypes.includes("Kamasan");
-      const hasNoble = availableTypes.includes("Noble");
-      const hasTotemic = availableTypes.includes("Totemic");
-      const hasBurial = availableTypes.includes("Burial");
-
-      if (hasKamasan && hasNoble) {
-        const perType = Math.floor(count / 2);
-        distribution["Kamasan"] = perType;
-        distribution["Noble"] = count - perType;
-      }
-      else if (hasTotemic && hasBurial) {
-        const perType = Math.floor(count / 2);
-        distribution["Totemic"] = perType;
-        distribution["Burial"] = count - perType;
-      }
-      else {
-        const typesCount = availableTypes.length;
-        const perType = Math.floor(count / typesCount);
-
-        availableTypes.forEach(type => {
-          distribution[type] = perType;
-        });
-
-        let remainder = count - (perType * typesCount);
-        let i = 0;
-        while (remainder > 0) {
-          distribution[availableTypes[i % availableTypes.length]]++;
-          remainder--;
-          i++;
-        }
-      }
-    } else {
-      for (let i = 0; i < count; i++) {
-        distribution[availableTypes[i % availableTypes.length]]++;
-      }
-    }
-
-    return { distribution, availableTypes };
+    typeCounts[sortedEligible[0]] = (typeCounts[sortedEligible[0]] || 0) + 1;
+    return sortedEligible[0];
   };
 
-  const getAvailableModifiers = (modType, idolTypeName, usedModifiers = [], excludeSimilar = []) => {
-    return uniqueModifiers
-      .filter((mod) => {
-        // Skip if all instances are used or not of the correct type
-        if (mod.type !== modType || modifierUsage[mod.id] >= mod.count) {
-          return false;
-        }
-
-        // Skip if already used in this idol
-        if (usedModifiers.includes(mod.id)) {
-          return false;
-        }
-
-        // Skip if we need to exclude similar mods (based on Name)
-        if (excludeSimilar.some(excludedMod =>
-          excludedMod.Name === mod.Name ||
-          (mod.Name?.startsWith('of ') && mod.Name.substring(3) === excludedMod.Name) ||
-          (excludedMod.Name?.startsWith('of ') && excludedMod.Name.substring(3) === mod.Name)
-        )) {
-          return false;
-        }
-
-        // Check for exclusive modifiers
-        for (const existingMod of excludeSimilar) {
-          if (areExclusiveModifiers(existingMod, mod)) {
-            return false;
-          }
-        }
-
-        // Check if the modifier is available for this idol type
-        if (mod.type === "prefix") {
-          return modData.prefixes[idolTypeName] &&
-            modData.prefixes[idolTypeName].some(
-              (prefix) => prefix.id === mod.id
-            );
-        } else {
-          return modData.suffixes[idolTypeName] &&
-            modData.suffixes[idolTypeName].some(
-              (suffix) => suffix.id === mod.id
-            );
-        }
-      })
-      .map((mod) => ({
-        ...mod,
-        originalId: mod.id,
-        displayCount: modifierUsage[mod.id] + 1,
-        totalCount: mod.originalCount,
-      }));
-  };
-
-  for (const modifier of uniqueModifiers) {
-    if (modifierUsage[modifier.id] >= modifier.count) {
-      continue;
-    }
-
-    const { distribution, availableTypes } = distributeModifiersAcrossTypes(
-      modifier,
-      modifier.count
+  // Try to create idols with maximum mods
+  const tryCreateFullIdol = () => {
+    // Get available prefix and suffix mods
+    const availablePrefixes = uniqueModifiers.filter(mod =>
+      mod.type === "prefix" && modifierUsage[mod.id] < mod.count
     );
 
-    const createdPerType = {};
-    availableTypes.forEach(type => {
-      createdPerType[type] = 0;
-    });
+    const availableSuffixes = uniqueModifiers.filter(mod =>
+      mod.type === "suffix" && modifierUsage[mod.id] < mod.count
+    );
 
-    for (const idolTypeName of availableTypes) {
-      if (distribution[idolTypeName] <= 0) {
-        continue;
-      }
+    // Skip if we don't have enough mods
+    if (availablePrefixes.length === 0 && availableSuffixes.length === 0) return false;
 
-      const idolType = idolTypes.find(t => t.name === idolTypeName);
-      if (!idolType) continue;
+    // Determine optimal idol type
+    const idolType = determineIdolType(availablePrefixes, availableSuffixes);
+    if (!idolType) return false;
 
-      for (let i = 0; i < distribution[idolTypeName]; i++) {
-        if (modifierUsage[modifier.id] >= modifier.count) {
-          break;
-        }
+    // Get available prefix and suffix mods for this type
+    const typeAvailablePrefixes = availablePrefixes.filter(mod =>
+      modData.prefixes[idolType] &&
+      modData.prefixes[idolType].some(p => p.id === mod.id)
+    );
 
-        const usedModifiers = [];
-        let selectedPrefixes = [];
-        let selectedSuffixes = [];
+    const typeAvailableSuffixes = availableSuffixes.filter(mod =>
+      modData.suffixes[idolType] &&
+      modData.suffixes[idolType].some(s => s.id === mod.id)
+    );
 
-        if (modifier.type === "prefix") {
-          const currentPrefix = getAvailableModifiers("prefix", idolTypeName).find(
-            p => p.id === modifier.id
-          );
+    // Select up to 2 prefixes that are compatible with each other
+    const selectedPrefixes = [];
+    for (const prefix of typeAvailablePrefixes) {
+      if (selectedPrefixes.length >= 2) break;
 
-          if (currentPrefix) {
-            selectedPrefixes.push(currentPrefix);
-            usedModifiers.push(currentPrefix.id);
-
-            // Get other prefixes that are different from the current one
-            const otherPrefixes = getAvailableModifiers("prefix", idolTypeName, usedModifiers, [currentPrefix]);
-            if (otherPrefixes.length > 0) {
-              selectedPrefixes.push(otherPrefixes[0]);
-              usedModifiers.push(otherPrefixes[0].id);
-            }
-
-            // Get suffixes that don't conflict with selected prefixes
-            const availableSuffixes = getAvailableModifiers("suffix", idolTypeName, usedModifiers, selectedPrefixes);
-            selectedSuffixes = availableSuffixes.slice(0, 2);
-            selectedSuffixes.forEach(suffix => usedModifiers.push(suffix.id));
-          }
-        } else {
-          const currentSuffix = getAvailableModifiers("suffix", idolTypeName).find(
-            s => s.id === modifier.id
-          );
-
-          if (currentSuffix) {
-            selectedSuffixes.push(currentSuffix);
-            usedModifiers.push(currentSuffix.id);
-
-            // Get other suffixes that are different from the current one
-            const otherSuffixes = getAvailableModifiers("suffix", idolTypeName, usedModifiers, [currentSuffix]);
-            if (otherSuffixes.length > 0) {
-              selectedSuffixes.push(otherSuffixes[0]);
-              usedModifiers.push(otherSuffixes[0].id);
-            }
-
-            // Get prefixes that don't conflict with selected suffixes
-            const availablePrefixes = getAvailableModifiers("prefix", idolTypeName, usedModifiers, selectedSuffixes);
-            selectedPrefixes = availablePrefixes.slice(0, 2);
-            selectedPrefixes.forEach(prefix => usedModifiers.push(prefix.id));
-          }
-        }
-
-        if ((modifier.type === "prefix" && selectedPrefixes.some(p => p.id === modifier.id)) ||
-          (modifier.type === "suffix" && selectedSuffixes.some(s => s.id === modifier.id))) {
-
-          const idolId = Date.now() + Math.random();
-
-          const newIdol = {
-            id: idolId,
-            type: idolType.name,
-            name: generateIdolName(idolType.name, selectedPrefixes, selectedSuffixes),
-            prefixes: selectedPrefixes,
-            suffixes: selectedSuffixes,
-          };
-
-          selectedPrefixes.forEach(prefix => {
-            modifierUsage[prefix.originalId]++;
-          });
-
-          selectedSuffixes.forEach(suffix => {
-            modifierUsage[suffix.originalId]++;
-          });
-
-          createdPerType[idolTypeName]++;
-          idols.push(newIdol);
-        }
+      // Check if this prefix is compatible with already selected prefixes
+      const isCompatible = selectedPrefixes.every(p => areModsCompatible(p, prefix));
+      if (isCompatible) {
+        selectedPrefixes.push(prefix);
       }
     }
+
+    // Select up to 2 suffixes that are compatible with each other and with selected prefixes
+    const selectedSuffixes = [];
+    for (const suffix of typeAvailableSuffixes) {
+      if (selectedSuffixes.length >= 2) break;
+
+      // Check if this suffix is compatible with already selected suffixes and prefixes
+      const isCompatibleWithSuffixes = selectedSuffixes.every(s => areModsCompatible(s, suffix));
+      const isCompatibleWithPrefixes = selectedPrefixes.every(p => areModsCompatible(p, suffix));
+
+      if (isCompatibleWithSuffixes && isCompatibleWithPrefixes) {
+        selectedSuffixes.push(suffix);
+      }
+    }
+
+    // Only create idol if we have at least one modifier
+    if (selectedPrefixes.length + selectedSuffixes.length > 0) {
+      const idolId = Date.now() + Math.random();
+      const newIdol = {
+        id: idolId,
+        type: idolType,
+        name: generateIdolName(idolType, selectedPrefixes, selectedSuffixes),
+        prefixes: selectedPrefixes,
+        suffixes: selectedSuffixes,
+      };
+
+      // Mark all included mods as used
+      selectedPrefixes.forEach(prefix => {
+        modifierUsage[prefix.id]++;
+      });
+
+      selectedSuffixes.forEach(suffix => {
+        modifierUsage[suffix.id]++;
+      });
+
+      idols.push(newIdol);
+      return true;
+    }
+
+    return false;
+  };
+
+  // Create as many idols as needed
+  while (uniqueModifiers.some(mod => modifierUsage[mod.id] < mod.count)) {
+    if (!tryCreateFullIdol()) break;
   }
 
   return idols;
