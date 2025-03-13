@@ -8,6 +8,10 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
   const [selectedPrefixes, setSelectedPrefixes] = useState([]);
   const [selectedSuffixes, setSelectedSuffixes] = useState([]);
   const [idolName, setIdolName] = useState("");
+  
+  // Error state for exclusive modifiers
+  const [error, setError] = useState(null);
+  const [errorTimeout, setErrorTimeout] = useState(null);
 
   // Search state
   const [searchState, setSearchState] = useState({
@@ -21,23 +25,126 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
   useEffect(() => {
     setSelectedPrefixes([]);
     setSelectedSuffixes([]);
+    setError(null);
   }, [selectedType]);
+  
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (errorTimeout) clearTimeout(errorTimeout);
+    };
+  }, [errorTimeout]);
+
+  // Fixed function to check for exclusive modifier pairs
+  const areExclusiveModifiers = (mod1, mod2) => {
+    // First check if names match and are among the known exclusive modifier types
+    if (!mod1 || !mod2 || mod1.Name !== mod2.Name) return { exclusive: false };
+    
+    const exclusiveModNames = ["Breach", "Domination", "Essence", "Harbinger", "Ambush", "Torment"];
+    if (!exclusiveModNames.includes(mod1.Name)) return { exclusive: false };
+    
+    // Now check specific mod text patterns that should be exclusive
+    const exactExclusivePairs = [
+      {
+        name: "Breach",
+        patterns: [
+          "Breaches in your Maps contain 3 additional Clasped Hands",
+          "Breaches in your Maps contain 2 additional Clasped Hands"
+        ]
+      },
+      {
+        name: "Domination",
+        patterns: [
+          "Your Maps contain an additional Shrine",
+          "Your Maps contain 2 additional Shrines"
+        ]
+      },
+      {
+        name: "Essence",
+        patterns: [
+          "Your Maps contain an additional Imprisoned Monster",
+          "Your Maps contain 2 additional Imprisoned Monsters"
+        ]
+      },
+      {
+        name: "Harbinger",
+        patterns: [
+          "Your Maps contain an additional Harbinger",
+          "Your Maps contain 2 additional Harbingers"
+        ]
+      },
+      {
+        name: "Ambush",
+        patterns: [
+          "Your Maps contain an additional Strongbox",
+          "Your Maps contain 2 additional Strongboxes"
+        ]
+      },
+      {
+        name: "Torment",
+        patterns: [
+          "Your Maps are haunted by an additional Tormented Spirit",
+          "Your Maps are haunted by 2 additional Tormented Spirits"
+        ]
+      }
+    ];
+    
+    // Find the relevant pattern set for this modifier name
+    const patternSet = exactExclusivePairs.find(set => set.name === mod1.Name);
+    if (!patternSet) return { exclusive: false };
+    
+    // Check if both modifiers match patterns from the same set and are different from each other
+    const mod1MatchesPattern = patternSet.patterns.includes(mod1.Mod);
+    const mod2MatchesPattern = patternSet.patterns.includes(mod2.Mod);
+    
+    if (mod1MatchesPattern && mod2MatchesPattern && mod1.Mod !== mod2.Mod) {
+      return { exclusive: true, name: patternSet.name };
+    }
+    
+    return { exclusive: false };
+  };
 
   // Handle adding a modifier
   const handleAddModifier = (modifier, type) => {
+    // Clear any existing error
+    setError(null);
+    if (errorTimeout) clearTimeout(errorTimeout);
+    
     if (type === "prefix") {
       // Can only have 2 prefixes max
       if (selectedPrefixes.length < 2) {
+        // Check for exclusive modifiers
+        for (const existingPrefix of selectedPrefixes) {
+          const result = areExclusiveModifiers(existingPrefix, modifier);
+          if (result.exclusive) {
+            setError(`Cannot add multiple ${result.name} modifiers that add different amounts to the same idol.`);
+            const timeout = setTimeout(() => setError(null), 5000);
+            setErrorTimeout(timeout);
+            return;
+          }
+        }
+        
         // Don't add duplicates
-        if (!selectedPrefixes.some((p) => p.Code === modifier.Code)) {
+        if (!selectedPrefixes.some((p) => p.id === modifier.id)) {
           setSelectedPrefixes([...selectedPrefixes, modifier]);
         }
       }
     } else if (type === "suffix") {
       // Can only have 2 suffixes max
       if (selectedSuffixes.length < 2) {
+        // Check for exclusive modifiers
+        for (const existingSuffix of selectedSuffixes) {
+          const result = areExclusiveModifiers(existingSuffix, modifier);
+          if (result.exclusive) {
+            setError(`Cannot add multiple ${result.name} modifiers that add different amounts to the same idol.`);
+            const timeout = setTimeout(() => setError(null), 5000);
+            setErrorTimeout(timeout);
+            return;
+          }
+        }
+        
         // Don't add duplicates
-        if (!selectedSuffixes.some((s) => s.Code === modifier.Code)) {
+        if (!selectedSuffixes.some((s) => s.id === modifier.id)) {
           setSelectedSuffixes([...selectedSuffixes, modifier]);
         }
       }
@@ -47,11 +154,13 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
   // Remove prefix
   const handleRemovePrefix = (index) => {
     setSelectedPrefixes(selectedPrefixes.filter((_, i) => i !== index));
+    setError(null);
   };
 
   // Remove suffix
   const handleRemoveSuffix = (index) => {
     setSelectedSuffixes(selectedSuffixes.filter((_, i) => i !== index));
+    setError(null);
   };
 
   // Create new idol
@@ -115,6 +224,13 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
       <h2 className="text-xl font-bold mb-4 text-white">Idol Builder</h2>
 
       <div className="space-y-5">
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-900/50 p-3 rounded-lg border border-red-800 text-red-200 text-sm">
+            {error}
+          </div>
+        )}
+      
         {/* Idol Type Selection */}
         <div>
           <label className="block mb-2 text-sm text-slate-300">Idol Type</label>

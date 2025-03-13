@@ -1,5 +1,69 @@
 // utils/idol/idolGenerator.js
 
+const areExclusiveModifiers = (mod1, mod2) => {
+  // First check if names match and are among the known exclusive modifier types
+  if (!mod1 || !mod2 || mod1.Name !== mod2.Name) return false;
+
+  const exclusiveModNames = ["Breach", "Domination", "Essence", "Harbinger", "Ambush", "Torment"];
+  if (!exclusiveModNames.includes(mod1.Name)) return false;
+
+  // Now check specific mod text patterns that should be exclusive
+  const exactExclusivePairs = [
+    {
+      name: "Breach",
+      patterns: [
+        "Breaches in your Maps contain 3 additional Clasped Hands",
+        "Breaches in your Maps contain 2 additional Clasped Hands"
+      ]
+    },
+    {
+      name: "Domination",
+      patterns: [
+        "Your Maps contain an additional Shrine",
+        "Your Maps contain 2 additional Shrines"
+      ]
+    },
+    {
+      name: "Essence",
+      patterns: [
+        "Your Maps contain an additional Imprisoned Monster",
+        "Your Maps contain 2 additional Imprisoned Monsters"
+      ]
+    },
+    {
+      name: "Harbinger",
+      patterns: [
+        "Your Maps contain an additional Harbinger",
+        "Your Maps contain 2 additional Harbingers"
+      ]
+    },
+    {
+      name: "Ambush",
+      patterns: [
+        "Your Maps contain an additional Strongbox",
+        "Your Maps contain 2 additional Strongboxes"
+      ]
+    },
+    {
+      name: "Torment",
+      patterns: [
+        "Your Maps are haunted by an additional Tormented Spirit",
+        "Your Maps are haunted by 2 additional Tormented Spirits"
+      ]
+    }
+  ];
+
+  // Find the relevant pattern set for this modifier name
+  const patternSet = exactExclusivePairs.find(set => set.name === mod1.Name);
+  if (!patternSet) return false;
+
+  // Check if both modifiers match patterns from the same set and are different from each other
+  const mod1MatchesPattern = patternSet.patterns.includes(mod1.Mod);
+  const mod2MatchesPattern = patternSet.patterns.includes(mod2.Mod);
+
+  return (mod1MatchesPattern && mod2MatchesPattern && mod1.Mod !== mod2.Mod);
+};
+
 export const generateIdols = (desiredModifiers, modData, idolTypes) => {
   const modifierGroups = {};
 
@@ -93,17 +157,36 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
     return { distribution, availableTypes };
   };
 
-  const getAvailableModifiers = (modType, idolTypeName, usedModifiers = []) => {
+  const getAvailableModifiers = (modType, idolTypeName, usedModifiers = [], excludeSimilar = []) => {
     return uniqueModifiers
       .filter((mod) => {
+        // Skip if all instances are used or not of the correct type
         if (mod.type !== modType || modifierUsage[mod.id] >= mod.count) {
           return false;
         }
 
+        // Skip if already used in this idol
         if (usedModifiers.includes(mod.id)) {
           return false;
         }
 
+        // Skip if we need to exclude similar mods (based on Name)
+        if (excludeSimilar.some(excludedMod =>
+          excludedMod.Name === mod.Name ||
+          (mod.Name?.startsWith('of ') && mod.Name.substring(3) === excludedMod.Name) ||
+          (excludedMod.Name?.startsWith('of ') && excludedMod.Name.substring(3) === mod.Name)
+        )) {
+          return false;
+        }
+
+        // Check for exclusive modifiers
+        for (const existingMod of excludeSimilar) {
+          if (areExclusiveModifiers(existingMod, mod)) {
+            return false;
+          }
+        }
+
+        // Check if the modifier is available for this idol type
         if (mod.type === "prefix") {
           return modData.prefixes[idolTypeName] &&
             modData.prefixes[idolTypeName].some(
@@ -165,13 +248,15 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
             selectedPrefixes.push(currentPrefix);
             usedModifiers.push(currentPrefix.id);
 
-            const otherPrefixes = getAvailableModifiers("prefix", idolTypeName, usedModifiers);
+            // Get other prefixes that are different from the current one
+            const otherPrefixes = getAvailableModifiers("prefix", idolTypeName, usedModifiers, [currentPrefix]);
             if (otherPrefixes.length > 0) {
               selectedPrefixes.push(otherPrefixes[0]);
               usedModifiers.push(otherPrefixes[0].id);
             }
 
-            const availableSuffixes = getAvailableModifiers("suffix", idolTypeName, usedModifiers);
+            // Get suffixes that don't conflict with selected prefixes
+            const availableSuffixes = getAvailableModifiers("suffix", idolTypeName, usedModifiers, selectedPrefixes);
             selectedSuffixes = availableSuffixes.slice(0, 2);
             selectedSuffixes.forEach(suffix => usedModifiers.push(suffix.id));
           }
@@ -184,13 +269,15 @@ export const generateIdols = (desiredModifiers, modData, idolTypes) => {
             selectedSuffixes.push(currentSuffix);
             usedModifiers.push(currentSuffix.id);
 
-            const otherSuffixes = getAvailableModifiers("suffix", idolTypeName, usedModifiers);
+            // Get other suffixes that are different from the current one
+            const otherSuffixes = getAvailableModifiers("suffix", idolTypeName, usedModifiers, [currentSuffix]);
             if (otherSuffixes.length > 0) {
               selectedSuffixes.push(otherSuffixes[0]);
               usedModifiers.push(otherSuffixes[0].id);
             }
 
-            const availablePrefixes = getAvailableModifiers("prefix", idolTypeName, usedModifiers);
+            // Get prefixes that don't conflict with selected suffixes
+            const availablePrefixes = getAvailableModifiers("prefix", idolTypeName, usedModifiers, selectedSuffixes);
             selectedPrefixes = availablePrefixes.slice(0, 2);
             selectedPrefixes.forEach(prefix => usedModifiers.push(prefix.id));
           }
