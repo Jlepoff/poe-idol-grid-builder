@@ -5,6 +5,7 @@ import { useModifiers } from "../../hooks/useModifiers";
 function ModifierSearch({
   modData,
   onAddModifier,
+  modifierList = [],
   selectedType = "",
   initialState = null,
   onSearchUpdate = null,
