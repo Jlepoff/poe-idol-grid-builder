@@ -1,5 +1,5 @@
 // App.js
-import React, { useEffect } from "react";
+import React, { } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -10,7 +10,6 @@ import IdolInventory from "./components/inventory/IdolInventory";
 import ActiveModifiers from "./components/modifiers/ActiveModifiers";
 import IdolBuilder from "./components/builder/IdolBuilder";
 import DesiredModifiers from "./components/modifiers/DesiredModifiers";
-import KeyboardShortcuts from "./components/common/KeyboardShortcuts";
 import IdolPasteHandler from "./components/inventory/IdolPasteHandler";
 import ShareButton from "./components/common/ShareButton";
 import ClearButton from "./components/common/ClearButton";
@@ -38,12 +37,10 @@ function AppContent() {
         isLoading,
         activeTab,
         generationResult,
-        showHelp,
         firstVisit,
         inventorySearchTerm,
         setActiveTab,
         setGenerationResult,
-        setShowHelp,
         setFirstVisit,
         setInventorySearchTerm,
         handleAddIdol,
@@ -55,22 +52,6 @@ function AppContent() {
         handleGenerateIdols,
         handleLoadStrategy,
     } = React.useContext(AppContext);
-
-    // Add keyboard shortcut for help
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) {
-                return;
-            }
-
-            if (e.key === "?" || e.key === "/") {
-                setShowHelp((prev) => !prev);
-            }
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [setShowHelp]);
 
     // Calculate filtered inventory
     const filteredInventory = React.useMemo(() => {
@@ -219,17 +200,6 @@ function AppContent() {
         );
     };
 
-    // Help button in corner
-    const renderHelpButton = () => (
-        <button
-            className="fixed bottom-16 right-6 w-12 h-12 rounded-full bg-indigo-600 hover:bg-indigo-500 flex items-center justify-center text-xl text-white shadow-lg z-50 transition-colors"
-            onClick={() => setShowHelp(true)}
-            title="Show keyboard shortcuts (Press ?)"
-        >
-            ?
-        </button>
-    );
-
     // Mobile tab navigation
     const renderMobileTabNav = () => (
         <div className="flex flex-wrap md:hidden border-b border-slate-700 mb-4">
@@ -377,8 +347,8 @@ function AppContent() {
                             <div className="bg-slate-800 rounded-lg overflow-hidden flex flex-wrap w-full">
                                 <button
                                     className={`py-2.5 px-4 min-w-[120px] flex-grow ${activeTab === "builder"
-                                            ? "bg-indigo-600 text-white font-medium"
-                                            : "hover:bg-slate-700 text-slate-300"
+                                        ? "bg-indigo-600 text-white font-medium"
+                                        : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("builder")}
                                 >
@@ -386,8 +356,8 @@ function AppContent() {
                                 </button>
                                 <button
                                     className={`py-2.5 px-4 min-w-[120px] flex-grow ${activeTab === "autogen"
-                                            ? "bg-indigo-600 text-white font-medium"
-                                            : "hover:bg-slate-700 text-slate-300"
+                                        ? "bg-indigo-600 text-white font-medium"
+                                        : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("autogen")}
                                 >
@@ -395,8 +365,8 @@ function AppContent() {
                                 </button>
                                 <button
                                     className={`py-2.5 px-4 min-w-[100px] flex-grow ${activeTab === "unique"
-                                            ? "bg-indigo-600 text-white font-medium"
-                                            : "hover:bg-slate-700 text-slate-300"
+                                        ? "bg-indigo-600 text-white font-medium"
+                                        : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("unique")}
                                 >
@@ -404,8 +374,8 @@ function AppContent() {
                                 </button>
                                 <button
                                     className={`py-2.5 px-4 min-w-[100px] flex-grow ${activeTab === "trade"
-                                            ? "bg-indigo-600 text-white font-medium"
-                                            : "hover:bg-slate-700 text-slate-300"
+                                        ? "bg-indigo-600 text-white font-medium"
+                                        : "hover:bg-slate-700 text-slate-300"
                                         } transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
                                     onClick={() => setActiveTab("trade")}
                                 >
@@ -582,8 +552,6 @@ function AppContent() {
                 </footer>
 
                 {/* Global Components */}
-                {renderHelpButton()}
-                {showHelp && <KeyboardShortcuts onClose={() => setShowHelp(false)} />}
                 <IdolPasteHandler onAddIdol={handleAddIdol} modData={modData} />
             </div>
         </DndProvider>

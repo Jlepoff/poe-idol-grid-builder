@@ -20,7 +20,6 @@ export const AppProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("builder");
   const [generationResult, setGenerationResult] = useState(null);
-  const [showHelp, setShowHelp] = useState(false);
   const [firstVisit, setFirstVisit] = useState(true);
 
   // Inventory search state
@@ -410,14 +409,12 @@ export const AppProvider = ({ children }) => {
     isLoading,
     activeTab,
     generationResult,
-    showHelp,
     firstVisit,
     inventorySearchTerm,
 
     // State setters
     setActiveTab,
     setGenerationResult,
-    setShowHelp,
     setFirstVisit,
     setInventorySearchTerm,
 
