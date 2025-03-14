@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/poe-idol-grid-builder/static/css/main.75b36d0e.css",
-    "main.js": "/poe-idol-grid-builder/static/js/main.6ece4441.js",
+    "main.css": "/poe-idol-grid-builder/static/css/main.6730a03b.css",
+    "main.js": "/poe-idol-grid-builder/static/js/main.3727571b.js",
     "index.html": "/poe-idol-grid-builder/index.html",
-    "main.75b36d0e.css.map": "/poe-idol-grid-builder/static/css/main.75b36d0e.css.map",
-    "main.6ece4441.js.map": "/poe-idol-grid-builder/static/js/main.6ece4441.js.map"
+    "main.6730a03b.css.map": "/poe-idol-grid-builder/static/css/main.6730a03b.css.map",
+    "main.3727571b.js.map": "/poe-idol-grid-builder/static/js/main.3727571b.js.map"
   },
   "entrypoints": [
-    "static/css/main.75b36d0e.css",
-    "static/js/main.6ece4441.js"
+    "static/css/main.6730a03b.css",
+    "static/js/main.3727571b.js"
   ]
 }
