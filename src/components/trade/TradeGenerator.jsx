@@ -66,12 +66,15 @@ function TradeGenerator({ modData, idolTypes }) {
     setError(null);
   };
 
-  // Handle trade for modifiers
-  const handleTradeForModifiers = () => {
-    if (!selectedType) return;
+  // Handle trade for modifiers with specific type
+  const handleTradeForModifiers = (specificType = null) => {
+    // Use either the specific type passed in or the selected type
+    const tradeType = specificType || selectedType;
+    
+    if (!tradeType) return;
 
     const tradeUrl = generateTradeUrlWithMultipleModifiers(
-      selectedType,
+      tradeType,
       selectedPrefixes,
       selectedSuffixes
     );
@@ -85,10 +88,31 @@ function TradeGenerator({ modData, idolTypes }) {
     }
   };
 
+  // Group idol types for the dropdown with size info
+  const groupedIdolTypes = [
+    { label: "Minor (1×1)", value: "Minor" },
+    { label: "Kamasan (1×2) • Noble (2×1)", value: "KamasanNoble" },
+    { label: "Totemic (1×3) • Burial (3×1)", value: "TotemicBurial" },
+    { label: "Conqueror (2×2)", value: "Conqueror" },
+  ];
+
   // Get type-specific modifiers
   const getTypeSpecificMods = () => {
     if (!selectedType || !modData.prefixes || !modData.suffixes) {
       return { prefixes: {}, suffixes: {} };
+    }
+
+    // For grouped types, use just one of the types since they share the same modifiers
+    if (selectedType === "KamasanNoble") {
+      return {
+        prefixes: { KamasanNoble: modData.prefixes["Kamasan"] || [] },
+        suffixes: { KamasanNoble: modData.suffixes["Kamasan"] || [] }
+      };
+    } else if (selectedType === "TotemicBurial") {
+      return {
+        prefixes: { TotemicBurial: modData.prefixes["Burial"] || [] },
+        suffixes: { TotemicBurial: modData.suffixes["Burial"] || [] }
+      };
     }
 
     return {
@@ -101,6 +125,16 @@ function TradeGenerator({ modData, idolTypes }) {
   const handleSearchUpdate = (newState) => {
     setSearchState(newState);
   };
+
+  // Determine if we're using a grouped type
+  const isGroupedType = selectedType === "KamasanNoble" || selectedType === "TotemicBurial";
+  
+  // Determine which specific types to show buttons for
+  const specificTypes = selectedType === "KamasanNoble" 
+    ? ["Kamasan", "Noble"] 
+    : selectedType === "TotemicBurial"
+      ? ["Totemic", "Burial"]
+      : [];
 
   return (
     <div className="bg-slate-900 p-5 rounded-xl shadow-sm">
@@ -124,9 +158,9 @@ function TradeGenerator({ modData, idolTypes }) {
             onChange={(e) => setSelectedType(e.target.value)}
           >
             <option value="">Select Idol Type</option>
-            {idolTypes.map((type) => (
-              <option key={type.name} value={type.name}>
-                {type.name} ({type.width}×{type.height})
+            {groupedIdolTypes.map((type) => (
+              <option key={type.value} value={type.value}>
+                {type.label}
               </option>
             ))}
           </select>
@@ -216,7 +250,7 @@ function TradeGenerator({ modData, idolTypes }) {
             <div className="border-t border-slate-800 pt-4">
               <h3 className="font-medium mb-2 text-sm text-slate-300">Search & Add Modifiers</h3>
               <ModifierSearch
-                modData={selectedType ? getTypeSpecificMods() : modData}
+                modData={getTypeSpecificMods()}
                 onAddModifier={handleAddModifier}
                 selectedType={selectedType}
                 initialState={searchState}
@@ -225,14 +259,29 @@ function TradeGenerator({ modData, idolTypes }) {
               />
             </div>
 
-            {/* Trade Button */}
-            <button
-              className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-medium transition-colors"
-              onClick={handleTradeForModifiers}
-              disabled={!selectedType || (selectedPrefixes.length === 0 && selectedSuffixes.length === 0)}
-            >
-              Trade for Modifiers
-            </button>
+            {/* Trade Buttons */}
+            {isGroupedType ? (
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                {specificTypes.map(type => (
+                  <button
+                    key={type}
+                    className="py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-medium transition-colors"
+                    onClick={() => handleTradeForModifiers(type)}
+                    disabled={selectedPrefixes.length === 0 && selectedSuffixes.length === 0}
+                  >
+                    Trade for {type}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <button
+                className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-medium transition-colors"
+                onClick={() => handleTradeForModifiers()}
+                disabled={!selectedType || (selectedPrefixes.length === 0 && selectedSuffixes.length === 0)}
+              >
+                Trade for Modifiers
+              </button>
+            )}
           </>
         )}
       </div>
