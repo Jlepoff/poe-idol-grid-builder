@@ -242,8 +242,8 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
           )}
         </Button>
 
-          {/* Clear All Button */}
-          {desiredModifiers.length > 0 && (
+        {/* Clear All Button */}
+        {desiredModifiers.length > 0 && (
           <Button
             variant="danger"
             onClick={() => setIsClearModalOpen(true)}
@@ -312,6 +312,23 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
           </div>
         )}
 
+        {/* Generate button */}
+        <Button
+          variant={desiredModifiers.length === 0 ? "disabled" : "amber"}
+          onClick={handleGenerateIdols}
+          disabled={desiredModifiers.length === 0}
+          className="w-full py-3"
+        >
+          Generate & Place Idols
+        </Button>
+
+        {desiredModifiers.length > 0 && (
+          <div className="mt-2 text-xs text-slate-400 text-center">
+            This will create idols with these modifiers and place them on the
+            grid
+          </div>
+        )}
+
         {/* Search controls */}
         <div className="mb-4">
           <div className="flex justify-between items-center mb-3">
@@ -347,23 +364,6 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
             </Button>
           )}
         </div>
-
-        {/* Generate button */}
-        <Button
-          variant={desiredModifiers.length === 0 ? "disabled" : "amber"}
-          onClick={handleGenerateIdols}
-          disabled={desiredModifiers.length === 0}
-          className="w-full py-3"
-        >
-          Generate & Place Idols
-        </Button>
-
-        {desiredModifiers.length > 0 && (
-          <div className="mt-2 text-xs text-slate-400 text-center">
-            This will create idols with these modifiers and place them on the
-            grid
-          </div>
-        )}
       </div>
 
       {/* Load Confirmation Modal */}
