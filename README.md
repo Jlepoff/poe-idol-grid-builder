@@ -78,7 +78,6 @@ Check out the live demo: [PoE Idol Grid Builder](https://jlepoff.github.io/poe-i
 
 ### Keyboard Shortcuts
 - **Ctrl+V**: Paste an idol from Path of Exile
-- **?**: Show keyboard shortcuts
 - **Esc**: Close dialog windows
 
 ### Sharing Layouts
