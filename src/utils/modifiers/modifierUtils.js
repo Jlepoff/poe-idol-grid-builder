@@ -32,6 +32,11 @@ export const getMatchPattern = (modText) => {
 export const getBaseEffectKey = (modText) => {
   if (!modText) return "";
 
+  // Special case for the Tier Maps pattern
+  if (modText.match(/Tier \d+-\d+ Maps found/)) {
+    return "Tier X-Y Maps found have X% chance to become 1 tier higher";
+  }
+
   return modText
     .replace(/(\d+(?:\.\d+)?)(%|\s|$)/g, "X$2")
     .replace(/\s+/g, " ")
@@ -272,6 +277,20 @@ export const calculateStackedModifiers = (gridState) => {
 
     if (group.matchPattern.type === "additional" && !totalValue) {
       stackedMod.mod = group.Mod.replace(/an additional/i, `${group.count} additional`);
+    } else if (group.Mod && group.Mod.match(/Tier \d+-\d+ Maps found have/)) {
+      // Special handling for Tier X-Y Maps pattern
+      const tierMatch = group.Mod.match(/Tier (\d+-\d+) Maps found have/);
+      if (tierMatch && tierMatch[1]) {
+        stackedMod.mod = group.Mod.replace(
+          /have\s+\d+(?:\.\d+)?%/,
+          `have ${totalValue}%`
+        );
+      } else {
+        stackedMod.mod = group.Mod.replace(
+          /(\d+(?:\.\d+)?)(%|\s|$)/,
+          `${totalValue}$2`
+        );
+      }
     } else if (group.Mod) {
       stackedMod.mod = group.Mod.replace(
         /(\d+(?:\.\d+)?)(%|\s|$)/,
