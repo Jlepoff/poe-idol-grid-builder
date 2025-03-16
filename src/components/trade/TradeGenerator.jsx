@@ -54,6 +54,16 @@ function TradeGenerator({ modData, idolTypes }) {
     }
   };
 
+  // Remove a specific modifier
+  const handleRemoveModifier = (modifier) => {
+    if (modifier.type === "prefix") {
+      setSelectedPrefixes(selectedPrefixes.filter(p => p.id !== modifier.id));
+    } else {
+      setSelectedSuffixes(selectedSuffixes.filter(s => s.id !== modifier.id));
+    }
+    setError(null);
+  };
+
   // Remove prefix
   const handleRemovePrefix = (index) => {
     setSelectedPrefixes(selectedPrefixes.filter((_, i) => i !== index));
@@ -252,10 +262,13 @@ function TradeGenerator({ modData, idolTypes }) {
               <ModifierSearch
                 modData={getTypeSpecificMods()}
                 onAddModifier={handleAddModifier}
+                onRemoveModifier={handleRemoveModifier}
                 selectedType={selectedType}
                 initialState={searchState}
                 onSearchUpdate={handleSearchUpdate}
-                searchContext="builder"
+                searchContext="trade"
+                selectedPrefixes={selectedPrefixes}
+                selectedSuffixes={selectedSuffixes}
               />
             </div>
 

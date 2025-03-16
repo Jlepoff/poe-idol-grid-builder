@@ -1,112 +1,109 @@
-// components/modifiers/ModifierSearch.jsx (Part 1)
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+// components/modifiers/ModifierSearch.jsx
+import React, { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useModifiers } from "../../hooks/useModifiers";
+import ModifierCard from "./ModifierCard";
 
-function ModifierSearch({
+const ModifierSearch = ({
   modData,
   onAddModifier,
+  onRemoveModifier = null,
   modifierList = [],
   selectedType = "",
   initialState = null,
   onSearchUpdate = null,
-  searchContext = "builder", // Can be 'builder' or 'autogen'
-}) {
-  // Initialize state from props or defaults
+  searchContext = "builder",
+  selectedPrefixes = [],
+  selectedSuffixes = [],
+}) => {
+  // State initialization from props
   const [searchTerm, setSearchTerm] = useState(initialState?.searchTerm || "");
-  const [filterType, setFilterType] = useState(
-    initialState?.filterType || "all"
-  );
-  const [viewByName, setViewByName] = useState(
-    initialState?.viewByName || false
-  );
-  const [selectedNames, setSelectedNames] = useState(
-    initialState?.selectedNames || []
-  );
+  const [filterType, setFilterType] = useState(initialState?.filterType || "all");
+  const [viewByName, setViewByName] = useState(initialState?.viewByName || false);
+  const [selectedNames, setSelectedNames] = useState(initialState?.selectedNames || []);
   const [nameSearchTerm, setNameSearchTerm] = useState("");
   const [selectedGroupNames, setSelectedGroupNames] = useState([]);
 
   const { modifierGroups, nameToGroupMap } = useModifiers();
 
-  // Update parent when search state changes
-  const updateParent = useCallback(() => {
-    if (onSearchUpdate) {
-      onSearchUpdate({
-        searchTerm,
-        filterType,
-        viewByName,
-        selectedNames,
-      });
-    }
-  }, [onSearchUpdate, searchTerm, filterType, viewByName, selectedNames]);
-
-  // Send updates when search parameters change
+  // Update parent with search state changes
   useEffect(() => {
-    const timeoutId = setTimeout(updateParent, 50);
+    const timeoutId = setTimeout(() => {
+      if (onSearchUpdate) {
+        onSearchUpdate({
+          searchTerm,
+          filterType,
+          viewByName,
+          selectedNames,
+        });
+      }
+    }, 50);
     return () => clearTimeout(timeoutId);
-  }, [searchTerm, filterType, viewByName, selectedNames, updateParent]);
+  }, [searchTerm, filterType, viewByName, selectedNames, onSearchUpdate]);
 
   // Event handlers
-  const handleSearchTermChange = (e) => setSearchTerm(e.target.value);
-  const handleFilterTypeChange = (e) => setFilterType(e.target.value);
+  const handleSearchTermChange = useCallback(e => setSearchTerm(e.target.value), []);
+  const handleFilterTypeChange = useCallback(e => setFilterType(e.target.value), []);
+  const handleNameSearchChange = useCallback(e => setNameSearchTerm(e.target.value), []);
+  const handleClearSelections = useCallback(() => {
+    setSelectedNames([]);
+    setSelectedGroupNames([]);
+  }, []);
 
-  const handleViewModeChange = (mode) => {
+  const handleViewModeChange = useCallback(mode => {
     setViewByName(mode);
-    setSelectedNames([]); // Reset selected names when changing view mode
-  };
+    setSelectedNames([]);
+  }, []);
 
   // Handle name selection for tag cloud
-  const handleNameSelection = (item) => {
+  const handleNameSelection = useCallback(item => {
     if (item.isGroup) {
-      // If clicking a group, select/deselect all names in the group
-      const groupNames = getNamesInGroup(item.name);
-      const allSelected = groupNames.every((name) =>
-        selectedNames.includes(name)
-      );
+      const groupNames = modifierGroups[item.name] || [];
+      const allSelected = groupNames.every(name => selectedNames.includes(name));
 
       if (allSelected) {
-        // Remove all names in this group
-        setSelectedNames((prevNames) =>
-          prevNames.filter((name) => !groupNames.includes(name))
-        );
-        // Remove group from selected groups
-        setSelectedGroupNames((prev) =>
-          prev.filter((name) => name !== item.name)
-        );
+        setSelectedNames(prev => prev.filter(name => !groupNames.includes(name)));
+        setSelectedGroupNames(prev => prev.filter(name => name !== item.name));
       } else {
-        // Add all missing names in this group
-        setSelectedNames((prevNames) => {
-          const newNames = [...prevNames];
-          groupNames.forEach((name) => {
-            if (!newNames.includes(name)) {
-              newNames.push(name);
-            }
+        setSelectedNames(prev => {
+          const newNames = [...prev];
+          groupNames.forEach(name => {
+            if (!newNames.includes(name)) newNames.push(name);
           });
           return newNames;
         });
-        // Add group to selected groups if not already there
-        setSelectedGroupNames((prev) => {
-          if (!prev.includes(item.name)) {
-            return [...prev, item.name];
-          }
-          return prev;
-        });
+        setSelectedGroupNames(prev => 
+          prev.includes(item.name) ? prev : [...prev, item.name]
+        );
       }
     } else {
-      // Regular name selection logic
-      setSelectedNames((prevNames) => {
-        if (prevNames.includes(item.name)) {
-          return prevNames.filter((n) => n !== item.name);
-        }
-        return [...prevNames, item.name];
-      });
+      setSelectedNames(prev => 
+        prev.includes(item.name) 
+          ? prev.filter(n => n !== item.name) 
+          : [...prev, item.name]
+      );
     }
-  };
+  }, [modifierGroups, selectedNames]);
 
-  function getNamesInGroup(groupName) {
-    return modifierGroups[groupName] || [];
-  }
+  // Get modifier count for display
+  const getModifierCount = useCallback(modifier => {
+    if (searchContext === "builder" || searchContext === "trade") {
+      // Determine if this is a prefix by checking modData
+      const isPrefixMod = filterType === "prefix" || 
+        (filterType === "all" && modData.prefixes && 
+          Object.values(modData.prefixes).some(list => 
+            list.some(p => p.id === modifier.id)));
+      
+      if (isPrefixMod) {
+        return selectedPrefixes.some(p => p.id === modifier.id) ? { count: 1 } : null;
+      } else {
+        return selectedSuffixes.some(s => s.id === modifier.id) ? { count: 1 } : null;
+      }
+    } else {
+      return modifierList.find(m => m.id === modifier.id) || null;
+    }
+  }, [filterType, modData, selectedPrefixes, selectedSuffixes, modifierList, searchContext]);
 
-  // Get all unique modifier names for browsing, with deduplication
+  // Get modifier names for browsing
   const modifierNames = useMemo(() => {
     if (!modData.prefixes || !modData.suffixes)
       return { prefixes: [], suffixes: [] };
@@ -114,27 +111,19 @@ function ModifierSearch({
     const prefixNames = new Set();
     const suffixNames = new Set();
 
-    // Only show modifiers for the selected type when in builder context
     if (searchContext === "builder" && selectedType) {
       if (modData.prefixes[selectedType]) {
-        modData.prefixes[selectedType].forEach((mod) =>
-          prefixNames.add(mod.Name)
-        );
+        modData.prefixes[selectedType].forEach(mod => prefixNames.add(mod.Name));
       }
-
       if (modData.suffixes[selectedType]) {
-        modData.suffixes[selectedType].forEach((mod) =>
-          suffixNames.add(mod.Name)
-        );
+        modData.suffixes[selectedType].forEach(mod => suffixNames.add(mod.Name));
       }
     } else {
-      // Collect all unique names for auto-generate mode
-      Object.values(modData.prefixes).forEach((typeModifiers) => {
-        typeModifiers.forEach((mod) => prefixNames.add(mod.Name));
+      Object.values(modData.prefixes).forEach(typeModifiers => {
+        typeModifiers.forEach(mod => prefixNames.add(mod.Name));
       });
-
-      Object.values(modData.suffixes).forEach((typeModifiers) => {
-        typeModifiers.forEach((mod) => suffixNames.add(mod.Name));
+      Object.values(modData.suffixes).forEach(typeModifiers => {
+        typeModifiers.forEach(mod => suffixNames.add(mod.Name));
       });
     }
 
@@ -144,17 +133,13 @@ function ModifierSearch({
     };
   }, [modData, selectedType, searchContext]);
 
-  // Get combined unique modifier names (for when showing "all types")
+  // Combined unique names for "all types" view
   const combinedUniqueNames = useMemo(() => {
-    // If we're not showing "all types", just return empty array
     if (filterType !== "all") return [];
-
-    // Create a Set to deduplicate names that appear in both prefixes and suffixes
     const uniqueNames = new Set([
       ...modifierNames.prefixes,
       ...modifierNames.suffixes,
     ]);
-
     return Array.from(uniqueNames).sort();
   }, [modifierNames.prefixes, modifierNames.suffixes, filterType]);
 
@@ -163,339 +148,276 @@ function ModifierSearch({
     if (!modData.prefixes || !modData.suffixes)
       return { prefixes: [], suffixes: [] };
 
-    // Auto-generate search context
+    // Autogen context filtering
     if (searchContext === "autogen") {
-      // When browsing by name in auto-generate mode with multiple selections
+      // By name with selections
       if (viewByName && selectedNames.length > 0) {
         const result = { prefixes: [], suffixes: [] };
-
-        // Handle each selected name
-        selectedNames.forEach((nameFilter) => {
-          const combinedPrefixes = [];
-          const modsSeen = new Set();
-
-          // Collect unique prefixes by Mod text across all idol types
-          // Only if we're showing all or specifically prefixes
+        
+        selectedNames.forEach(nameFilter => {
+          // Filter prefixes
           if (filterType === "all" || filterType === "prefix") {
-            Object.entries(modData.prefixes).forEach(
-              ([typeName, prefixList]) => {
-                prefixList.forEach((prefix) => {
-                  if (prefix.Name === nameFilter) {
-                    const modText = prefix.Mod;
-
-                    if (!modsSeen.has(modText)) {
-                      modsSeen.add(modText);
-
-                      // Track which idol types support this modifier
-                      const supportedTypes = Object.entries(modData.prefixes)
-                        .filter(([_, typeList]) =>
-                          typeList.some((p) => p.Mod === modText)
-                        )
-                        .map(([type, _]) => type);
-
-                      combinedPrefixes.push({
-                        ...prefix,
-                        supportedTypes,
-                      });
-                    }
-                  }
-                });
-              }
-            );
-
+            const combinedPrefixes = [];
+            const modsSeen = new Set();
+            
+            Object.entries(modData.prefixes).forEach(([_, prefixList]) => {
+              prefixList.forEach(prefix => {
+                if (prefix.Name === nameFilter && !modsSeen.has(prefix.Mod)) {
+                  modsSeen.add(prefix.Mod);
+                  const supportedTypes = Object.entries(modData.prefixes)
+                    .filter(([_, typeList]) => 
+                      typeList.some(p => p.Mod === prefix.Mod)
+                    )
+                    .map(([type]) => type);
+                  combinedPrefixes.push({ ...prefix, supportedTypes });
+                }
+              });
+            });
             result.prefixes = [...result.prefixes, ...combinedPrefixes];
           }
 
-          // Same for suffixes - only if we're showing all or specifically suffixes
-          const combinedSuffixes = [];
-          modsSeen.clear();
-
+          // Filter suffixes
           if (filterType === "all" || filterType === "suffix") {
-            Object.entries(modData.suffixes).forEach(
-              ([typeName, suffixList]) => {
-                suffixList.forEach((suffix) => {
-                  if (
-                    suffix.Name === nameFilter ||
-                    suffix.Name === `of ${nameFilter}`
-                  ) {
-                    const modText = suffix.Mod;
-
-                    if (!modsSeen.has(modText)) {
-                      modsSeen.add(modText);
-
-                      const supportedTypes = Object.entries(modData.suffixes)
-                        .filter(([_, typeList]) =>
-                          typeList.some((s) => s.Mod === modText)
-                        )
-                        .map(([type, _]) => type);
-
-                      combinedSuffixes.push({
-                        ...suffix,
-                        supportedTypes,
-                      });
-                    }
-                  }
-                });
-              }
-            );
-
+            const combinedSuffixes = [];
+            const modsSeen = new Set();
+            
+            Object.entries(modData.suffixes).forEach(([_, suffixList]) => {
+              suffixList.forEach(suffix => {
+                if (
+                  (suffix.Name === nameFilter || suffix.Name === `of ${nameFilter}`) && 
+                  !modsSeen.has(suffix.Mod)
+                ) {
+                  modsSeen.add(suffix.Mod);
+                  const supportedTypes = Object.entries(modData.suffixes)
+                    .filter(([_, typeList]) => 
+                      typeList.some(s => s.Mod === suffix.Mod)
+                    )
+                    .map(([type]) => type);
+                  combinedSuffixes.push({ ...suffix, supportedTypes });
+                }
+              });
+            });
             result.suffixes = [...result.suffixes, ...combinedSuffixes];
           }
         });
-
         return result;
-      }
-      // When searching by text in auto-generate mode
+      } 
+      // By text search
       else if (searchTerm) {
         const lowerTerm = searchTerm.toLowerCase();
-
-        // Get unique prefixes across all idol types
-        // Only if we're showing all or specifically prefixes
-        const combinedPrefixes = [];
-        const prefixModsSeen = new Set();
-
+        const result = { prefixes: [], suffixes: [] };
+        
+        // Find matching prefixes
         if (filterType === "all" || filterType === "prefix") {
-          Object.entries(modData.prefixes).forEach(([typeName, prefixList]) => {
-            prefixList.forEach((prefix) => {
+          const combinedPrefixes = [];
+          const prefixModsSeen = new Set();
+          
+          Object.entries(modData.prefixes).forEach(([_, prefixList]) => {
+            prefixList.forEach(prefix => {
               if (
-                prefix.Name.toLowerCase().includes(lowerTerm) ||
-                prefix.Mod.toLowerCase().includes(lowerTerm)
+                (prefix.Name.toLowerCase().includes(lowerTerm) || 
+                 prefix.Mod.toLowerCase().includes(lowerTerm)) &&
+                !prefixModsSeen.has(prefix.Mod)
               ) {
-                const modText = prefix.Mod;
-
-                if (!prefixModsSeen.has(modText)) {
-                  prefixModsSeen.add(modText);
-
-                  // Find all idol types that support this modifier
-                  const supportedTypes = Object.entries(modData.prefixes)
-                    .filter(([_, typeList]) =>
-                      typeList.some((p) => p.Mod === modText)
-                    )
-                    .map(([type, _]) => type);
-
-                  combinedPrefixes.push({
-                    ...prefix,
-                    supportedTypes,
-                  });
-                }
+                prefixModsSeen.add(prefix.Mod);
+                const supportedTypes = Object.entries(modData.prefixes)
+                  .filter(([_, typeList]) => 
+                    typeList.some(p => p.Mod === prefix.Mod)
+                  )
+                  .map(([type]) => type);
+                combinedPrefixes.push({ ...prefix, supportedTypes });
               }
             });
           });
-        }// components/modifiers/ModifierSearch.jsx (Part 2)
-        // Do the same for suffixes
-        // Only if we're showing all or specifically suffixes
-        const combinedSuffixes = [];
-        const suffixModsSeen = new Set();
-
-        if (filterType === "all" || filterType === "suffix") {
-          Object.entries(modData.suffixes).forEach(([typeName, suffixList]) => {
-            suffixList.forEach((suffix) => {
-              if (
-                suffix.Name.toLowerCase().includes(lowerTerm) ||
-                suffix.Mod.toLowerCase().includes(lowerTerm)
-              ) {
-                const modText = suffix.Mod;
-
-                if (!suffixModsSeen.has(modText)) {
-                  suffixModsSeen.add(modText);
-
-                  const supportedTypes = Object.entries(modData.suffixes)
-                    .filter(([_, typeList]) =>
-                      typeList.some((s) => s.Mod === modText)
-                    )
-                    .map(([type, _]) => type);
-
-                  combinedSuffixes.push({
-                    ...suffix,
-                    supportedTypes,
-                  });
-                }
-              }
-            });
-          });
+          
+          // Sort by relevance
+          result.prefixes = combinedPrefixes
+            .sort((a, b) => {
+              const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
+              const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
+              if (aNameMatch !== -1 && bNameMatch === -1) return -1;
+              if (aNameMatch === -1 && bNameMatch !== -1) return 1;
+              if (aNameMatch !== -1 && bNameMatch !== -1)
+                return aNameMatch - bNameMatch;
+              return a.Name.localeCompare(b.Name);
+            })
+            .slice(0, 50);
         }
-
-        // Sort results by relevance
-        combinedPrefixes.sort((a, b) => {
-          const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
-          const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
-
-          if (aNameMatch !== -1 && bNameMatch === -1) return -1;
-          if (aNameMatch === -1 && bNameMatch !== -1) return 1;
-          if (aNameMatch !== -1 && bNameMatch !== -1)
-            return aNameMatch - bNameMatch;
-
-          return a.Name.localeCompare(b.Name);
-        });
-
-        combinedSuffixes.sort((a, b) => {
-          const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
-          const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
-
-          if (aNameMatch !== -1 && bNameMatch === -1) return -1;
-          if (aNameMatch === -1 && bNameMatch !== -1) return 1;
-          if (aNameMatch !== -1 && bNameMatch !== -1)
-            return aNameMatch - bNameMatch;
-
-          return a.Name.localeCompare(b.Name);
-        });
-
-        return {
-          prefixes: combinedPrefixes.slice(0, 50),
-          suffixes: combinedSuffixes.slice(0, 50),
-        };
+        
+        // Find matching suffixes
+        if (filterType === "all" || filterType === "suffix") {
+          const combinedSuffixes = [];
+          const suffixModsSeen = new Set();
+          
+          Object.entries(modData.suffixes).forEach(([_, suffixList]) => {
+            suffixList.forEach(suffix => {
+              if (
+                (suffix.Name.toLowerCase().includes(lowerTerm) || 
+                 suffix.Mod.toLowerCase().includes(lowerTerm)) &&
+                !suffixModsSeen.has(suffix.Mod)
+              ) {
+                suffixModsSeen.add(suffix.Mod);
+                const supportedTypes = Object.entries(modData.suffixes)
+                  .filter(([_, typeList]) => 
+                    typeList.some(s => s.Mod === suffix.Mod)
+                  )
+                  .map(([type]) => type);
+                combinedSuffixes.push({ ...suffix, supportedTypes });
+              }
+            });
+          });
+          
+          // Sort by relevance
+          result.suffixes = combinedSuffixes
+            .sort((a, b) => {
+              const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
+              const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
+              if (aNameMatch !== -1 && bNameMatch === -1) return -1;
+              if (aNameMatch === -1 && bNameMatch !== -1) return 1;
+              if (aNameMatch !== -1 && bNameMatch !== -1)
+                return aNameMatch - bNameMatch;
+              return a.Name.localeCompare(b.Name);
+            })
+            .slice(0, 50);
+        }
+        
+        return result;
       }
-
-      // If no search term or name filter, return empty list
+      
       return { prefixes: [], suffixes: [] };
     }
 
-    // Builder context filtering logic
-    // If viewing by name with multiple selections
+    // Builder/Trade context filtering
+    
+    // By name with selections
     if (viewByName && selectedNames.length > 0) {
       const result = { prefixes: [], suffixes: [] };
-
-      selectedNames.forEach((nameFilter) => {
-        // Filter prefixes by name
+      
+      selectedNames.forEach(nameFilter => {
         if (filterType === "all" || filterType === "prefix") {
           if (
             searchContext === "builder" &&
             selectedType &&
             modData.prefixes[selectedType]
           ) {
-            // For type-specific filtering in builder context
             const filtered = modData.prefixes[selectedType].filter(
-              (mod) => mod.Name === nameFilter
+              mod => mod.Name === nameFilter
             );
             result.prefixes = [...result.prefixes, ...filtered];
           } else {
-            // For all idol types
-            Object.values(modData.prefixes).forEach((typeModifiers) => {
+            Object.values(modData.prefixes).forEach(typeModifiers => {
               const filtered = typeModifiers.filter(
-                (mod) => mod.Name === nameFilter
+                mod => mod.Name === nameFilter
               );
               result.prefixes = [...result.prefixes, ...filtered];
-            });// components/modifiers/ModifierSearch.jsx (Part 3)
+            });
           }
         }
 
-        // Filter suffixes by name
         if (filterType === "all" || filterType === "suffix") {
           if (
             searchContext === "builder" &&
             selectedType &&
             modData.suffixes[selectedType]
           ) {
-            // For type-specific filtering in builder context
             const filtered = modData.suffixes[selectedType].filter(
-              (mod) =>
-                mod.Name === nameFilter || mod.Name === `of ${nameFilter}`
+              mod => mod.Name === nameFilter || mod.Name === `of ${nameFilter}`
             );
             result.suffixes = [...result.suffixes, ...filtered];
           } else {
-            // For all idol types
-            Object.values(modData.suffixes).forEach((typeModifiers) => {
+            Object.values(modData.suffixes).forEach(typeModifiers => {
               const filtered = typeModifiers.filter(
-                (mod) =>
-                  mod.Name === nameFilter || mod.Name === `of ${nameFilter}`
+                mod => mod.Name === nameFilter || mod.Name === `of ${nameFilter}`
               );
               result.suffixes = [...result.suffixes, ...filtered];
             });
           }
         }
       });
-
+      
       return result;
     }
 
-    // If searching by term
+    // By text search
     if (searchTerm) {
       const lowerTerm = searchTerm.toLowerCase();
-      let filteredPrefixes = [];
-      let filteredSuffixes = [];
-
-      // Search prefixes if filter allows
+      const result = { prefixes: [], suffixes: [] };
+      
       if (filterType === "all" || filterType === "prefix") {
-        // For type-specific filtering, only show modifiers for the selected idol type
+        let filteredPrefixes = [];
+        
         if (
           searchContext === "builder" &&
           selectedType &&
           modData.prefixes[selectedType]
         ) {
           filteredPrefixes = modData.prefixes[selectedType].filter(
-            (prefix) =>
+            prefix =>
               prefix.Name.toLowerCase().includes(lowerTerm) ||
               prefix.Mod.toLowerCase().includes(lowerTerm)
           );
         } else {
-          // Flatten all prefixes from different idol types into a single array
           const allPrefixes = Object.values(modData.prefixes).flat();
-
           filteredPrefixes = allPrefixes.filter(
-            (prefix) =>
+            prefix =>
               prefix.Name.toLowerCase().includes(lowerTerm) ||
               prefix.Mod.toLowerCase().includes(lowerTerm)
           );
         }
+        
+        // Sort by relevance
+        result.prefixes = filteredPrefixes
+          .sort((a, b) => {
+            const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
+            const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
+            if (aNameMatch !== -1 && bNameMatch === -1) return -1;
+            if (aNameMatch === -1 && bNameMatch !== -1) return 1;
+            if (aNameMatch !== -1 && bNameMatch !== -1)
+              return aNameMatch - bNameMatch;
+            return a.Name.localeCompare(b.Name);
+          })
+          .slice(0, 50);
       }
 
-      // Search suffixes if filter allows
       if (filterType === "all" || filterType === "suffix") {
-        // For type-specific filtering
+        let filteredSuffixes = [];
+        
         if (
           searchContext === "builder" &&
           selectedType &&
           modData.suffixes[selectedType]
         ) {
           filteredSuffixes = modData.suffixes[selectedType].filter(
-            (suffix) =>
+            suffix =>
               suffix.Name.toLowerCase().includes(lowerTerm) ||
               suffix.Mod.toLowerCase().includes(lowerTerm)
           );
         } else {
-          // Flatten all suffixes from different idol types
           const allSuffixes = Object.values(modData.suffixes).flat();
-
           filteredSuffixes = allSuffixes.filter(
-            (suffix) =>
+            suffix =>
               suffix.Name.toLowerCase().includes(lowerTerm) ||
               suffix.Mod.toLowerCase().includes(lowerTerm)
           );
         }
+        
+        // Sort by relevance
+        result.suffixes = filteredSuffixes
+          .sort((a, b) => {
+            const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
+            const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
+            if (aNameMatch !== -1 && bNameMatch === -1) return -1;
+            if (aNameMatch === -1 && bNameMatch !== -1) return 1;
+            if (aNameMatch !== -1 && bNameMatch !== -1)
+              return aNameMatch - bNameMatch;
+            return a.Name.localeCompare(b.Name);
+          })
+          .slice(0, 50);
       }
 
-      // Sort results by relevance
-      filteredPrefixes.sort((a, b) => {
-        const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
-        const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
-
-        if (aNameMatch !== -1 && bNameMatch === -1) return -1;
-        if (aNameMatch === -1 && bNameMatch !== -1) return 1;
-        if (aNameMatch !== -1 && bNameMatch !== -1)
-          return aNameMatch - bNameMatch;
-
-        return a.Name.localeCompare(b.Name);
-      });
-
-      filteredSuffixes.sort((a, b) => {
-        const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
-        const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
-
-        if (aNameMatch !== -1 && bNameMatch === -1) return -1;
-        if (aNameMatch === -1 && bNameMatch !== -1) return 1;
-        if (aNameMatch !== -1 && bNameMatch !== -1)
-          return aNameMatch - bNameMatch;
-
-        return a.Name.localeCompare(b.Name);
-      });
-
-      return {
-        prefixes: filteredPrefixes.slice(0, 50),
-        suffixes: filteredSuffixes.slice(0, 50),
-      };
+      return result;
     }
 
-    // If no search term, return empty list
     return { prefixes: [], suffixes: [] };
   }, [
     searchTerm,
@@ -504,30 +426,23 @@ function ModifierSearch({
     selectedType,
     viewByName,
     selectedNames,
-    searchContext,
+    searchContext
   ]);
 
-  // Determine which names to display in the cloud based on filter type
+  // Name tags for display in the cloud
   const nameTagsToDisplay = useMemo(() => {
-    const getGroupForName = (name) => {
-      return nameToGroupMap[name] || null;
-    };
-
+    const getGroupForName = name => nameToGroupMap[name] || null;
     let names = [];
-    if (filterType === "all") {
-      names = combinedUniqueNames;
-    } else if (filterType === "prefix") {
-      names = modifierNames.prefixes;
-    } else {
-      names = modifierNames.suffixes;
-    }
+    
+    if (filterType === "all") names = combinedUniqueNames;
+    else if (filterType === "prefix") names = modifierNames.prefixes;
+    else names = modifierNames.suffixes;
 
     const result = [];
     const processedGroups = new Set();
 
-    names.forEach((name) => {
+    names.forEach(name => {
       const group = getGroupForName(name);
-
       if (group && !processedGroups.has(group)) {
         result.push({ isGroup: true, name: group });
         processedGroups.add(group);
@@ -538,6 +453,35 @@ function ModifierSearch({
 
     return result.sort((a, b) => a.name.localeCompare(b.name));
   }, [filterType, modifierNames, combinedUniqueNames, nameToGroupMap]);
+
+  // Filter name tags based on search
+  const filteredNameTags = useMemo(() => {
+    return nameTagsToDisplay.filter(item => {
+      if (nameSearchTerm === "") return true;
+      if (item.isGroup) {
+        return (
+          item.name.toLowerCase().includes(nameSearchTerm.toLowerCase()) ||
+          (modifierGroups[item.name] || []).some(name =>
+            name.toLowerCase().includes(nameSearchTerm.toLowerCase())
+          )
+        );
+      }
+      return item.name.toLowerCase().includes(nameSearchTerm.toLowerCase());
+    });
+  }, [nameTagsToDisplay, nameSearchTerm, modifierGroups]);
+
+  // Calculate selection count for display
+  const selectionCount = useMemo(() => {
+    return (
+      selectedGroupNames.length +
+      selectedNames.filter(
+        name =>
+          !selectedGroupNames.some(group =>
+            (modifierGroups[group] || []).includes(name)
+          )
+      ).length
+    );
+  }, [selectedNames, selectedGroupNames, modifierGroups]);
 
   return (
     <div className="bg-slate-800 rounded-lg ring-1 ring-slate-700">
@@ -586,13 +530,13 @@ function ModifierSearch({
               type="text"
               className="w-full bg-slate-700 p-2.5 rounded-md border-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
               value={nameSearchTerm}
-              onChange={(e) => setNameSearchTerm(e.target.value)}
+              onChange={handleNameSearchChange}
               placeholder="Filter modifier names..."
             />
           </div>
 
           {/* Selection count display */}
-          {(selectedNames.length > 0 || selectedGroupNames.length > 0) && (
+          {selectionCount > 0 && (
             <div className="mb-3 px-1 py-1 bg-indigo-900/30 border border-indigo-700/50 rounded-md text-sm font-medium text-indigo-300 flex items-center justify-between">
               <div className="flex items-center">
                 <svg
@@ -609,32 +553,10 @@ function ModifierSearch({
                     d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
-                {/* Count individual names plus group names */}
-                {selectedGroupNames.length +
-                  selectedNames.filter(
-                    (name) =>
-                      !selectedGroupNames.some((group) =>
-                        getNamesInGroup(group).includes(name)
-                      )
-                  ).length}{" "}
-                name
-                {selectedGroupNames.length +
-                  selectedNames.filter(
-                    (name) =>
-                      !selectedGroupNames.some((group) =>
-                        getNamesInGroup(group).includes(name)
-                      )
-                  ).length >
-                1
-                  ? "s"
-                  : ""}{" "}
-                selected
+                {selectionCount} name{selectionCount > 1 ? "s" : ""} selected
               </div>
               <button
-                onClick={() => {
-                  setSelectedNames([]);
-                  setSelectedGroupNames([]);
-                }}
+                onClick={handleClearSelections}
                 className="bg-indigo-700 hover:bg-indigo-600 px-2 py-0.5 rounded text-xs text-white transition-colors mr-1"
               >
                 Reset
@@ -642,56 +564,37 @@ function ModifierSearch({
             </div>
           )}
 
-          {/* Deduplicated name tag cloud with multi-select support */}
+          {/* Name tag cloud */}
           <div className="flex flex-wrap gap-2 max-h-52 overflow-y-auto rounded-md px-1 py-2 custom-scrollbar">
-            {nameTagsToDisplay
-              .filter((item) => {
-                if (nameSearchTerm === "") return true;
+            {filteredNameTags.map(item => {
+              const isSelected = item.isGroup
+                ? (modifierGroups[item.name] || []).some(name =>
+                    selectedNames.includes(name)
+                  )
+                : selectedNames.includes(item.name);
 
-                if (item.isGroup) {
-                  return (
-                    item.name
-                      .toLowerCase()
-                      .includes(nameSearchTerm.toLowerCase()) ||
-                    getNamesInGroup(item.name).some((name) =>
-                      name.toLowerCase().includes(nameSearchTerm.toLowerCase())
-                    )
-                  );
-                } else {
-                  return item.name
-                    .toLowerCase()
-                    .includes(nameSearchTerm.toLowerCase());
-                }
-              })
-              .map((item) => {
-                const isSelected = item.isGroup
-                  ? getNamesInGroup(item.name).some((name) =>
-                      selectedNames.includes(name)
-                    )
-                  : selectedNames.includes(item.name);
+              const isFullySelected = item.isGroup
+                ? (modifierGroups[item.name] || []).every(name =>
+                    selectedNames.includes(name)
+                  )
+                : isSelected;
 
-                const isFullySelected = item.isGroup
-                  ? getNamesInGroup(item.name).every((name) =>
-                      selectedNames.includes(name)
-                    )
-                  : isSelected;
-
-                return (
-                  <button
-                    key={`name-tag-${item.isGroup ? "group-" : ""}${item.name}`}
-                    className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                      isSelected
-                        ? `bg-indigo-600 text-white font-medium ${
-                            !isFullySelected ? "ring-2 ring-indigo-300" : ""
-                          }`
-                        : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                    }`}
-                    onClick={() => handleNameSelection(item)}
-                  >
-                    {item.name}
-                  </button>
-                );
-              })}
+              return (
+                <button
+                  key={`name-tag-${item.isGroup ? "group-" : ""}${item.name}`}
+                  className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                    isSelected
+                      ? `bg-indigo-600 text-white font-medium ${
+                          !isFullySelected ? "ring-2 ring-indigo-300" : ""
+                        }`
+                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                  }`}
+                  onClick={() => handleNameSelection(item)}
+                >
+                  {item.name}
+                </button>
+              );
+            })}
           </div>
         </div>
       ) : (
@@ -705,7 +608,6 @@ function ModifierSearch({
               onChange={handleSearchTermChange}
               placeholder="Search for modifiers..."
             />
-
             <select
               className="bg-slate-700 p-2.5 rounded-r-md border-0 border-l-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
               value={filterType}
@@ -724,7 +626,7 @@ function ModifierSearch({
         <div className="results space-y-5 px-3 pb-3">
           {Array.from(new Set(selectedNames))
             .sort()
-            .map((name) => (
+            .map(name => (
               <div
                 key={`name-group-${name}`}
                 className="border-t border-slate-700 pt-4 mt-4"
@@ -732,233 +634,90 @@ function ModifierSearch({
                 <h3 className="font-medium text-amber-400 mb-3 text-base px-1">
                   {name}
                 </h3>
-
-                {/* Prefix results for this name */}
-                {filteredModifiers.prefixes.filter((p) => p.Name === name)
-                  .length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="font-medium text-blue-400 mb-2 text-sm px-1">
-                      Prefixes (
-                      {
-                        filteredModifiers.prefixes.filter(
-                          (p) => p.Name === name
-                        ).length
-                      }
-                      )
-                    </h4>
-                    <div
-                      className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
-                        filteredModifiers.prefixes.filter(
-                          (p) => p.Name === name
-                        ).length === 1
-                          ? "h-auto"
-                          : "h-36"
-                      }`}
-                    >
-                      {filteredModifiers.prefixes
-                        .filter((prefix) => prefix.Name === name)
-                        .map((prefix, index) => (
-                          <div
-                            key={`prefix-${prefix.id}-${index}`}
-                            className="p-3 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
-                            onClick={() => onAddModifier(prefix, "prefix")}
-                          >
-                            <div className="font-medium text-white">
-                              {prefix.Name}
-                              {modifierList &&
-                                modifierList.find(
-                                  (m) => m.id === prefix.id
-                                ) && (
-                                  <span className="text-yellow-400 font-bold ml-2">
-                                    (
-                                    {
-                                      modifierList.find(
-                                        (m) => m.id === prefix.id
-                                      ).count
-                                    }
-                                    ×)
-                                  </span>
-                                )}
-                            </div>
-                            <div className="text-slate-300 text-xs mt-1">
-                              {prefix.Mod}
-                            </div>
-                            {searchContext === "autogen" &&
-                              prefix.supportedTypes && (
-                                <div className="text-slate-400 text-xs mt-1">
-                                  Available on:{" "}
-                                  {prefix.supportedTypes.join(", ")}
-                                </div>
-                              )}
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Suffix results for this name */}
-                {filteredModifiers.suffixes.filter(
-                  (s) => s.Name === name || s.Name === `of ${name}`
-                ).length > 0 && (
-                  <div>
-                    <h4 className="font-medium text-green-400 mb-2 text-sm px-1">
-                      Suffixes (
-                      {
-                        filteredModifiers.suffixes.filter(
-                          (s) => s.Name === name || s.Name === `of ${name}`
-                        ).length
-                      }
-                      )
-                    </h4>
-                    <div
-                      className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
-                        filteredModifiers.suffixes.filter(
-                          (suffix) =>
-                            suffix.Name === name || suffix.Name === `of ${name}`
-                        ).length === 1
-                          ? "h-auto"
-                          : "h-36"
-                      }`}
-                    >
-                      {filteredModifiers.suffixes
-                        .filter(
-                          (suffix) =>
-                            suffix.Name === name || suffix.Name === `of ${name}`
-                        )
-                        .map((suffix, index) => (
-                          <div
-                            key={`suffix-${suffix.id}-${index}`}
-                            className="p-3 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
-                            onClick={() => onAddModifier(suffix, "suffix")}
-                          >
-                            <div className="font-medium text-white">
-                              {suffix.Name}
-                              {modifierList &&
-                                modifierList.find(
-                                  (m) => m.id === suffix.id
-                                ) && (
-                                  <span className="text-yellow-400 font-bold ml-2">
-                                    (
-                                    {
-                                      modifierList.find(
-                                        (m) => m.id === suffix.id
-                                      ).count
-                                    }
-                                    ×)
-                                  </span>
-                                )}
-                            </div>
-                            <div className="text-slate-300 text-xs mt-1">
-                              {suffix.Mod}
-                            </div>
-                            {searchContext === "autogen" &&
-                              suffix.supportedTypes && (
-                                <div className="text-slate-400 text-xs mt-1">
-                                  Available on:{" "}
-                                  {suffix.supportedTypes.join(", ")}
-                                </div>
-                              )}
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* No results for this name */}
-                {filteredModifiers.prefixes.filter((p) => p.Name === name)
-                  .length === 0 &&
+                {(filteredModifiers.prefixes.filter(p => p.Name === name).length > 0 ||
                   filteredModifiers.suffixes.filter(
-                    (s) => s.Name === name || s.Name === `of ${name}`
-                  ).length === 0 && (
-                    <div className="text-slate-400 py-3 text-sm px-1">
-                      No modifiers found for "{name}" with current idol type
+                    s => s.Name === name || s.Name === `of ${name}`
+                  ).length > 0) ? (
+                  <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
+                    <div className="grid grid-cols-2 gap-2">
+                      {filteredModifiers.prefixes
+                        .filter(p => p.Name === name)
+                        .map((prefix, index) => (
+                          <ModifierCard
+                            key={`prefix-${prefix.id}-${index}`}
+                            modifier={{ ...prefix, type: "prefix" }}
+                            inModifierList={getModifierCount(prefix)}
+                            searchContext={searchContext}
+                            onClick={onAddModifier}
+                            onRemove={onRemoveModifier}
+                          />
+                        ))}
+                      {filteredModifiers.suffixes
+                        .filter(s => s.Name === name || s.Name === `of ${name}`)
+                        .map((suffix, index) => (
+                          <ModifierCard
+                            key={`suffix-${suffix.id}-${index}`}
+                            modifier={{ ...suffix, type: "suffix" }}
+                            inModifierList={getModifierCount(suffix)}
+                            searchContext={searchContext}
+                            onClick={onAddModifier}
+                            onRemove={onRemoveModifier}
+                          />
+                        ))}
                     </div>
-                  )}
+                  </div>
+                ) : (
+                  <div className="text-slate-400 py-3 text-sm px-1">
+                    No modifiers found for "{name}" with current idol type
+                  </div>
+                )}
               </div>
             ))}
         </div>
       ) : (
-        <div className="results space-y-3 px-3 pb-3">
-          {/* Prefix results */}
+        <div className="results space-y-4 px-3 pb-3">
+          {/* Prefix Section */}
           {filteredModifiers.prefixes.length > 0 && (
             <div>
-              <h3 className="font-medium text-blue-400 mb-2 text-sm px-1">
+              <h3 className="font-medium text-blue-400 text-sm px-1 mb-2">
                 Prefixes ({filteredModifiers.prefixes.length})
               </h3>
-              <div
-                className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
-                  filteredModifiers.prefixes.length === 1 ? "h-auto" : "h-40"
-                }`}
-              >
-                {filteredModifiers.prefixes.map((prefix, index) => (
-                  <div
-                    key={`prefix-${prefix.id}-${index}`}
-                    className="p-2.5 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
-                    onClick={() => onAddModifier(prefix, "prefix")}
-                  >
-                    <div className="font-medium text-white">
-                      {prefix.Name}
-                      {modifierList &&
-                        modifierList.find((m) => m.id === prefix.id) && (
-                          <span className="text-yellow-400 font-bold ml-2">
-                            (
-                            {modifierList.find((m) => m.id === prefix.id).count}
-                            ×)
-                          </span>
-                        )}
-                    </div>
-                    <div className="text-slate-300 text-xs mt-1">
-                      {prefix.Mod}
-                    </div>
-                    {searchContext === "autogen" && prefix.supportedTypes && (
-                      <div className="text-slate-400 text-xs mt-1">
-                        Available on: {prefix.supportedTypes.join(", ")}
-                      </div>
-                    )}
-                  </div>
-                ))}
+              <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
+                <div className="grid grid-cols-2 gap-2">
+                  {filteredModifiers.prefixes.map((prefix, index) => (
+                    <ModifierCard
+                      key={`prefix-${prefix.id}-${index}`}
+                      modifier={{ ...prefix, type: "prefix" }}
+                      inModifierList={getModifierCount(prefix)}
+                      searchContext={searchContext}
+                      onClick={onAddModifier}
+                      onRemove={onRemoveModifier}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           )}
 
-          {/* Suffix results */}
+          {/* Suffix Section */}
           {filteredModifiers.suffixes.length > 0 && (
             <div>
-              <h3 className="font-medium text-green-400 mb-2 text-sm px-1">
+              <h3 className="font-medium text-green-400 text-sm px-1 mb-2">
                 Suffixes ({filteredModifiers.suffixes.length})
               </h3>
-              <div
-                className={`min-h-14 overflow-y-auto bg-slate-700 rounded-md ring-1 ring-slate-600 custom-scrollbar resize-y ${
-                  filteredModifiers.suffixes.length === 1 ? "h-auto" : "h-40"
-                }`}
-              >
-                {filteredModifiers.suffixes.map((suffix, index) => (
-                  <div
-                    key={`suffix-${suffix.id}-${index}`}
-                    className="p-2.5 hover:bg-slate-600 active:bg-slate-600/50 border-b border-slate-600 text-sm cursor-pointer transition-colors select-none"
-                    onClick={() => onAddModifier(suffix, "suffix")}
-                  >
-                    <div className="font-medium text-white">
-                      {suffix.Name}
-                      {modifierList &&
-                        modifierList.find((m) => m.id === suffix.id) && (
-                          <span className="text-yellow-400 font-bold ml-2">
-                            (
-                            {modifierList.find((m) => m.id === suffix.id).count}
-                            ×)
-                          </span>
-                        )}
-                    </div>
-                    <div className="text-slate-300 text-xs mt-1">
-                      {suffix.Mod}
-                    </div>
-                    {searchContext === "autogen" && suffix.supportedTypes && (
-                      <div className="text-slate-400 text-xs mt-1">
-                        Available on: {suffix.supportedTypes.join(", ")}
-                      </div>
-                    )}
-                  </div>
-                ))}
+              <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
+                <div className="grid grid-cols-2 gap-2">
+                  {filteredModifiers.suffixes.map((suffix, index) => (
+                    <ModifierCard
+                      key={`suffix-${suffix.id}-${index}`}
+                      modifier={{ ...suffix, type: "suffix" }}
+                      inModifierList={getModifierCount(suffix)}
+                      searchContext={searchContext}
+                      onClick={onAddModifier}
+                      onRemove={onRemoveModifier}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -968,8 +727,7 @@ function ModifierSearch({
             filteredModifiers.prefixes.length === 0 &&
             filteredModifiers.suffixes.length === 0 && (
               <p className="text-slate-400 py-2 text-sm text-center">
-                No modifiers found matching "
-                {searchTerm || selectedNames.join(", ")}"
+                No modifiers found matching "{searchTerm || selectedNames.join(", ")}"
               </p>
             )}
 
@@ -983,6 +741,6 @@ function ModifierSearch({
       )}
     </div>
   );
-}
+};
 
-export default React.memo(ModifierSearch);
+export default memo(ModifierSearch);

@@ -1,4 +1,4 @@
-// components/IdolBuilder.jsx
+// components/builder/IdolBuilder.jsx
 import React, { useState, useEffect } from "react";
 import ModifierSearch from "../modifiers/ModifierSearch";
 
@@ -178,6 +178,16 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
   // Remove suffix
   const handleRemoveSuffix = (index) => {
     setSelectedSuffixes(selectedSuffixes.filter((_, i) => i !== index));
+    setError(null);
+  };
+
+  // Remove a specific modifier
+  const handleRemoveModifier = (modifier) => {
+    if (modifier.type === "prefix") {
+      setSelectedPrefixes(selectedPrefixes.filter(p => p.id !== modifier.id));
+    } else {
+      setSelectedSuffixes(selectedSuffixes.filter(s => s.id !== modifier.id));
+    }
     setError(null);
   };
 
@@ -381,10 +391,13 @@ function IdolBuilder({ modData, idolTypes, onAddIdol }) {
               <ModifierSearch
                 modData={selectedType ? getTypeSpecificMods() : modData}
                 onAddModifier={handleAddModifier}
+                onRemoveModifier={handleRemoveModifier}
                 selectedType={selectedType}
                 initialState={searchState}
                 onSearchUpdate={handleSearchUpdate}
                 searchContext="builder"
+                selectedPrefixes={selectedPrefixes}
+                selectedSuffixes={selectedSuffixes}
               />
             </div>
 

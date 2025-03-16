@@ -92,6 +92,14 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
     }
   };
 
+  // Handle removing a modifier by direct reference
+  const handleRemoveModifierByRef = (modifierToRemove) => {
+    const index = desiredModifiers.findIndex(mod => mod.id === modifierToRemove.id);
+    if (index !== -1) {
+      handleRemoveModifier(index);
+    }
+  };
+
   // Load modifiers from inventory
   const handleLoadFromInventory = () => {
     setLoadingFromInventory(true);
@@ -349,6 +357,7 @@ function DesiredModifiers({ modData, onGenerateIdols }) {
             <ModifierSearch
               modData={modData}
               onAddModifier={handleAddModifier}
+              onRemoveModifier={handleRemoveModifierByRef}
               modifierList={desiredModifiers}
               initialState={searchHistoryRef.current}
               onSearchUpdate={handleSearchUpdate}
