@@ -1,5 +1,5 @@
 // hooks/useInventory.js
-import { useContext, useMemo, useCallback } from 'react';
+import { useContext, useMemo } from 'react';
 import { AppContext } from '../context/AppContext';
 
 export const useInventory = () => {
@@ -12,11 +12,12 @@ export const useInventory = () => {
   } = useContext(AppContext);
 
   const filteredInventory = useMemo(() => {
+    if (!inventorySearchTerm) return inventory;
+
+    const searchTerm = inventorySearchTerm.toLowerCase();
+
     return inventory.filter((idol) => {
-      if (!inventorySearchTerm) return true;
-
-      const searchTerm = inventorySearchTerm.toLowerCase();
-
+      // Check idol name and type
       if (
         idol.name.toLowerCase().includes(searchTerm) ||
         idol.type.toLowerCase().includes(searchTerm) ||
@@ -25,34 +26,28 @@ export const useInventory = () => {
         return true;
       }
 
-      if (idol.prefixes && idol.prefixes.length > 0) {
-        for (const prefix of idol.prefixes) {
-          if (
-            prefix.Name.toLowerCase().includes(searchTerm) ||
-            prefix.Mod.toLowerCase().includes(searchTerm)
-          ) {
-            return true;
-          }
-        }
+      // Check prefixes
+      if (idol.prefixes?.some(prefix =>
+        prefix.Name.toLowerCase().includes(searchTerm) ||
+        prefix.Mod.toLowerCase().includes(searchTerm)
+      )) {
+        return true;
       }
 
-      if (idol.suffixes && idol.suffixes.length > 0) {
-        for (const suffix of idol.suffixes) {
-          if (
-            suffix.Name.toLowerCase().includes(searchTerm) ||
-            suffix.Mod.toLowerCase().includes(searchTerm)
-          ) {
-            return true;
-          }
-        }
+      // Check suffixes
+      if (idol.suffixes?.some(suffix =>
+        suffix.Name.toLowerCase().includes(searchTerm) ||
+        suffix.Mod.toLowerCase().includes(searchTerm)
+      )) {
+        return true;
       }
 
-      if (idol.isUnique && idol.uniqueModifiers && idol.uniqueModifiers.length > 0) {
-        for (const mod of idol.uniqueModifiers) {
-          if (mod.Mod.toLowerCase().includes(searchTerm)) {
-            return true;
-          }
-        }
+      // Check unique modifiers
+      if (
+        idol.isUnique &&
+        idol.uniqueModifiers?.some(mod => mod.Mod.toLowerCase().includes(searchTerm))
+      ) {
+        return true;
       }
 
       return false;

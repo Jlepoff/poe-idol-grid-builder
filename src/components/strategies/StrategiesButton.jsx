@@ -1,15 +1,19 @@
 // components/strategies/StrategiesButton.jsx
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import StrategiesModal from "./StrategiesModal";
 
-function StrategiesButton({ onLoadStrategy }) {
+// Using memo to prevent unnecessary re-renders when parent components change
+const StrategiesButton = memo(function StrategiesButton({ onLoadStrategy }) {
   const [showModal, setShowModal] = useState(false);
+  
+  const handleOpen = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
 
   return (
     <>
       <button
         className="bg-amber-600 hover:bg-amber-500 text-white py-2 px-4 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-colors"
-        onClick={() => setShowModal(true)}
+        onClick={handleOpen}
         title="Load community strategies"
       >
         <svg
@@ -30,10 +34,13 @@ function StrategiesButton({ onLoadStrategy }) {
       </button>
 
       {showModal && (
-        <StrategiesModal onClose={() => setShowModal(false)} onLoadStrategy={onLoadStrategy} />
+        <StrategiesModal 
+          onClose={handleClose} 
+          onLoadStrategy={onLoadStrategy} 
+        />
       )}
     </>
   );
-}
+});
 
 export default StrategiesButton;

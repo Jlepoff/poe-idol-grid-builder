@@ -1,22 +1,30 @@
 // components/common/ClearButton.jsx
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import Button from "./Button";
 import { clearSavedData } from "../../utils/storage/storageUtils";
 
-function ClearButton({ onClear }) {
+const ClearButton = ({ onClear }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const confirmClear = () => {
+  const handleShowConfirm = useCallback(() => {
+    setShowConfirm(true);
+  }, []);
+
+  const handleCancelConfirm = useCallback(() => {
+    setShowConfirm(false);
+  }, []);
+
+  const confirmClear = useCallback(() => {
     clearSavedData();
     onClear();
     setShowConfirm(false);
-  };
+  }, [onClear]);
 
   return (
     <div className="relative">
       <Button
         variant="danger"
-        onClick={() => setShowConfirm(true)}
+        onClick={handleShowConfirm}
         title="Clear all idols and grid layout"
         className="flex items-center gap-2"
       >
@@ -46,7 +54,7 @@ function ClearButton({ onClear }) {
             <Button 
               variant="secondary" 
               size="sm" 
-              onClick={() => setShowConfirm(false)}
+              onClick={handleCancelConfirm}
             >
               Cancel
             </Button>
@@ -62,6 +70,6 @@ function ClearButton({ onClear }) {
       )}
     </div>
   );
-}
+};
 
-export default ClearButton;
+export default React.memo(ClearButton);

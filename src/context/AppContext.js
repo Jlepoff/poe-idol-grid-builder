@@ -1,5 +1,5 @@
 // context/AppContext.js
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { loadIdolData } from '../api/idolDataApi';
 import { saveGridState, saveInventory, loadGridState, loadInventory, getSharedDataFromURL } from '../utils/storage/storageUtils';
 import { optimizeGrid } from '../utils/grid/gridUtils';
@@ -71,10 +71,23 @@ export const AppProvider = ({ children }) => {
       id: Date.now() + Math.random(),
     };
 
-    const updatedInventory = [...inventory, idolWithId];
-    setInventory(updatedInventory);
-    saveInventory(updatedInventory);
-  }, [inventory]);
+    setInventory(prevInventory => {
+      const updatedInventory = [...prevInventory, idolWithId];
+      saveInventory(updatedInventory);
+      return updatedInventory;
+    });
+  }, []);
+
+  // Cached function to check if a cell is blocked
+  const isBlockedCell = useCallback((row, col) => {
+    return (
+      (row === 0 && col === 0) ||
+      (row === 2 && (col === 1 || col === 4)) ||
+      (row === 3 && (col === 1 || col === 2 || col === 3 || col === 4)) ||
+      (row === 4 && (col === 1 || col === 4)) ||
+      (row === 6 && col === 5)
+    );
+  }, []);
 
   // Removes idol from both inventory and grid
   const handleRemoveIdol = useCallback((id) => {
@@ -82,6 +95,7 @@ export const AppProvider = ({ children }) => {
     let idolPosition = null;
     let idolType = null;
 
+    // Find idol on grid
     for (let row = 0; row < gridState.length; row++) {
       for (let col = 0; col < gridState[row].length; col++) {
         const cell = gridState[row][col];
@@ -95,10 +109,9 @@ export const AppProvider = ({ children }) => {
       if (idolOnGrid) break;
     }
 
-    let newGrid = [...gridState];
-
+    // Remove from grid if present
     if (idolOnGrid && idolPosition && idolType) {
-      newGrid = gridState.map((row) => [...row]);
+      const newGrid = gridState.map((row) => [...row]);
       const { width, height } = idolType;
       for (let r = idolPosition.row; r < idolPosition.row + height; r++) {
         for (let c = idolPosition.col; c < idolPosition.col + width; c++) {
@@ -112,10 +125,13 @@ export const AppProvider = ({ children }) => {
       saveGridState(newGrid);
     }
 
-    const updatedInventory = inventory.filter((idol) => idol.id !== id);
-    setInventory(updatedInventory);
-    saveInventory(updatedInventory);
-  }, [gridState, inventory, idolTypes]);
+    // Remove from inventory
+    setInventory(prevInventory => {
+      const updatedInventory = prevInventory.filter((idol) => idol.id !== id);
+      saveInventory(updatedInventory);
+      return updatedInventory;
+    });
+  }, [gridState, idolTypes]);
 
   // Check if an idol can be placed at a position on a given grid
   const canPlaceIdol = useCallback((grid, idol, position) => {
@@ -129,13 +145,7 @@ export const AppProvider = ({ children }) => {
 
     for (let r = row; r < row + height; r++) {
       for (let c = col; c < col + width; c++) {
-        if (
-          (r === 0 && c === 0) ||
-          (r === 2 && (c === 1 || c === 4)) ||
-          (r === 3 && (c === 1 || c === 2 || c === 3 || c === 4)) ||
-          (r === 4 && (c === 1 || c === 4)) ||
-          (r === 6 && c === 5)
-        ) {
+        if (isBlockedCell(r, c)) {
           return false;
         }
         if (grid[r][c] !== null) {
@@ -144,21 +154,26 @@ export const AppProvider = ({ children }) => {
       }
     }
     return true;
-  }, [idolTypes]);
+  }, [idolTypes, isBlockedCell]);
 
   // Place an idol on a grid, returning a new grid state
   const placeIdolOnGrid = useCallback((grid, idol, position) => {
     const newGrid = grid.map((row) => [...row]);
     const { row, col } = position;
     const idolType = idolTypes.find((type) => type.name === idol.type);
+
+    if (!idolType) return newGrid;
+
     const { width, height } = idolType;
 
     for (let r = row; r < row + height; r++) {
       for (let c = col; c < col + width; c++) {
-        newGrid[r][c] = {
-          ...idol,
-          position: { row, col },
-        };
+        if (r < newGrid.length && c < newGrid[r].length) {
+          newGrid[r][c] = {
+            ...idol,
+            position: { row, col },
+          };
+        }
       }
     }
     return newGrid;
@@ -167,7 +182,7 @@ export const AppProvider = ({ children }) => {
   // Remove an idol from a grid, returning a new grid state
   const removeIdolFromGrid = useCallback((grid, position) => {
     const { row, col } = position;
-    if (!grid[row][col]) return grid;
+    if (!grid[row] || !grid[row][col]) return grid;
 
     const idol = grid[row][col];
     const idolType = idolTypes.find((type) => type.name === idol.type);
@@ -177,9 +192,11 @@ export const AppProvider = ({ children }) => {
     const idolPosition = idol.position || { row, col };
     const newGrid = grid.map((row) => [...row]);
 
-    for (let r = idolPosition.row; r < idolPosition.row + height; r++) {
-      for (let c = idolPosition.col; c < idolPosition.col + width; c++) {
-        newGrid[r][c] = null;
+    for (let r = idolPosition.row; r < idolPosition.row + height && r < grid.length; r++) {
+      for (let c = idolPosition.col; c < idolPosition.col + width && c < grid[0].length; c++) {
+        if (r >= 0 && c >= 0) {
+          newGrid[r][c] = null;
+        }
       }
     }
     return newGrid;
@@ -199,23 +216,25 @@ export const AppProvider = ({ children }) => {
       saveGridState(newGrid);
 
       if (!currentPosition) {
-        const updatedInventory = inventory.map((invIdol) =>
-          invIdol.id === idol.id ? { ...invIdol, isPlaced: true } : invIdol
-        );
-        setInventory(updatedInventory);
-        saveInventory(updatedInventory);
+        setInventory(prevInventory => {
+          const updatedInventory = prevInventory.map((invIdol) =>
+            invIdol.id === idol.id ? { ...invIdol, isPlaced: true } : invIdol
+          );
+          saveInventory(updatedInventory);
+          return updatedInventory;
+        });
       }
 
       return true;
     }
 
     return false;
-  }, [gridState, inventory, canPlaceIdol, placeIdolOnGrid, removeIdolFromGrid]);
+  }, [gridState, canPlaceIdol, placeIdolOnGrid, removeIdolFromGrid]);
 
   // Remove idol from grid
   const handleRemoveFromGrid = useCallback((position) => {
     const { row, col } = position;
-    if (!gridState[row][col]) return;
+    if (!gridState[row] || !gridState[row][col]) return;
 
     const idol = gridState[row][col];
     const idolType = idolTypes.find((type) => type.name === idol.type);
@@ -225,24 +244,30 @@ export const AppProvider = ({ children }) => {
     const { width, height } = idolType;
     const idolPosition = idol.position || { row, col };
 
-    const newGrid = [...gridState];
-    for (let r = idolPosition.row; r < idolPosition.row + height; r++) {
-      for (let c = idolPosition.col; c < idolPosition.col + width; c++) {
-        newGrid[r][c] = null;
+    // Create new grid with idol removed
+    const newGrid = gridState.map(row => [...row]);
+    for (let r = idolPosition.row; r < idolPosition.row + height && r < newGrid.length; r++) {
+      for (let c = idolPosition.col; c < idolPosition.col + width && c < newGrid[r].length; c++) {
+        if (r >= 0 && c >= 0) {
+          newGrid[r][c] = null;
+        }
       }
     }
 
     setGridState(newGrid);
     saveGridState(newGrid);
 
-    const updatedInventory = inventory.map((invIdol) =>
-      invIdol.id === idol.id
-        ? { ...invIdol, isPlaced: false }
-        : invIdol
-    );
-    setInventory(updatedInventory);
-    saveInventory(updatedInventory);
-  }, [gridState, inventory, idolTypes]);
+    // Update inventory to mark idol as not placed
+    setInventory(prevInventory => {
+      const updatedInventory = prevInventory.map((invIdol) =>
+        invIdol.id === idol.id
+          ? { ...invIdol, isPlaced: false }
+          : invIdol
+      );
+      saveInventory(updatedInventory);
+      return updatedInventory;
+    });
+  }, [gridState, idolTypes]);
 
   // Clear all data
   const handleClearAll = useCallback(() => {
@@ -258,18 +283,18 @@ export const AppProvider = ({ children }) => {
 
   // Clear inventory except unique idols and reset grid
   const handleClearInventoryExceptUniques = useCallback(() => {
-    // Create empty grid
     const emptyGrid = Array(7).fill().map(() => Array(6).fill(null));
     setGridState(emptyGrid);
     saveGridState(emptyGrid);
 
-    // Filter inventory to keep only unique idols
-    const uniqueIdols = inventory.filter(idol => idol.isUnique);
-    setInventory(uniqueIdols);
-    saveInventory(uniqueIdols);
+    setInventory(prevInventory => {
+      const uniqueIdols = prevInventory.filter(idol => idol.isUnique);
+      saveInventory(uniqueIdols);
+      return uniqueIdols;
+    });
 
     setGenerationResult(null);
-  }, [inventory]);
+  }, []);
 
   // Auto-optimize idol placement
   const handleOptimizeGrid = useCallback(() => {
@@ -278,25 +303,27 @@ export const AppProvider = ({ children }) => {
     setGridState(optimizationResult.grid);
     saveGridState(optimizationResult.grid);
 
-    const updatedInventory = inventory.map((idol) => {
-      let isPlaced = false;
+    setInventory(prevInventory => {
+      const updatedInventory = prevInventory.map((idol) => {
+        let isPlaced = false;
 
-      for (let row = 0; row < optimizationResult.grid.length; row++) {
-        for (let col = 0; col < optimizationResult.grid[row].length; col++) {
-          const cell = optimizationResult.grid[row][col];
-          if (cell && cell.id === idol.id) {
-            isPlaced = true;
-            break;
+        // Check if this idol is placed on the grid
+        outer: for (let row = 0; row < optimizationResult.grid.length; row++) {
+          for (let col = 0; col < optimizationResult.grid[row].length; col++) {
+            const cell = optimizationResult.grid[row][col];
+            if (cell && cell.id === idol.id) {
+              isPlaced = true;
+              break outer;
+            }
           }
         }
-        if (isPlaced) break;
-      }
 
-      return { ...idol, isPlaced };
+        return { ...idol, isPlaced };
+      });
+
+      saveInventory(updatedInventory);
+      return updatedInventory;
     });
-
-    setInventory(updatedInventory);
-    saveInventory(updatedInventory);
 
     return {
       placedCount: optimizationResult.placedCount,
@@ -305,100 +332,168 @@ export const AppProvider = ({ children }) => {
     };
   }, [inventory, idolTypes, gridState]);
 
+  // Generate idols from desired modifiers
   const handleGenerateIdols = useCallback((desiredModifiers) => {
     if (!desiredModifiers || desiredModifiers.length === 0) {
       return;
     }
 
-    const result = generateAndPlaceIdols(
-      desiredModifiers,
-      modData,
-      idolTypes,
-      gridState
-    );
+    try {
+      const result = generateAndPlaceIdols(
+        desiredModifiers,
+        modData,
+        idolTypes,
+        gridState
+      );
 
-    if (!result || !result.idols || result.idols.length === 0) {
-      setGenerationResult({
-        total: 0,
-        placed: 0,
-        notPlaced: [],
-        modifiersRequested: desiredModifiers.length,
-        success: false,
-        error: "Failed to generate idols. Try different modifiers.",
-      });
-      return;
-    }
-
-    const newInventory = [...inventory];
-    result.idols.forEach((idol) => {
-      newInventory.push({
-        ...idol,
-        isPlaced: false,
-      });
-    });
-
-    setInventory(newInventory);
-    saveInventory(newInventory);
-
-    const optimizationResult = optimizeGrid(newInventory, idolTypes, gridState);
-
-    setGridState(optimizationResult.grid);
-    saveGridState(optimizationResult.grid);
-
-    const updatedInventory = newInventory.map((idol) => {
-      let isPlaced = false;
-      for (let row = 0; row < optimizationResult.grid.length; row++) {
-        for (let col = 0; col < optimizationResult.grid[row].length; col++) {
-          const cell = optimizationResult.grid[row][col];
-          if (cell && cell.id === idol.id) {
-            isPlaced = true;
-            break;
-          }
-        }
-        if (isPlaced) break;
-      }
-      return { ...idol, isPlaced };
-    });
-
-    setInventory(updatedInventory);
-    saveInventory(updatedInventory);
-
-    setGenerationResult({
-      total: result.idols.length,
-      placed: optimizationResult.placedCount,
-      notPlaced: optimizationResult.notPlacedIdols,
-      modifiersRequested: desiredModifiers.length,
-      success: result.idols.length > 0,
-    });
-
-    // setActiveTab("builder");
-  }, [gridState, inventory, idolTypes, modData]);
-
-  const handleLoadStrategy = useCallback((shareUrl) => {
-    const url = new URL(shareUrl);
-    const shareParam = url.searchParams.get("share");
-
-    if (shareParam) {
-      const sharedData = getSharedDataFromURL(modData, shareParam);
-
-      if (sharedData) {
-        setGridState(sharedData.gridState);
-        saveGridState(sharedData.gridState);
-
-        setInventory(sharedData.inventory);
-        saveInventory(sharedData.inventory);
-
+      if (!result || !result.idols || result.idols.length === 0) {
         setGenerationResult({
-          total: sharedData.inventory.length,
-          placed: sharedData.inventory.filter((idol) => idol.isPlaced).length,
-          success: true,
-          message: "Strategy loaded successfully!",
+          total: 0,
+          placed: 0,
+          notPlaced: [],
+          modifiersRequested: desiredModifiers.length,
+          success: false,
+          error: "Failed to generate idols. Try different modifiers.",
+        });
+        return;
+      }
+
+      // Add new idols to inventory
+      setInventory(prevInventory => {
+        const newInventory = [
+          ...prevInventory,
+          ...result.idols.map(idol => ({ ...idol, isPlaced: false }))
+        ];
+
+        // Optimize grid with the new inventory
+        const optimizationResult = optimizeGrid(newInventory, idolTypes, gridState);
+
+        // Update grid state
+        setGridState(optimizationResult.grid);
+        saveGridState(optimizationResult.grid);
+
+        // Mark placed idols in inventory
+        const finalInventory = newInventory.map(idol => {
+          let isPlaced = false;
+
+          // Check if this idol is placed on the grid
+          outer: for (let row = 0; row < optimizationResult.grid.length; row++) {
+            for (let col = 0; col < optimizationResult.grid[row].length; col++) {
+              const cell = optimizationResult.grid[row][col];
+              if (cell && cell.id === idol.id) {
+                isPlaced = true;
+                break outer;
+              }
+            }
+          }
+
+          return { ...idol, isPlaced };
         });
 
-        // setActiveTab("builder");
+        // Set generation result
+        setGenerationResult({
+          total: result.idols.length,
+          placed: optimizationResult.placedCount,
+          notPlaced: optimizationResult.notPlacedIdols,
+          modifiersRequested: desiredModifiers.length,
+          success: result.idols.length > 0,
+        });
+
+        saveInventory(finalInventory);
+        return finalInventory;
+      });
+    } catch (error) {
+      console.error("Error generating idols:", error);
+      setGenerationResult({
+        error: "An error occurred while generating idols.",
+        success: false
+      });
+    }
+  }, [gridState, idolTypes, modData]);
+
+  // Handle loading a strategy from URL
+  const handleLoadStrategy = useCallback((shareUrl) => {
+    if (!shareUrl) return;
+
+    try {
+      const url = new URL(shareUrl);
+      const shareParam = url.searchParams.get("share");
+
+      if (shareParam) {
+        const sharedData = getSharedDataFromURL(modData, shareParam);
+
+        if (sharedData) {
+          setGridState(sharedData.gridState);
+          saveGridState(sharedData.gridState);
+
+          setInventory(sharedData.inventory);
+          saveInventory(sharedData.inventory);
+
+          setGenerationResult({
+            total: sharedData.inventory.length,
+            placed: sharedData.inventory.filter((idol) => idol.isPlaced).length,
+            success: true,
+            message: "Strategy loaded successfully!",
+          });
+        }
       }
+    } catch (error) {
+      console.error("Error loading strategy:", error);
+      setGenerationResult({
+        error: "Failed to load strategy.",
+        success: false
+      });
     }
   }, [modData]);
+
+  // Memoize filtered inventory for better performance
+  const filteredInventory = useMemo(() => {
+    return inventory.filter((idol) => {
+      if (!inventorySearchTerm) return true;
+
+      const searchTerm = inventorySearchTerm.toLowerCase();
+
+      if (
+        idol.name.toLowerCase().includes(searchTerm) ||
+        idol.type.toLowerCase().includes(searchTerm) ||
+        (idol.isUnique && "unique".includes(searchTerm))
+      ) {
+        return true;
+      }
+
+      if (idol.prefixes && idol.prefixes.length > 0) {
+        for (const prefix of idol.prefixes) {
+          if (
+            prefix.Name.toLowerCase().includes(searchTerm) ||
+            prefix.Mod.toLowerCase().includes(searchTerm)
+          ) {
+            return true;
+          }
+        }
+      }
+
+      if (idol.suffixes && idol.suffixes.length > 0) {
+        for (const suffix of idol.suffixes) {
+          if (
+            suffix.Name.toLowerCase().includes(searchTerm) ||
+            suffix.Mod.toLowerCase().includes(searchTerm)
+          ) {
+            return true;
+          }
+        }
+      }
+
+      if (idol.isUnique && idol.uniqueModifiers && idol.uniqueModifiers.length > 0) {
+        for (const mod of idol.uniqueModifiers) {
+          if (mod.Mod.toLowerCase().includes(searchTerm)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    });
+  }, [inventory, inventorySearchTerm]);
 
   const contextValue = {
     // State
@@ -411,6 +506,7 @@ export const AppProvider = ({ children }) => {
     generationResult,
     firstVisit,
     inventorySearchTerm,
+    filteredInventory, // Memoized filtered inventory
 
     // State setters
     setActiveTab,
@@ -431,6 +527,7 @@ export const AppProvider = ({ children }) => {
     handleOptimizeGrid,
     handleGenerateIdols,
     handleLoadStrategy,
+    isBlockedCell,
   };
 
   return (

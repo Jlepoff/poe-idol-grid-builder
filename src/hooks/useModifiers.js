@@ -3,8 +3,9 @@ import { useState, useEffect, useMemo, useCallback, useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
 export const useModifiers = (initialState = null, onSearchUpdate = null, searchContext = 'builder') => {
-  const { modData, idolTypes } = useContext(AppContext);
+  const { modData } = useContext(AppContext);
 
+  // State management
   const [searchTerm, setSearchTerm] = useState(initialState?.searchTerm || "");
   const [filterType, setFilterType] = useState(initialState?.filterType || "all");
   const [viewByName, setViewByName] = useState(initialState?.viewByName || false);
@@ -12,120 +13,50 @@ export const useModifiers = (initialState = null, onSearchUpdate = null, searchC
   const [nameSearchTerm, setNameSearchTerm] = useState("");
   const [selectedGroupNames, setSelectedGroupNames] = useState([]);
 
+  // Constants
   const modifierGroups = useMemo(() => ({
     "Bossing": ["Conqueror", "Shaper", "Maven", "Synthesis", "Elder"],
     "Eldritch": ["Eater", "Exarch"],
     "Mapping": ["Cartographer", "Kirac", "Scouting"],
   }), []);
 
-  const nameToGroupMap = useMemo(() => {
-    const mapping = {};
-    Object.entries(modifierGroups).forEach(([groupName, modNames]) => {
+  // Computed values
+  const nameToGroupMap = useMemo(() =>
+    Object.entries(modifierGroups).reduce((mapping, [groupName, modNames]) => {
       modNames.forEach(name => {
         mapping[name] = groupName;
       });
-    });
-    return mapping;
-  }, [modifierGroups]);
-
-  useEffect(() => {
-    if (onSearchUpdate) {
-      const timeoutId = setTimeout(() => {
-        onSearchUpdate({
-          searchTerm,
-          filterType,
-          viewByName,
-          selectedNames,
-        });
-      }, 50);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [searchTerm, filterType, viewByName, selectedNames, onSearchUpdate]);
-
-  const getNamesInGroup = useCallback((groupName) => {
-    return modifierGroups[groupName] || [];
-  }, [modifierGroups]);
-
-  const handleSearchTermChange = useCallback((e) => {
-    setSearchTerm(e.target.value);
-  }, []);
-
-  const handleFilterTypeChange = useCallback((e) => {
-    setFilterType(e.target.value);
-  }, []);
-
-  const handleViewModeChange = useCallback((mode) => {
-    setViewByName(mode);
-    setSelectedNames([]);
-  }, []);
-
-  const handleNameSelection = useCallback((item) => {
-    if (item.isGroup) {
-      const groupNames = getNamesInGroup(item.name);
-      const allSelected = groupNames.every((name) =>
-        selectedNames.includes(name)
-      );
-
-      if (allSelected) {
-        setSelectedNames((prevNames) =>
-          prevNames.filter((name) => !groupNames.includes(name))
-        );
-        setSelectedGroupNames((prev) =>
-          prev.filter((name) => name !== item.name)
-        );
-      } else {
-        setSelectedNames((prevNames) => {
-          const newNames = [...prevNames];
-          groupNames.forEach((name) => {
-            if (!newNames.includes(name)) {
-              newNames.push(name);
-            }
-          });
-          return newNames;
-        });
-        setSelectedGroupNames((prev) => {
-          if (!prev.includes(item.name)) {
-            return [...prev, item.name];
-          }
-          return prev;
-        });
-      }
-    } else {
-      setSelectedNames((prevNames) => {
-        if (prevNames.includes(item.name)) {
-          return prevNames.filter((n) => n !== item.name);
-        }
-        return [...prevNames, item.name];
-      });
-    }
-  }, [selectedNames, getNamesInGroup]);
+      return mapping;
+    }, {}),
+    [modifierGroups]);
 
   const modifierNames = useMemo(() => {
-    if (!modData.prefixes || !modData.suffixes)
+    if (!modData.prefixes || !modData.suffixes) {
       return { prefixes: [], suffixes: [] };
+    }
 
     const prefixNames = new Set();
     const suffixNames = new Set();
 
-    if (searchContext === "builder" && initialState?.selectedType) {
-      if (modData.prefixes[initialState.selectedType]) {
-        modData.prefixes[initialState.selectedType].forEach((mod) =>
-          prefixNames.add(mod.Name)
-        );
+    const shouldFilterByType = searchContext === "builder" && initialState?.selectedType;
+
+    if (shouldFilterByType) {
+      const selectedType = initialState.selectedType;
+
+      if (modData.prefixes[selectedType]) {
+        modData.prefixes[selectedType].forEach(mod => prefixNames.add(mod.Name));
       }
 
-      if (modData.suffixes[initialState.selectedType]) {
-        modData.suffixes[initialState.selectedType].forEach((mod) =>
-          suffixNames.add(mod.Name)
-        );
+      if (modData.suffixes[selectedType]) {
+        modData.suffixes[selectedType].forEach(mod => suffixNames.add(mod.Name));
       }
     } else {
-      Object.values(modData.prefixes).forEach((typeModifiers) => {
-        typeModifiers.forEach((mod) => prefixNames.add(mod.Name));
+      Object.values(modData.prefixes).forEach(typeModifiers => {
+        typeModifiers.forEach(mod => prefixNames.add(mod.Name));
       });
 
-      Object.values(modData.suffixes).forEach((typeModifiers) => {
-        typeModifiers.forEach((mod) => suffixNames.add(mod.Name));
+      Object.values(modData.suffixes).forEach(typeModifiers => {
+        typeModifiers.forEach(mod => suffixNames.add(mod.Name));
       });
     }
 
@@ -146,7 +77,98 @@ export const useModifiers = (initialState = null, onSearchUpdate = null, searchC
     return Array.from(uniqueNames).sort();
   }, [modifierNames.prefixes, modifierNames.suffixes, filterType]);
 
-  const getMatchPattern = useCallback((modText) => {
+  const nameTagsToDisplay = useMemo(() => {
+    let names;
+    switch (filterType) {
+      case "prefix":
+        names = modifierNames.prefixes;
+        break;
+      case "suffix":
+        names = modifierNames.suffixes;
+        break;
+      default: // "all"
+        names = combinedUniqueNames;
+    }
+
+    const result = [];
+    const processedGroups = new Set();
+
+    names.forEach(name => {
+      const group = nameToGroupMap[name] || null;
+
+      if (group && !processedGroups.has(group)) {
+        result.push({ isGroup: true, name: group });
+        processedGroups.add(group);
+      } else if (!group) {
+        result.push({ isGroup: false, name });
+      }
+    });
+
+    return result.sort((a, b) => a.name.localeCompare(b.name));
+  }, [filterType, modifierNames, combinedUniqueNames, nameToGroupMap]);
+
+  // Callbacks
+  const getNamesInGroup = useCallback(
+    groupName => modifierGroups[groupName] || [],
+    [modifierGroups]
+  );
+
+  const handleSearchTermChange = useCallback(
+    e => setSearchTerm(e.target.value),
+    []
+  );
+
+  const handleFilterTypeChange = useCallback(
+    e => setFilterType(e.target.value),
+    []
+  );
+
+  const handleViewModeChange = useCallback(mode => {
+    setViewByName(mode);
+    setSelectedNames([]);
+  }, []);
+
+  const handleNameSelection = useCallback(item => {
+    if (item.isGroup) {
+      const groupNames = getNamesInGroup(item.name);
+      const allSelected = groupNames.every(name => selectedNames.includes(name));
+
+      if (allSelected) {
+        setSelectedNames(prevNames =>
+          prevNames.filter(name => !groupNames.includes(name))
+        );
+        setSelectedGroupNames(prev =>
+          prev.filter(name => name !== item.name)
+        );
+      } else {
+        setSelectedNames(prevNames => {
+          const newNames = [...prevNames];
+          groupNames.forEach(name => {
+            if (!newNames.includes(name)) {
+              newNames.push(name);
+            }
+          });
+          return newNames;
+        });
+
+        setSelectedGroupNames(prev => {
+          if (!prev.includes(item.name)) {
+            return [...prev, item.name];
+          }
+          return prev;
+        });
+      }
+    } else {
+      setSelectedNames(prevNames => {
+        if (prevNames.includes(item.name)) {
+          return prevNames.filter(n => n !== item.name);
+        }
+        return [...prevNames, item.name];
+      });
+    }
+  }, [selectedNames, getNamesInGroup]);
+
+  const getMatchPattern = useCallback(modText => {
     const patterns = [
       { type: "plusChance", regex: /\+(\d+(?:\.\d+)?)%\s+chance/i },
       { type: "haveChance", regex: /have\s+(\d+(?:\.\d+)?)%\s+(?:increased\s+)?chance/i },
@@ -162,9 +184,13 @@ export const useModifiers = (initialState = null, onSearchUpdate = null, searchC
     for (const { type, regex } of patterns) {
       const match = modText.match(regex);
       if (match) {
+        const value = type !== "additional"
+          ? parseFloat(match[1])
+          : (modText.match(/(\d+)/)?.[1] ? parseFloat(modText.match(/(\d+)/)[1]) : 1);
+
         return {
           type,
-          value: type !== "additional" ? parseFloat(match[1]) : (modText.match(/(\d+)/)?.[1] ? parseFloat(modText.match(/(\d+)/)[1]) : 1),
+          value,
           fullText: modText,
         };
       }
@@ -173,45 +199,32 @@ export const useModifiers = (initialState = null, onSearchUpdate = null, searchC
     return { type: "unstackable", value: null, fullText: modText };
   }, []);
 
-  const getBaseEffectKey = useCallback((modText) => {
+  const getBaseEffectKey = useCallback(modText => {
     return modText
       .replace(/(\d+(?:\.\d+)?)(%|\s|$)/g, "X$2")
       .replace(/\s+/g, " ")
       .trim();
   }, []);
 
-  const nameTagsToDisplay = useMemo(() => {
-    const getGroupForName = (name) => {
-      return nameToGroupMap[name] || null;
-    };
+  // Side effects
+  useEffect(() => {
+    if (!onSearchUpdate) return;
 
-    let names = [];
-    if (filterType === "all") {
-      names = combinedUniqueNames;
-    } else if (filterType === "prefix") {
-      names = modifierNames.prefixes;
-    } else {
-      names = modifierNames.suffixes;
-    }
+    const timeoutId = setTimeout(() => {
+      onSearchUpdate({
+        searchTerm,
+        filterType,
+        viewByName,
+        selectedNames,
+      });
+    }, 50);
 
-    const result = [];
-    const processedGroups = new Set();
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, filterType, viewByName, selectedNames, onSearchUpdate]);
 
-    names.forEach((name) => {
-      const group = getGroupForName(name);
-
-      if (group && !processedGroups.has(group)) {
-        result.push({ isGroup: true, name: group });
-        processedGroups.add(group);
-      } else if (!group) {
-        result.push({ isGroup: false, name });
-      }
-    });
-
-    return result.sort((a, b) => a.name.localeCompare(b.name));
-  }, [filterType, modifierNames, combinedUniqueNames, nameToGroupMap]);
-
+  // Return hook API
   return {
+    // State
     searchTerm,
     setSearchTerm,
     filterType,
@@ -223,16 +236,22 @@ export const useModifiers = (initialState = null, onSearchUpdate = null, searchC
     nameSearchTerm,
     setNameSearchTerm,
     selectedGroupNames,
+
+    // Handlers
     handleSearchTermChange,
     handleFilterTypeChange,
     handleViewModeChange,
     handleNameSelection,
+
+    // Computed values
     modifierGroups,
     nameToGroupMap,
     getNamesInGroup,
     modifierNames,
     combinedUniqueNames,
     nameTagsToDisplay,
+
+    // Utility functions
     getMatchPattern,
     getBaseEffectKey,
   };

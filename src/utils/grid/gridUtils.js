@@ -1,15 +1,12 @@
 // utils/grid/gridUtils.js
 import _ from "lodash";
 
-export const isBlockedCell = (row, col) => {
-  return (
-    (row === 0 && col === 0) ||
-    (row === 2 && (col === 1 || col === 4)) ||
-    (row === 3 && (col === 1 || col === 2 || col === 3 || col === 4)) ||
-    (row === 4 && (col === 1 || col === 4)) ||
-    (row === 6 && col === 5)
-  );
-};
+// Predefined blocked cells for performance optimization
+const BLOCKED_CELLS = new Set([
+  "0,0", "2,1", "2,4", "3,1", "3,2", "3,3", "3,4", "4,1", "4,4", "6,5"
+]);
+
+export const isBlockedCell = (row, col) => BLOCKED_CELLS.has(`${row},${col}`);
 
 export const isValidPlacement = (grid, idol, row, col, idolTypes) => {
   const idolType = idolTypes.find((type) => type.name === idol.type);
@@ -17,8 +14,10 @@ export const isValidPlacement = (grid, idol, row, col, idolTypes) => {
 
   const { width, height } = idolType;
 
+  // Check boundaries
   if (row + height > 7 || col + width > 6) return false;
 
+  // Check for blocked cells and collisions
   for (let r = row; r < row + height; r++) {
     for (let c = col; c < col + width; c++) {
       if (isBlockedCell(r, c) || grid[r][c] !== null) {
@@ -36,9 +35,11 @@ export const placeIdol = (grid, idol, row, col, idolTypes) => {
 
   if (!idolType) return newGrid;
 
+  const positionData = { ...idol, position: { row, col } };
+
   for (let r = row; r < row + idolType.height; r++) {
     for (let c = col; c < col + idolType.width; c++) {
-      newGrid[r][c] = { ...idol, position: { row, col } };
+      newGrid[r][c] = positionData;
     }
   }
 
@@ -59,7 +60,7 @@ export const calculateGridScore = (grid) => {
   return filledCellCount;
 };
 
-function validatePlacement(grid, idol, row, col, idolTypes) {
+export const validatePlacement = (grid, idol, row, col, idolTypes) => {
   const idolType = idolTypes.find((type) => type.name === idol.type);
 
   if (!idolType) {
@@ -85,7 +86,7 @@ function validatePlacement(grid, idol, row, col, idolTypes) {
   }
 
   return { valid: true };
-}
+};
 
 export const optimizeGrid = (
   inventory,
@@ -135,11 +136,9 @@ export const optimizeGrid = (
 
           if (validation.valid) {
             const newGrid = placeIdol(testGrid, idol, row, col, idolTypes);
-
+            // Update the test grid directly instead of nested loops
             for (let r = 0; r < 7; r++) {
-              for (let c = 0; c < 6; c++) {
-                testGrid[r][c] = newGrid[r][c];
-              }
+              testGrid[r] = [...newGrid[r]];
             }
 
             placed = true;
@@ -184,41 +183,37 @@ export const optimizeGrid = (
   };
 };
 
+// Pre-calculate idol sizes for performance
+const DEFAULT_IDOL_SIZES = {
+  minor: { width: 1, height: 1 },
+  kamasan: { width: 1, height: 2 },
+  totemic: { width: 1, height: 3 },
+  noble: { width: 2, height: 1 },
+  conqueror: { width: 2, height: 2 },
+  burial: { width: 3, height: 1 },
+};
+
+// Default invalid positions
+const DEFAULT_INVALID_POSITIONS = new Set([
+  "0,0", "1,2", "4,2", "1,3", "2,3", "3,3", "4,3", "1,4", "4,4", "5,6",
+]);
+
+const getIdolValue = (idol) => (idol.prefixes?.length || 0) + (idol.suffixes?.length || 0);
+
 export function optimizeIdolPlacement(
   idols,
   gridDimensions = { width: 6, height: 7 },
   invalidPositions = null,
   idolSizes = null
 ) {
-  if (!invalidPositions) {
-    invalidPositions = new Set([
-      "0,0",
-      "1,2",
-      "4,2",
-      "1,3",
-      "2,3",
-      "3,3",
-      "4,3",
-      "1,4",
-      "4,4",
-      "5,6",
-    ]);
-  }
+  const blockedPositions = invalidPositions || DEFAULT_INVALID_POSITIONS;
+  const sizes = idolSizes || DEFAULT_IDOL_SIZES;
 
-  if (!idolSizes) {
-    idolSizes = {
-      minor: { width: 1, height: 1 },
-      kamasan: { width: 1, height: 2 },
-      totemic: { width: 1, height: 3 },
-      noble: { width: 2, height: 1 },
-      conqueror: { width: 2, height: 2 },
-      burial: { width: 3, height: 1 },
-    };
-  }
-
+  // Calculate value per cell for each idol and sort
   const scoredIdols = idols.map((idol) => {
-    const modCount = (idol.prefixes?.length || 0) + (idol.suffixes?.length || 0);
-    const size = idolSizes[idol.type.toLowerCase()]?.width * idolSizes[idol.type.toLowerCase()]?.height || 1;
+    const modCount = getIdolValue(idol);
+    const idolSizeInfo = sizes[idol.type.toLowerCase()] || { width: 1, height: 1 };
+    const size = idolSizeInfo.width * idolSizeInfo.height;
 
     return {
       ...idol,
@@ -229,14 +224,17 @@ export function optimizeIdolPlacement(
 
   scoredIdols.sort((a, b) => b.valuePerCell - a.valuePerCell);
 
-  const grid = Array(gridDimensions.height).fill().map(() => Array(gridDimensions.width).fill(null));
+  const grid = Array(gridDimensions.height)
+    .fill()
+    .map(() => Array(gridDimensions.width).fill(null));
+
   const placedIdols = [];
 
   for (const idol of scoredIdols) {
-    const bestPosition = findBestPosition(idol, grid, invalidPositions, idolSizes);
+    const bestPosition = findBestPosition(idol, grid, blockedPositions, sizes);
 
     if (bestPosition) {
-      placeIdolOnGrid(idol, bestPosition, grid, idolSizes);
+      placeIdolOnGrid(idol, bestPosition, grid, sizes);
       placedIdols.push({
         ...idol,
         position: bestPosition,
@@ -253,21 +251,15 @@ function findBestPosition(idol, grid, invalidPositions, idolSizes) {
   const gridHeight = grid.length;
   const gridWidth = grid[0].length;
 
-  const validPositions = [];
-
   for (let y = 0; y < gridHeight - height + 1; y++) {
     for (let x = 0; x < gridWidth - width + 1; x++) {
       if (isValidPosition(x, y, width, height, grid, invalidPositions)) {
-        validPositions.push({ x, y });
+        return { x, y };
       }
     }
   }
 
-  if (validPositions.length === 0) {
-    return null;
-  }
-
-  return validPositions[0];
+  return null;
 }
 
 function isValidPosition(x, y, width, height, grid, invalidPositions) {
@@ -276,15 +268,12 @@ function isValidPosition(x, y, width, height, grid, invalidPositions) {
       const posX = x + i;
       const posY = y + j;
 
-      if (posY >= grid.length || posX >= grid[0].length) {
-        return false;
-      }
-
-      if (invalidPositions.has(`${posX},${posY}`)) {
-        return false;
-      }
-
-      if (grid[posY][posX] !== null) {
+      if (
+        posY >= grid.length ||
+        posX >= grid[0].length ||
+        invalidPositions.has(`${posX},${posY}`) ||
+        grid[posY][posX] !== null
+      ) {
         return false;
       }
     }
@@ -311,39 +300,15 @@ export function backtrackingOptimization(
   invalidPositions = null,
   idolSizes = null
 ) {
-  if (!invalidPositions) {
-    invalidPositions = new Set([
-      "0,0",
-      "1,2",
-      "4,2",
-      "1,3",
-      "2,3",
-      "3,3",
-      "4,3",
-      "1,4",
-      "4,4",
-      "5,6",
-    ]);
-  }
+  const blockedPositions = invalidPositions || DEFAULT_INVALID_POSITIONS;
+  const sizes = idolSizes || DEFAULT_IDOL_SIZES;
 
-  if (!idolSizes) {
-    idolSizes = {
-      minor: { width: 1, height: 1 },
-      kamasan: { width: 1, height: 2 },
-      totemic: { width: 1, height: 3 },
-      noble: { width: 2, height: 1 },
-      conqueror: { width: 2, height: 2 },
-      burial: { width: 3, height: 1 },
-    };
-  }
+  // Sort idols by value (highest first)
+  const sortedIdols = [...idols].sort((a, b) => getIdolValue(b) - getIdolValue(a));
 
-  const sortedIdols = [...idols].sort((a, b) => {
-    const aValue = (a.prefixes?.length || 0) + (a.suffixes?.length || 0);
-    const bValue = (b.prefixes?.length || 0) + (b.suffixes?.length || 0);
-    return bValue - aValue;
-  });
-
-  const grid = Array(gridDimensions.height).fill().map(() => Array(gridDimensions.width).fill(null));
+  const grid = Array(gridDimensions.height)
+    .fill()
+    .map(() => Array(gridDimensions.width).fill(null));
 
   let bestSolution = {
     idols: [],
@@ -351,6 +316,7 @@ export function backtrackingOptimization(
   };
 
   function backtrack(index, currentGrid, placedIdols, currentValue) {
+    // Base case: all idols processed
     if (index >= sortedIdols.length) {
       if (currentValue > bestSolution.totalValue) {
         bestSolution = {
@@ -363,26 +329,33 @@ export function backtrackingOptimization(
 
     const idol = sortedIdols[index];
     const idolType = idol.type.toLowerCase();
-    const { width, height } = idolSizes[idolType] || { width: 1, height: 1 };
+    const { width, height } = sizes[idolType] || { width: 1, height: 1 };
 
+    // Try to place the current idol
     let placed = false;
+    const { height: gridHeight, width: gridWidth } = gridDimensions;
 
-    for (let y = 0; y < gridDimensions.height - height + 1; y++) {
-      for (let x = 0; x < gridDimensions.width - width + 1; x++) {
-        if (isValidPosition(x, y, width, height, currentGrid, invalidPositions)) {
-          const newGrid = currentGrid.map((row) => [...row]);
-          placeIdolOnGrid(idol, { x, y }, newGrid, idolSizes);
-          const idolValue = (idol.prefixes?.length || 0) + (idol.suffixes?.length || 0);
+    for (let y = 0; y < gridHeight - height + 1; y++) {
+      for (let x = 0; x < gridWidth - width + 1; x++) {
+        if (isValidPosition(x, y, width, height, currentGrid, blockedPositions)) {
+          // Clone grid and place idol
+          const newGrid = currentGrid.map(row => [...row]);
+          placeIdolOnGrid(idol, { x, y }, newGrid, sizes);
+
+          const idolValue = getIdolValue(idol);
           placedIdols.push({ ...idol, position: { x, y } });
 
+          // Recurse with the placed idol
           backtrack(index + 1, newGrid, placedIdols, currentValue + idolValue);
 
+          // Backtrack
           placedIdols.pop();
           placed = true;
         }
       }
     }
 
+    // If couldn't place this idol, skip it
     if (!placed) {
       backtrack(index + 1, currentGrid, placedIdols, currentValue);
     }

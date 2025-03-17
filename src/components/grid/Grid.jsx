@@ -1,30 +1,41 @@
 // components/grid/Grid.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import GridCell from "./GridCell";
 import { useGrid } from "../../hooks/useGrid";
+
+const GRID_PATTERN_STYLE = {
+  backgroundSize: '56px 56px',
+  backgroundImage: `
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
+  `,
+  backgroundPosition: '0 0'
+};
 
 function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
   const [currentDrag, setCurrentDrag] = useState(null);
   const { isBlockedCell } = useGrid();
 
-  useEffect(() => {
-    const handleDragStart = (e) => {
-      if (e.dataTransfer && e.dataTransfer.types.includes('application/json')) {
-        try {
-          const data = JSON.parse(e.dataTransfer.getData('application/json'));
-          if (data.type === 'IDOL') {
-            setCurrentDrag(data.idol);
-          }
-        } catch (err) {
-          // If parsing fails, ignore
+  // Memoize drag event handlers
+  const handleDragStart = useCallback((e) => {
+    if (e.dataTransfer?.types.includes('application/json')) {
+      try {
+        const data = JSON.parse(e.dataTransfer.getData('application/json'));
+        if (data.type === 'IDOL') {
+          setCurrentDrag(data.idol);
         }
+      } catch (err) {
+        // Silently ignore parse errors
       }
-    };
+    }
+  }, []);
 
-    const handleDragEnd = () => {
-      setCurrentDrag(null);
-    };
+  const handleDragEnd = useCallback(() => {
+    setCurrentDrag(null);
+  }, []);
 
+  // Effect for drag event listeners
+  useEffect(() => {
     window.addEventListener('dragstart', handleDragStart);
     window.addEventListener('dragend', handleDragEnd);
 
@@ -32,9 +43,10 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
       window.removeEventListener('dragstart', handleDragStart);
       window.removeEventListener('dragend', handleDragEnd);
     };
-  }, []);
+  }, [handleDragStart, handleDragEnd]);
 
-  const canPlaceIdol = (idol, position) => {
+  // Memoize canPlaceIdol function
+  const canPlaceIdol = useCallback((idol, position) => {
     if (!idol || !position) return false;
 
     const { row, col } = position;
@@ -43,36 +55,37 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
 
     const { width, height } = idolType;
 
+    // Check grid boundaries
     if (row + height > 7 || col + width > 6) return false;
 
+    // Check for blocked cells or existing idols
     for (let r = row; r < row + height; r++) {
       for (let c = col; c < col + width; c++) {
-        if (isBlockedCell(r, c)) return false;
-        if (gridState[r][c] !== null) return false;
+        if (isBlockedCell(r, c) || gridState[r][c] !== null) return false;
       }
     }
     return true;
-  };
+  }, [gridState, idolTypes, isBlockedCell]);
 
-  const getValidPlacementCells = () => {
+  // Memoize valid cells calculation
+  const validCells = useMemo(() => {
     if (!currentDrag) return [];
 
-    const validCells = [];
+    const validPositions = [];
     
     for (let row = 0; row < gridState.length; row++) {
       for (let col = 0; col < gridState[row].length; col++) {
         if (canPlaceIdol(currentDrag, { row, col })) {
-          validCells.push({ row, col });
+          validPositions.push({ row, col });
         }
       }
     }
 
-    return validCells;
-  };
+    return validPositions;
+  }, [currentDrag, gridState, canPlaceIdol]);
 
-  const validCells = getValidPlacementCells();
-
-  const renderGrid = () => {
+  // Memoize grid rendering
+  const renderGrid = useCallback(() => {
     return gridState.map((row, rowIndex) => (
       <div key={`row-${rowIndex}`} className="flex">
         {row.map((cell, colIndex) => {
@@ -83,7 +96,7 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
                 cell.position.col === colIndex));
 
           const isValidPlacement = validCells.some(
-            (validCell) => validCell.row === rowIndex && validCell.col === colIndex
+            validCell => validCell.row === rowIndex && validCell.col === colIndex
           );
 
           return (
@@ -105,25 +118,24 @@ function Grid({ gridState, onPlaceIdol, onRemoveFromGrid, idolTypes }) {
         })}
       </div>
     ));
-  };
-
-  const gridPatternStyle = {
-    backgroundSize: '56px 56px',
-    backgroundImage: `
-      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
-    `,
-    backgroundPosition: '0 0'
-  };
+  }, [
+    gridState, 
+    validCells, 
+    currentDrag, 
+    onPlaceIdol, 
+    onRemoveFromGrid, 
+    idolTypes, 
+    isBlockedCell
+  ]);
 
   return (
     <div 
-    className="grid-container border-2 border-indigo-600 rounded-xl p-1 bg-slate-950 inline-block shadow-sm mx-auto scale-95 minimal-scrollbar"
-    style={gridPatternStyle}
+      className="grid-container border-2 border-indigo-600 rounded-xl p-1 bg-slate-950 inline-block shadow-sm mx-auto scale-95 minimal-scrollbar"
+      style={GRID_PATTERN_STYLE}
     >
       {renderGrid()}
     </div>
   );
 }
 
-export default Grid;
+export default React.memo(Grid);

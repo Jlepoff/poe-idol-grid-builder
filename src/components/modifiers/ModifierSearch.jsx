@@ -3,6 +3,96 @@ import React, { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useModifiers } from "../../hooks/useModifiers";
 import ModifierCard from "./ModifierCard";
 
+// Extracted for reusability and cleaner render method
+const ModeToggleButtons = memo(({ viewByName, handleViewModeChange }) => (
+  <div className="flex space-x-2 mb-4 p-3">
+    <button
+      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+        !viewByName
+          ? "bg-indigo-600 text-white"
+          : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+      }`}
+      onClick={() => handleViewModeChange(false)}
+    >
+      Search by Text
+    </button>
+    <button
+      className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+        viewByName
+          ? "bg-indigo-600 text-white"
+          : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+      }`}
+      onClick={() => handleViewModeChange(true)}
+    >
+      Browse by Name
+    </button>
+  </div>
+));
+
+ModeToggleButtons.displayName = 'ModeToggleButtons';
+
+const NameTag = memo(({ item, isSelected, isFullySelected, onClick }) => (
+  <button
+    className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+      isSelected
+        ? `bg-indigo-600 text-white font-medium ${
+            !isFullySelected ? "ring-2 ring-indigo-300" : ""
+          }`
+        : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+    }`}
+    onClick={() => onClick(item)}
+  >
+    {item.name}
+  </button>
+));
+
+NameTag.displayName = 'NameTag';
+
+const FilterTypeSelect = memo(({ filterType, onChange }) => (
+  <select
+    className="bg-slate-700 p-2.5 rounded-md border-0 text-sm flex-grow ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
+    value={filterType}
+    onChange={onChange}
+  >
+    <option value="all">All Types</option>
+    <option value="prefix">Prefixes Only</option>
+    <option value="suffix">Suffixes Only</option>
+  </select>
+));
+
+FilterTypeSelect.displayName = 'FilterTypeSelect';
+
+const SelectionIndicator = memo(({ count, onClear }) => (
+  <div className="mb-3 px-1 py-1 bg-indigo-900/30 border border-indigo-700/50 rounded-md text-sm font-medium text-indigo-300 flex items-center justify-between">
+    <div className="flex items-center">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-4 w-4 mr-1.5 ml-2"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M13 10V3L4 14h7v7l9-11h-7z"
+        />
+      </svg>
+      {count} name{count > 1 ? "s" : ""} selected
+    </div>
+    <button
+      onClick={onClear}
+      className="bg-indigo-700 hover:bg-indigo-600 px-2 py-0.5 rounded text-xs text-white transition-colors mr-1"
+    >
+      Reset
+    </button>
+  </div>
+));
+
+SelectionIndicator.displayName = 'SelectionIndicator';
+
+// Main ModifierSearch component
 const ModifierSearch = ({
   modData,
   onAddModifier,
@@ -25,25 +115,11 @@ const ModifierSearch = ({
 
   const { modifierGroups, nameToGroupMap } = useModifiers();
 
-  // Update parent with search state changes
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (onSearchUpdate) {
-        onSearchUpdate({
-          searchTerm,
-          filterType,
-          viewByName,
-          selectedNames,
-        });
-      }
-    }, 50);
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm, filterType, viewByName, selectedNames, onSearchUpdate]);
-
-  // Event handlers
+  // Memoized handlers
   const handleSearchTermChange = useCallback(e => setSearchTerm(e.target.value), []);
   const handleFilterTypeChange = useCallback(e => setFilterType(e.target.value), []);
   const handleNameSearchChange = useCallback(e => setNameSearchTerm(e.target.value), []);
+  
   const handleClearSelections = useCallback(() => {
     setSelectedNames([]);
     setSelectedGroupNames([]);
@@ -54,7 +130,7 @@ const ModifierSearch = ({
     setSelectedNames([]);
   }, []);
 
-  // Handle name selection for tag cloud
+  // Handle name selection for tag cloud with optimized logic
   const handleNameSelection = useCallback(item => {
     if (item.isGroup) {
       const groupNames = modifierGroups[item.name] || [];
@@ -84,7 +160,23 @@ const ModifierSearch = ({
     }
   }, [modifierGroups, selectedNames]);
 
-  // Get modifier count for display
+  // Update parent with search state changes
+  useEffect(() => {
+    if (!onSearchUpdate) return;
+    
+    const timeoutId = setTimeout(() => {
+      onSearchUpdate({
+        searchTerm,
+        filterType,
+        viewByName,
+        selectedNames,
+      });
+    }, 50);
+    
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, filterType, viewByName, selectedNames, onSearchUpdate]);
+
+  // Get modifier count for display - memoized for performance
   const getModifierCount = useCallback(modifier => {
     if (searchContext === "builder" || searchContext === "trade") {
       // Determine if this is a prefix by checking modData
@@ -103,7 +195,7 @@ const ModifierSearch = ({
     }
   }, [filterType, modData, selectedPrefixes, selectedSuffixes, modifierList, searchContext]);
 
-  // Get modifier names for browsing
+  // Memoized data preparation
   const modifierNames = useMemo(() => {
     if (!modData.prefixes || !modData.suffixes)
       return { prefixes: [], suffixes: [] };
@@ -143,7 +235,20 @@ const ModifierSearch = ({
     return Array.from(uniqueNames).sort();
   }, [modifierNames.prefixes, modifierNames.suffixes, filterType]);
 
-  // Filter modifiers based on search criteria
+  // Helper function for sorting by relevance - extracted for clarity
+  const sortByRelevance = useCallback((items, searchTerm) => {
+    const lowerTerm = searchTerm.toLowerCase();
+    return items.sort((a, b) => {
+      const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
+      const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
+      if (aNameMatch !== -1 && bNameMatch === -1) return -1;
+      if (aNameMatch === -1 && bNameMatch !== -1) return 1;
+      if (aNameMatch !== -1 && bNameMatch !== -1) return aNameMatch - bNameMatch;
+      return a.Name.localeCompare(b.Name);
+    }).slice(0, 50);
+  }, []);
+
+  // Optimized filtering logic
   const filteredModifiers = useMemo(() => {
     if (!modData.prefixes || !modData.suffixes)
       return { prefixes: [], suffixes: [] };
@@ -230,18 +335,7 @@ const ModifierSearch = ({
             });
           });
           
-          // Sort by relevance
-          result.prefixes = combinedPrefixes
-            .sort((a, b) => {
-              const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
-              const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
-              if (aNameMatch !== -1 && bNameMatch === -1) return -1;
-              if (aNameMatch === -1 && bNameMatch !== -1) return 1;
-              if (aNameMatch !== -1 && bNameMatch !== -1)
-                return aNameMatch - bNameMatch;
-              return a.Name.localeCompare(b.Name);
-            })
-            .slice(0, 50);
+          result.prefixes = sortByRelevance(combinedPrefixes, searchTerm);
         }
         
         // Find matching suffixes
@@ -267,18 +361,7 @@ const ModifierSearch = ({
             });
           });
           
-          // Sort by relevance
-          result.suffixes = combinedSuffixes
-            .sort((a, b) => {
-              const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
-              const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
-              if (aNameMatch !== -1 && bNameMatch === -1) return -1;
-              if (aNameMatch === -1 && bNameMatch !== -1) return 1;
-              if (aNameMatch !== -1 && bNameMatch !== -1)
-                return aNameMatch - bNameMatch;
-              return a.Name.localeCompare(b.Name);
-            })
-            .slice(0, 50);
+          result.suffixes = sortByRelevance(combinedSuffixes, searchTerm);
         }
         
         return result;
@@ -365,18 +448,7 @@ const ModifierSearch = ({
           );
         }
         
-        // Sort by relevance
-        result.prefixes = filteredPrefixes
-          .sort((a, b) => {
-            const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
-            const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
-            if (aNameMatch !== -1 && bNameMatch === -1) return -1;
-            if (aNameMatch === -1 && bNameMatch !== -1) return 1;
-            if (aNameMatch !== -1 && bNameMatch !== -1)
-              return aNameMatch - bNameMatch;
-            return a.Name.localeCompare(b.Name);
-          })
-          .slice(0, 50);
+        result.prefixes = sortByRelevance(filteredPrefixes, searchTerm);
       }
 
       if (filterType === "all" || filterType === "suffix") {
@@ -401,18 +473,7 @@ const ModifierSearch = ({
           );
         }
         
-        // Sort by relevance
-        result.suffixes = filteredSuffixes
-          .sort((a, b) => {
-            const aNameMatch = a.Name.toLowerCase().indexOf(lowerTerm);
-            const bNameMatch = b.Name.toLowerCase().indexOf(lowerTerm);
-            if (aNameMatch !== -1 && bNameMatch === -1) return -1;
-            if (aNameMatch === -1 && bNameMatch !== -1) return 1;
-            if (aNameMatch !== -1 && bNameMatch !== -1)
-              return aNameMatch - bNameMatch;
-            return a.Name.localeCompare(b.Name);
-          })
-          .slice(0, 50);
+        result.suffixes = sortByRelevance(filteredSuffixes, searchTerm);
       }
 
       return result;
@@ -426,7 +487,8 @@ const ModifierSearch = ({
     selectedType,
     viewByName,
     selectedNames,
-    searchContext
+    searchContext,
+    sortByRelevance
   ]);
 
   // Name tags for display in the cloud
@@ -456,17 +518,19 @@ const ModifierSearch = ({
 
   // Filter name tags based on search
   const filteredNameTags = useMemo(() => {
+    if (nameSearchTerm === "") return nameTagsToDisplay;
+    
+    const lowerSearchTerm = nameSearchTerm.toLowerCase();
     return nameTagsToDisplay.filter(item => {
-      if (nameSearchTerm === "") return true;
       if (item.isGroup) {
         return (
-          item.name.toLowerCase().includes(nameSearchTerm.toLowerCase()) ||
+          item.name.toLowerCase().includes(lowerSearchTerm) ||
           (modifierGroups[item.name] || []).some(name =>
-            name.toLowerCase().includes(nameSearchTerm.toLowerCase())
+            name.toLowerCase().includes(lowerSearchTerm)
           )
         );
       }
-      return item.name.toLowerCase().includes(nameSearchTerm.toLowerCase());
+      return item.name.toLowerCase().includes(lowerSearchTerm);
     });
   }, [nameTagsToDisplay, nameSearchTerm, modifierGroups]);
 
@@ -483,262 +547,230 @@ const ModifierSearch = ({
     );
   }, [selectedNames, selectedGroupNames, modifierGroups]);
 
+  // Render name selection view
+  const renderNameSelectionView = () => (
+    <>
+      <div className="mb-3 flex space-x-2">
+        <FilterTypeSelect filterType={filterType} onChange={handleFilterTypeChange} />
+      </div>
+
+      {/* Name search filter */}
+      <div className="mb-3">
+        <input
+          type="text"
+          className="w-full bg-slate-700 p-2.5 rounded-md border-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
+          value={nameSearchTerm}
+          onChange={handleNameSearchChange}
+          placeholder="Filter modifier names..."
+        />
+      </div>
+
+      {/* Selection count display */}
+      {selectionCount > 0 && (
+        <SelectionIndicator count={selectionCount} onClear={handleClearSelections} />
+      )}
+
+      {/* Name tag cloud */}
+      <div className="flex flex-wrap gap-2 max-h-52 overflow-y-auto rounded-md px-1 py-2 custom-scrollbar">
+        {filteredNameTags.map(item => {
+          const isSelected = item.isGroup
+            ? (modifierGroups[item.name] || []).some(name =>
+                selectedNames.includes(name)
+              )
+            : selectedNames.includes(item.name);
+
+          const isFullySelected = item.isGroup
+            ? (modifierGroups[item.name] || []).every(name =>
+                selectedNames.includes(name)
+              )
+            : isSelected;
+
+          return (
+            <NameTag
+              key={`name-tag-${item.isGroup ? "group-" : ""}${item.name}`}
+              item={item}
+              isSelected={isSelected}
+              isFullySelected={isFullySelected}
+              onClick={handleNameSelection}
+            />
+          );
+        })}
+      </div>
+    </>
+  );
+
+  // Render text search view
+  const renderTextSearchView = () => (
+    <div className="flex">
+      <input
+        type="text"
+        className="flex-grow bg-slate-700 p-2.5 rounded-l-md border-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
+        value={searchTerm}
+        onChange={handleSearchTermChange}
+        placeholder="Search for modifiers..."
+      />
+      <select
+        className="bg-slate-700 p-2.5 rounded-r-md border-0 border-l-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
+        value={filterType}
+        onChange={handleFilterTypeChange}
+      >
+        <option value="all">All</option>
+        <option value="prefix">Prefixes</option>
+        <option value="suffix">Suffixes</option>
+      </select>
+    </div>
+  );
+
+  // Render results by name
+  const renderResultsByName = () => (
+    <div className="space-y-5 px-3 pb-3">
+      {Array.from(new Set(selectedNames))
+        .sort()
+        .map(name => {
+          const prefixesForName = filteredModifiers.prefixes.filter(p => p.Name === name);
+          const suffixesForName = filteredModifiers.suffixes.filter(
+            s => s.Name === name || s.Name === `of ${name}`
+          );
+          
+          const hasModifiers = prefixesForName.length > 0 || suffixesForName.length > 0;
+          
+          return (
+            <div
+              key={`name-group-${name}`}
+              className="border-t border-slate-700 pt-4 mt-4"
+            >
+              <h3 className="font-medium text-amber-400 mb-3 text-base px-1">
+                {name}
+              </h3>
+              {hasModifiers ? (
+                <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
+                  <div className="grid grid-cols-2 gap-2">
+                    {prefixesForName.map((prefix, index) => (
+                      <ModifierCard
+                        key={`prefix-${prefix.id}-${index}`}
+                        modifier={{ ...prefix, type: "prefix" }}
+                        inModifierList={getModifierCount(prefix)}
+                        searchContext={searchContext}
+                        onClick={onAddModifier}
+                        onRemove={onRemoveModifier}
+                      />
+                    ))}
+                    {suffixesForName.map((suffix, index) => (
+                      <ModifierCard
+                        key={`suffix-${suffix.id}-${index}`}
+                        modifier={{ ...suffix, type: "suffix" }}
+                        inModifierList={getModifierCount(suffix)}
+                        searchContext={searchContext}
+                        onClick={onAddModifier}
+                        onRemove={onRemoveModifier}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-slate-400 py-3 text-sm px-1">
+                  No modifiers found for "{name}" with current idol type
+                </div>
+              )}
+            </div>
+          );
+        })}
+    </div>
+  );
+
+  // Render search results
+  const renderSearchResults = () => {
+    const hasPrefixes = filteredModifiers.prefixes.length > 0;
+    const hasSuffixes = filteredModifiers.suffixes.length > 0;
+    const hasSearch = searchTerm || selectedNames.length > 0;
+    const noResults = hasSearch && !hasPrefixes && !hasSuffixes;
+    
+    return (
+      <div className="space-y-4 px-3 pb-3">
+        {/* Prefix Section */}
+        {hasPrefixes && (
+          <div>
+            <h3 className="font-medium text-blue-400 text-sm px-1 mb-2">
+              Prefixes ({filteredModifiers.prefixes.length})
+            </h3>
+            <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-2">
+                {filteredModifiers.prefixes.map((prefix, index) => (
+                  <ModifierCard
+                    key={`prefix-${prefix.id}-${index}`}
+                    modifier={{ ...prefix, type: "prefix" }}
+                    inModifierList={getModifierCount(prefix)}
+                    searchContext={searchContext}
+                    onClick={onAddModifier}
+                    onRemove={onRemoveModifier}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Suffix Section */}
+        {hasSuffixes && (
+          <div>
+            <h3 className="font-medium text-green-400 text-sm px-1 mb-2">
+              Suffixes ({filteredModifiers.suffixes.length})
+            </h3>
+            <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
+              <div className="grid grid-cols-2 gap-2">
+                {filteredModifiers.suffixes.map((suffix, index) => (
+                  <ModifierCard
+                    key={`suffix-${suffix.id}-${index}`}
+                    modifier={{ ...suffix, type: "suffix" }}
+                    inModifierList={getModifierCount(suffix)}
+                    searchContext={searchContext}
+                    onClick={onAddModifier}
+                    onRemove={onRemoveModifier}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* No results message */}
+        {noResults && (
+          <p className="text-slate-400 py-2 text-sm text-center">
+            No modifiers found matching "{searchTerm || selectedNames.join(", ")}"
+          </p>
+        )}
+
+        {/* Help text when no search */}
+        {!hasSearch && (
+          <p className="text-slate-400 py-2 text-sm text-center">
+            Enter search terms or select modifier name(s) to see results
+          </p>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="bg-slate-800 rounded-lg ring-1 ring-slate-700">
       {/* View mode toggle */}
-      <div className="flex space-x-2 mb-4 p-3">
-        <button
-          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            !viewByName
-              ? "bg-indigo-600 text-white"
-              : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-          }`}
-          onClick={() => handleViewModeChange(false)}
-        >
-          Search by Text
-        </button>
-        <button
-          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            viewByName
-              ? "bg-indigo-600 text-white"
-              : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-          }`}
-          onClick={() => handleViewModeChange(true)}
-        >
-          Browse by Name
-        </button>
-      </div>
+      <ModeToggleButtons viewByName={viewByName} handleViewModeChange={handleViewModeChange} />
 
       {/* Browse by name interface */}
       {viewByName ? (
         <div className="px-3 pb-3">
-          <div className="mb-3 flex space-x-2">
-            <select
-              className="bg-slate-700 p-2.5 rounded-md border-0 text-sm flex-grow ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
-              value={filterType}
-              onChange={handleFilterTypeChange}
-            >
-              <option value="all">All Types</option>
-              <option value="prefix">Prefixes Only</option>
-              <option value="suffix">Suffixes Only</option>
-            </select>
-          </div>
-
-          {/* Name search filter */}
-          <div className="mb-3">
-            <input
-              type="text"
-              className="w-full bg-slate-700 p-2.5 rounded-md border-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
-              value={nameSearchTerm}
-              onChange={handleNameSearchChange}
-              placeholder="Filter modifier names..."
-            />
-          </div>
-
-          {/* Selection count display */}
-          {selectionCount > 0 && (
-            <div className="mb-3 px-1 py-1 bg-indigo-900/30 border border-indigo-700/50 rounded-md text-sm font-medium text-indigo-300 flex items-center justify-between">
-              <div className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 mr-1.5 ml-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-                {selectionCount} name{selectionCount > 1 ? "s" : ""} selected
-              </div>
-              <button
-                onClick={handleClearSelections}
-                className="bg-indigo-700 hover:bg-indigo-600 px-2 py-0.5 rounded text-xs text-white transition-colors mr-1"
-              >
-                Reset
-              </button>
-            </div>
-          )}
-
-          {/* Name tag cloud */}
-          <div className="flex flex-wrap gap-2 max-h-52 overflow-y-auto rounded-md px-1 py-2 custom-scrollbar">
-            {filteredNameTags.map(item => {
-              const isSelected = item.isGroup
-                ? (modifierGroups[item.name] || []).some(name =>
-                    selectedNames.includes(name)
-                  )
-                : selectedNames.includes(item.name);
-
-              const isFullySelected = item.isGroup
-                ? (modifierGroups[item.name] || []).every(name =>
-                    selectedNames.includes(name)
-                  )
-                : isSelected;
-
-              return (
-                <button
-                  key={`name-tag-${item.isGroup ? "group-" : ""}${item.name}`}
-                  className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                    isSelected
-                      ? `bg-indigo-600 text-white font-medium ${
-                          !isFullySelected ? "ring-2 ring-indigo-300" : ""
-                        }`
-                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                  }`}
-                  onClick={() => handleNameSelection(item)}
-                >
-                  {item.name}
-                </button>
-              );
-            })}
-          </div>
+          {renderNameSelectionView()}
         </div>
       ) : (
         /* Search by text interface */
         <div className="px-3 pb-3">
-          <div className="flex">
-            <input
-              type="text"
-              className="flex-grow bg-slate-700 p-2.5 rounded-l-md border-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
-              value={searchTerm}
-              onChange={handleSearchTermChange}
-              placeholder="Search for modifiers..."
-            />
-            <select
-              className="bg-slate-700 p-2.5 rounded-r-md border-0 border-l-0 text-sm ring-1 ring-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
-              value={filterType}
-              onChange={handleFilterTypeChange}
-            >
-              <option value="all">All</option>
-              <option value="prefix">Prefixes</option>
-              <option value="suffix">Suffixes</option>
-            </select>
-          </div>
+          {renderTextSearchView()}
         </div>
       )}
 
       {/* Results display */}
-      {viewByName && selectedNames.length > 0 ? (
-        <div className="results space-y-5 px-3 pb-3">
-          {Array.from(new Set(selectedNames))
-            .sort()
-            .map(name => (
-              <div
-                key={`name-group-${name}`}
-                className="border-t border-slate-700 pt-4 mt-4"
-              >
-                <h3 className="font-medium text-amber-400 mb-3 text-base px-1">
-                  {name}
-                </h3>
-                {(filteredModifiers.prefixes.filter(p => p.Name === name).length > 0 ||
-                  filteredModifiers.suffixes.filter(
-                    s => s.Name === name || s.Name === `of ${name}`
-                  ).length > 0) ? (
-                  <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
-                    <div className="grid grid-cols-2 gap-2">
-                      {filteredModifiers.prefixes
-                        .filter(p => p.Name === name)
-                        .map((prefix, index) => (
-                          <ModifierCard
-                            key={`prefix-${prefix.id}-${index}`}
-                            modifier={{ ...prefix, type: "prefix" }}
-                            inModifierList={getModifierCount(prefix)}
-                            searchContext={searchContext}
-                            onClick={onAddModifier}
-                            onRemove={onRemoveModifier}
-                          />
-                        ))}
-                      {filteredModifiers.suffixes
-                        .filter(s => s.Name === name || s.Name === `of ${name}`)
-                        .map((suffix, index) => (
-                          <ModifierCard
-                            key={`suffix-${suffix.id}-${index}`}
-                            modifier={{ ...suffix, type: "suffix" }}
-                            inModifierList={getModifierCount(suffix)}
-                            searchContext={searchContext}
-                            onClick={onAddModifier}
-                            onRemove={onRemoveModifier}
-                          />
-                        ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-slate-400 py-3 text-sm px-1">
-                    No modifiers found for "{name}" with current idol type
-                  </div>
-                )}
-              </div>
-            ))}
-        </div>
-      ) : (
-        <div className="results space-y-4 px-3 pb-3">
-          {/* Prefix Section */}
-          {filteredModifiers.prefixes.length > 0 && (
-            <div>
-              <h3 className="font-medium text-blue-400 text-sm px-1 mb-2">
-                Prefixes ({filteredModifiers.prefixes.length})
-              </h3>
-              <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
-                <div className="grid grid-cols-2 gap-2">
-                  {filteredModifiers.prefixes.map((prefix, index) => (
-                    <ModifierCard
-                      key={`prefix-${prefix.id}-${index}`}
-                      modifier={{ ...prefix, type: "prefix" }}
-                      inModifierList={getModifierCount(prefix)}
-                      searchContext={searchContext}
-                      onClick={onAddModifier}
-                      onRemove={onRemoveModifier}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Suffix Section */}
-          {filteredModifiers.suffixes.length > 0 && (
-            <div>
-              <h3 className="font-medium text-green-400 text-sm px-1 mb-2">
-                Suffixes ({filteredModifiers.suffixes.length})
-              </h3>
-              <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
-                <div className="grid grid-cols-2 gap-2">
-                  {filteredModifiers.suffixes.map((suffix, index) => (
-                    <ModifierCard
-                      key={`suffix-${suffix.id}-${index}`}
-                      modifier={{ ...suffix, type: "suffix" }}
-                      inModifierList={getModifierCount(suffix)}
-                      searchContext={searchContext}
-                      onClick={onAddModifier}
-                      onRemove={onRemoveModifier}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* No results message */}
-          {(searchTerm || selectedNames.length > 0) &&
-            filteredModifiers.prefixes.length === 0 &&
-            filteredModifiers.suffixes.length === 0 && (
-              <p className="text-slate-400 py-2 text-sm text-center">
-                No modifiers found matching "{searchTerm || selectedNames.join(", ")}"
-              </p>
-            )}
-
-          {/* Help text when no search */}
-          {!searchTerm && selectedNames.length === 0 && (
-            <p className="text-slate-400 py-2 text-sm text-center">
-              Enter search terms or select modifier name(s) to see results
-            </p>
-          )}
-        </div>
-      )}
+      {viewByName && selectedNames.length > 0 
+        ? renderResultsByName() 
+        : renderSearchResults()}
     </div>
   );
 };

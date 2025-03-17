@@ -1,7 +1,19 @@
 // components/common/Modal.jsx
 import React, { useEffect } from "react";
 
-function Modal({ 
+const MAX_WIDTH_CLASSES = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  "2xl": "max-w-2xl",
+  "3xl": "max-w-3xl",
+  "4xl": "max-w-4xl",
+  "5xl": "max-w-5xl",
+  full: "max-w-full",
+};
+
+const Modal = ({ 
   isOpen, 
   onClose, 
   title, 
@@ -9,7 +21,7 @@ function Modal({
   actions,
   maxWidth = "md",
   className = "",
-}) {
+}) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -27,22 +39,12 @@ function Modal({
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
-
-  const maxWidthClasses = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
-    xl: "max-w-xl",
-    "2xl": "max-w-2xl",
-    "3xl": "max-w-3xl",
-    "4xl": "max-w-4xl",
-    "5xl": "max-w-5xl",
-    full: "max-w-full",
-  };
-
+  
+  const maxWidthClass = MAX_WIDTH_CLASSES[maxWidth] || MAX_WIDTH_CLASSES.md;
+  
   return (
     <div className="fixed inset-0 bg-slate-950 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className={`bg-slate-900 rounded-xl p-6 w-full shadow-lg border border-slate-800 ${maxWidthClasses[maxWidth] || maxWidthClasses.md} ${className}`}>
+      <div className={`bg-slate-900 rounded-xl p-6 w-full shadow-lg border border-slate-800 ${maxWidthClass} ${className}`}>
         <div className="flex justify-between items-start mb-5">
           <h2 className="text-xl font-bold text-white">{title}</h2>
           <button
@@ -66,6 +68,6 @@ function Modal({
       </div>
     </div>
   );
-}
+};
 
-export default Modal;
+export default React.memo(Modal);
