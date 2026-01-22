@@ -1,3 +1,12 @@
+> ** REPOSITORY ARCHIVED – NO LONGER MAINTAINED **  
+> 
+> Archived on **January 22, 2026**.  
+> The repo is now **read-only**.  
+> → No more updates, bug fixes, security patches, new features, or responses to issues/PRs.  
+> 
+> The code, live demo, and documentation remain available for reference or forking.  
+> Feel free to fork it and keep the tool alive if you're interested!
+
 # Path of Exile Idol Grid Builder
 
 A powerful web application for planning and optimizing your Idol layouts in Path of Exile. This tool helps you experiment with different idol combinations, maximize modifier stacking, and find the perfect arrangement for your build.
